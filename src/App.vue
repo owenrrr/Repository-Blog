@@ -1,9 +1,5 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/regist">Regist</router-link>
-    </div>
+  <div>
     <router-view/>
     <!-- <button @click="hello()">click</button> -->
   </div>

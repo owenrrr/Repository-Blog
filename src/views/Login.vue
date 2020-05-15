@@ -54,9 +54,8 @@
               LOGIN
             </a-button>
             Or
-            <a href="">
-              Register Now
-            </a>
+            <router-link :to = "{ path : '/regist'}">Register Now</router-link>
+            <router-view></router-view>
           </a-form-item>
         </a-form>
       </div>
@@ -67,6 +66,16 @@
   </a-layout>
 </template>
 <style>
+  #app {
+  height: 100%;
+  width: 100%;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
   #components-layout-demo-fixed .logo{
     width: 120px;
     height: 31px;

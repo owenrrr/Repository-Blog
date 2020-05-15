@@ -1,85 +1,77 @@
 <template>
-  <div>
-    <div class="title">
-      <a><i>- - - - - - - - - - - - - - - My Blog - - - - - - - - - - - - - - -</i></a>
-    </div>
-    <div id="login">
-    <!-- <a-form-item>
-      <div style="padding: 0px 0px 10px 0px" class="form-item">
-        <a>Regist</a>
-      </div>  
-    </a-form-item> -->
-    <a-form :form="registerform">
-        <a-form-item>
-      <div style="padding: 10px 0px 10px 0px">
-        <a-input
-          size="large"
-          type="email"
-          placeholder="Mail"
-          style="width: 600px"
-          v-decorator="[
-              'registerUserMail', 
-              {rules: [{ required: true, type: 'email', message: 'Please input the mail' }], validateTrigger: 'blur'}]">
-          <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-        </a-input>
-      </div>  
-    </a-form-item>
-    <a-form-item>
-      <div style="padding: 10px 0px 10px 0px">
-        <a-input
-          size="large"
-          placeholder="Username"
-          style="width: 600px"
-          v-decorator="[
-              'registerUsername', 
-              {rules: [{ required: true, message: 'Please input the username' }, { validator: this.handleUsername }], validateTrigger: 'blur'}]">
-          <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-        </a-input>
+  <a-layout id="components-layout-demo-fixed">
+    <a-layout-header :style="{ position: 'fixed', zIndex: 1, width: '100%' }">
+      <span class="head">My Blog</span>
+    </a-layout-header>
+    <a-layout-content :style="{ padding: '0 50px', marginTop: '64px' }">
+      <div :style="{ background: 'lightgray', padding: '100px', minHeight: '380px' }">
+        <a-form
+                id="components-form-demo-normal-login"
+                :form="registerform"
+                class="login-form"
+                :style="{width: '300px', margin: '0 auto'}"
+        >
+          <a-form-item>
+            <a-input
+              size="large"
+              type="email"
+              placeholder="Mail"
+              v-decorator="[
+                  'registerUserMail', 
+                  {rules: [{ required: true, type: 'email', message: 'Invalid Mail' }], validateTrigger: 'blur'}]"
+            >
+              <a-icon slot="prefix" type="mail" style="color: rgba(0,0,0,.25)" />
+            </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-input
+              size="large"
+              placeholder="Username"
+              v-decorator="[
+                  'registerUsername', 
+                  {rules: [{ required: true, message: 'Invalid Username' }, { validator: this.handleUsername }], validateTrigger: 'blur'}]"
+            >
+              <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-input
+              size="large"
+              type="password"
+              placeholder="password"
+              v-decorator="[
+                    'registerPassword', 
+                    {rules: [{ required: true, message: ' ' }, { validator: this.handlePassword }], validateTrigger: 'blur'}]">
+              <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-input
+              size="large"
+              type="password"
+              placeholder="Confirm Password"
+              v-decorator="[
+                    'registerPasswordconfirm', 
+                    {rules: [{ required: true, message: ' ' }, { validator: this.handlePasswordCheck }], validateTrigger: 'blur'}]">
+              <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            </a-input>
+          </a-form-item>
+          <a-form-item style="margin-top: 20px" class="center">
+            <a-button
+              size="large"
+              type="primary"
+              :loading="registerLoading"
+              @click="handleRegister()"
+            >Submit</a-button>
+          </a-form-item>
+        </a-form>
       </div>
-    </a-form-item>
-    <a-form-item>
-      <div style="padding: 10px 0px 10px 0px">
-        <a-input
-          size="large"
-          type="password"
-          placeholder="password"
-          style="width: 600px"
-          v-decorator="[
-                'registerPassword', 
-                {rules: [{ required: true, message: 'Please input the password' }, { validator: this.handlePassword }], validateTrigger: 'blur'}]">
-          <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-        </a-input>
-      </div>
-    </a-form-item>
-    <a-form-item>
-      <div style="padding: 10px 0px 10px 0px">
-        <a-input
-          size="large"
-          type="password"
-          placeholder="Confirm Password"
-          style="width: 600px"
-          v-decorator="[
-                'registerPasswordconfirm', 
-                {rules: [{ required: true, message: 'Please input the password' }, { validator: this.handlePasswordCheck }], validateTrigger: 'blur'}]">
-          <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-        </a-input>
-      </div>
-    </a-form-item>
-    <a-form-item style="margin-top: 20px">
-      <a-button
-        size="large"
-        type="primary"
-        ghost="true"
-        :loading="registerLoading"
-        @click="handleRegister()"
-      >Submit</a-button>
-    </a-form-item>
-    </a-form>
-  </div>
-  </div>
-  
+    </a-layout-content>
+    <a-layout-footer :style="{ textAlign: 'center' }">
+      Design by LZY in 2020.5.15
+    </a-layout-footer>
+  </a-layout>
 </template>
-
 <script>
 // import axios from 'axios'
 export default {
@@ -95,13 +87,13 @@ export default {
         },
         registerLoading : false,
 
-        registerform: this.$form.createForm(this),
+        registerform: this.$form.createForm(this),  //create form to get input-data
     }
   },
 
   methods :{
       handlePassword(rule, value, callback) {
-          if (value.length <= 6){
+          if (value.length < 6){
               callback(new Error("Password length must longer than 6"))
           }
           this.basic.password = value;
@@ -149,12 +141,34 @@ export default {
   font-size: 1cm;
 }
 .title {
-  background-color:black;
+  height: 64px;
+  padding: 0px 50px;
+  background-color: #2c3e50;
 }
-.title a {
-  font-size: 1.5cm;
+.title a i{
+  text-align: center;
+  font-size: 40px;
   font-family: "Arial";
   color: aliceblue;
   
+}
+.center {
+  text-align: center;
+}
+.head {
+    font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+    color: whitesmoke;
+    font-size: 40px;
+    font-style:italic;
+  }
+
+#app {
+  height: 100%;
+  width: 100%;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
 }
 </style>
