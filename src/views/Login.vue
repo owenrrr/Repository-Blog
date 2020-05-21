@@ -27,8 +27,13 @@
             <a-input
               v-decorator="[
                 'password',
-                { rules: [{ required: true, message: 'Please input the password!'}]}
+                { rules: [
+                    { required: true, message: 'Please input the password!'},
+                    { whitespace: true, message: 'Passwords are not allowed to have spaces!' },
+                  ]
+                }
               ]"
+              @blur="validatePassword"
               type="password"
               placeholder="Password"
             >
@@ -55,7 +60,7 @@
             </a-button>
             Or
             <router-link :to = "{ path : '/regist'}">Register Now</router-link>
-            <router-view></router-view>
+            <!--<router-view></router-view>-->
           </a-form-item>
         </a-form>
       </div>
@@ -65,16 +70,8 @@
     </a-layout-footer>
   </a-layout>
 </template>
+
 <style>
-  #app {
-  height: 100%;
-  width: 100%;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 
   #components-layout-demo-fixed .logo{
     width: 120px;
@@ -108,15 +105,63 @@
     beforeCreate() {
       this.form = this.$form.createForm(this, { name: 'normal_login' });
     },
+    data() {
+      return {
+      }
+    },
     methods: {
       handleSubmit(e) {
         e.preventDefault();
         this.form.validateFields((err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
+
+
+            if (this.checkLoginInfo(values)) {
+              this.$message.success('Login Success! Welcom Back ' + this.form.getFieldValue('username') + '!', 3);
+              this.$router.push('/MyBlog')
+            }
+            else {
+              this.form.resetFields()
+              this.$message.warning('Login Failed! Wrong account or password.', 3);
+            }
           }
         });
       },
+      checkLoginInfo(values) {
+        if (values.username === 'lxy' && values.password === 'ZHIXINGHEYI99') {
+          return true
+        }
+        else {
+          return false
+        }
+      },
+      validatePassword(e) {
+        if (e.target.value.length < 6) {
+          const error = [{
+            message: 'Password cannot be less than 6 digits!',
+          }]
+          this.form.setFields({
+            password: {
+              value: e.target.value,
+              errors: error
+            }
+          })
+        }
+        else {
+          if (e.target.value.length > 20) {
+            const error = [{
+              message: 'Password cannot be more than 20 digits!',
+            }]
+            this.form.setFields({
+              password: {
+                value: e.target.value,
+                errors: error
+              }
+            })
+          }
+        }
+      }
     },
   };
 </script>
