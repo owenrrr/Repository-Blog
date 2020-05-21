@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Regist from '../views/Regist.vue'
-import Login from '../views/Login.vue'
+import Regist from '../views/LoginModule/Regist.vue'
+import Login from '../views/LoginModule/Login.vue'
 
 Vue.use(VueRouter)
 
@@ -24,12 +24,12 @@ Vue.use(VueRouter)
       path: '/MyBlog',
       name: 'Layout',
       redirect: '/home/blogList',
-      component: () => import('@/views/Layout'),
+      component: () => import('@/views/LayoutModule/Layout'),
       children: [
         {
           path: '/home/blogList',
           name: 'BlogList',
-          component: () => import('@/views/BlogList')
+          component: () => import('@/views/Home')
         }
       ]
     }
