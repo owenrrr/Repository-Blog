@@ -115,7 +115,7 @@ export default {
         });
       },
       addUser(){
-        axios.post('/user/adduser',this.basic)
+        axios.post('http://localhost:3000/user/adduser',this.basic)
       },
       checkRegistInfo(){
         if (this.registerPW && this.registerUN){
