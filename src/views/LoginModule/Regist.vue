@@ -9,6 +9,7 @@
                 id="components-form-demo-normal-login"
                 :form="registerform"
                 class="login-form"
+                @submit="handleRegisterSubmit"
                 :style="{width: '300px', margin: '0 auto'}"
         >
           <a-form-item>
@@ -61,7 +62,7 @@
               size="large"
               type="primary"
               :loading="registerLoading"
-              @click="handleRegister()"
+              html-type="submit"
             >Submit</a-button>
           </a-form-item>
         </a-form>
@@ -73,7 +74,7 @@
   </a-layout>
 </template>
 <script>
-// import axios from 'axios'
+import axios from 'axios'
 export default {
   name: 'Regist',
   
@@ -86,25 +87,64 @@ export default {
 
         },
         registerLoading : false,
+        registerPW: true,
+        registerUN: true,
 
         registerform: this.$form.createForm(this),  //create form to get input-data
     }
   },
 
   methods :{
+      handleRegisterSubmit(e){
+        e.preventDefault();
+
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            console.log('Received values of form: ', values);
+
+            if (this.checkRegistInfo()) {
+              this.$message.success('Regist Success!');
+              this.addUser()  
+              this.$router.push('/')
+            }
+            else {
+              this.form.resetFields()
+              this.$message.warning('Regist Failed! Fullfill the form please.', 3);
+            }
+          }
+        });
+      },
+      addUser(){
+        axios.post('/user/adduser',this.basic)
+      },
+      checkRegistInfo(){
+        if (this.registerPW && this.registerUN){
+          return true
+        }else{
+          return false
+        }
+      },
       handlePassword(rule, value, callback) {
           if (value.length < 6){
               callback(new Error("Password length must longer than 6"))
+              this.registerPW = false
           }
-          this.basic.password = value;
-          callback();
+          this.basic.password = value
+          this.registerPW = true
+          callback()
         
       },
       handlePasswordCheck(rule, value, callback){
           if (!value){
               callback(new Error("Please input your password!"))
+              if (this.registerPW){
+                this.registerPW = false
+              }
           }else if (value && this.basic.password && value.trim() != this.basic.password.trim()){
               callback(new Error("Please input the same password!"))
+              if (this.registerPW){
+                this.registerPW = false
+              }
           }
           callback()
       },
@@ -118,6 +158,7 @@ export default {
         //       }
         //   } )
         if (value == "Owen"){
+          this.registerUN = false
             callback(new Error("Username is used."))
         }
           this.basic.username = value
