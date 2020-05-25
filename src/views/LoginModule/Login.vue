@@ -101,6 +101,7 @@
 
 
 <script>
+import axios from 'axios'
   export default {
     beforeCreate() {
       this.form = this.$form.createForm(this, { name: 'normal_login' });
@@ -115,26 +116,38 @@
         this.form.validateFields((err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
-
-
-            if (this.checkLoginInfo(values)) {
-              this.$message.success('Login Success! Welcom Back ' + this.form.getFieldValue('username') + '!', 3);
-              this.$router.push('/MyBlog')
-            }
-            else {
-              this.form.resetFields()
-              this.$message.warning('Login Failed! Wrong account or password.', 3);
-            }
+            this.checkLoginInfo(values)
+            // if (this.checkLoginInfo(values)) {
+            //   this.$message.success('Login Success! Welcom Back ' + this.form.getFieldValue('username') + '!', 3);
+            //   this.$router.push('/MyBlog')
+            // }
+            // else {
+            //   this.form.resetFields()
+            //   this.$message.warning('Login Failed! Wrong account or password.', 3);
+            // }
           }
         });
       },
       checkLoginInfo(values) {
-        if (values.username === 'lxy' && values.password === 'ZHIXINGHEYI99') {
-          return true
-        }
-        else {
-          return false
-        }
+        this.returnCheckBool(values)  
+      },
+      returnCheckBool(values){
+        let userList
+        axios.get('http://localhost:3000/user/getuserlist').then((res) => {
+          userList = res.data.users.users
+          for (var user of userList){
+            if (user.username == values.username && user.password == values.password){
+              console.log("Execute true")
+              return Promise.reject()
+            }
+          }
+          console.log("Execute false")
+          this.form.resetFields()
+          this.$message.warning('Login Failed! Wrong account or password.', 3);
+        }).catch(() => {
+          this.$message.success('Login Success! Welcom Back ' + this.form.getFieldValue('username') + '!', 3);
+          this.$router.push('/MyBlog')
+        })
       },
       validatePassword(e) {
         if (e.target.value.length < 6) {
