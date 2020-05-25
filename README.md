@@ -18,3 +18,6 @@
     - 将新建的两个文件打包进LayoutModule
     - 填写路由信息
     - 完善了一部分主页面的template及style，功能未完善
+
+- 2020/05/25：commit by lzy
+    - 成功注册/登录
