@@ -98,7 +98,7 @@ export default {
       handleRegisterSubmit(e){
         e.preventDefault();
 
-        this.form.validateFields((err, values) => {
+        this.registerform.validateFields((err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
 
