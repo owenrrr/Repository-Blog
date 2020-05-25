@@ -81,10 +81,10 @@ export default {
   data(){
     return {
         basic : {
-            email: '',
+            sex: null,
+            age: null,
             username : '',
             password: '',
-
         },
         registerLoading : false,
         registerPW: true,
