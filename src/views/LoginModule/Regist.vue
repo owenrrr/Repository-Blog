@@ -146,23 +146,25 @@ export default {
                 this.registerPW = false
               }
           }
+          this.registerPW = true
           callback()
       },
       handleUsername(rule, value, callback){
-          // interface http://localhost:8083/returnUsername need return Username array
-        //   axios.get('http://localhost:8083/returnUsername').then(res => {
-        //       for (var i=0; i<res.length; i++){
-        //           if (res[i].trim() == value.trim()){
-        //               callback(new Error("Username is used."))
-        //           }
-        //       }
-        //   } )
-        if (value == "Owen"){
-          this.registerUN = false
-            callback(new Error("Username is used."))
-        }
+        let userList
+        axios.get('http://localhost:3000/user/getuserlist').then((res) => {
+          userList = res.data.users.users
+          for (var user of userList){
+            if (user.username == value.trim()){
+              return Promise.reject()
+            }
+          }
           this.basic.username = value
-          callback()         
+          this.registerUN = true
+          callback() 
+        } ).catch(() => {
+          this.registerUN = false
+          callback(new Error("Username is used"))
+        })       
       }
   }
 }
