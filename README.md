@@ -28,3 +28,6 @@
 
 - 2020/05/26: commit by lxyeah
     - 新增db.sql到sql文件夹，修改了一些数据表的属性，详情请自行查看，可通过sql脚本注入本地数据库
+
+- 2020/05/26: commit by lzy
+    - 新增EditorModule-BasicEditor基本功能（还未链接数据库）

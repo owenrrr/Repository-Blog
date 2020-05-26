@@ -4,6 +4,7 @@ import router from './router'
 import Antd from 'ant-design-vue'
 import store from './store'
 import 'ant-design-vue/dist/antd.css'
+import '@ckeditor/ckeditor5-build-classic/build/ckeditor.js'
 
 
 

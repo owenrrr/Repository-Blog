@@ -34,7 +34,7 @@
                 this.$router.push({name: 'BlogList'})
             },
             jumpToEdit() {
-
+                this.$router.push('/MyBlog/basicEditor')
             },
             jumpToStar() {
 

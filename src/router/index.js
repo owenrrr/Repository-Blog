@@ -30,6 +30,10 @@ Vue.use(VueRouter)
           path: '/home/blogList',
           name: 'BlogList',
           component: () => import('@/views/Home')
+        },{
+          path: 'basicEditor',  // children route cannot add '/'
+          name: 'BasicEditor',
+          component: () => import('@/views/EditorModule/BasicEditor')
         }
       ]
     }
