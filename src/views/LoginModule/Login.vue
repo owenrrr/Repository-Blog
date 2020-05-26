@@ -129,14 +129,14 @@ import axios from 'axios'
         });
       },
       checkLoginInfo(values) {
-        this.returnCheckBool(values)  
+        this.returnCheckBool(values)
       },
       returnCheckBool(values){
         let userList
         axios.get('http://localhost:3000/user/getuserlist').then((res) => {
           userList = res.data.users.users
           for (var user of userList){
-            if (user.username == values.username && user.password == values.password){
+            if (user.username === values.username && user.password === values.password){
               console.log("Execute true")
               return Promise.reject()
             }

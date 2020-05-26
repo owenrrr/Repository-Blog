@@ -5,8 +5,8 @@ function openConnection() {
     connection = mysql.createConnection({
         host: 'localhost',
         user: 'root',
-        password: 'owen890628',
-        database: 'Blog'
+        password: 'ZHIXINGHEYI99',
+        database: 'internet_work'
     });
 }
 
