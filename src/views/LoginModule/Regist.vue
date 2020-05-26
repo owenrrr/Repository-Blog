@@ -41,7 +41,7 @@
               type="password"
               placeholder="password"
               v-decorator="[
-                    'registerPassword',
+                    'registerPassword', 
                     {rules: [{ required: true, message: ' ' }, { validator: this.handlePassword }], validateTrigger: 'blur'}]">
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input>
@@ -52,7 +52,7 @@
               type="password"
               placeholder="Confirm Password"
               v-decorator="[
-                    'registerPasswordconfirm',
+                    'registerPasswordconfirm', 
                     {rules: [{ required: true, message: ' ' }, { validator: this.handlePasswordCheck }], validateTrigger: 'blur'}]">
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input>
@@ -77,7 +77,7 @@
 import axios from 'axios'
 export default {
   name: 'Regist',
-
+  
   data(){
     return {
         basic : {
@@ -104,11 +104,11 @@ export default {
 
             if (this.checkRegistInfo()) {
               this.$message.success('Regist Success!');
-              this.addUser()
+              this.addUser()  
               this.$router.push('/')
             }
             else {
-              this.form.resetFields();
+              this.form.resetFields()
               this.$message.warning('Regist Failed! Fullfill the form please.', 3);
             }
           }
@@ -132,7 +132,7 @@ export default {
           this.basic.password = value
           this.registerPW = true
           callback()
-
+        
       },
       handlePasswordCheck(rule, value, callback){
           if (!value){
@@ -162,7 +162,7 @@ export default {
             callback(new Error("Username is used."))
         }
           this.basic.username = value
-          callback()
+          callback()         
       }
   }
 }
@@ -191,7 +191,7 @@ export default {
   font-size: 40px;
   font-family: "Arial";
   color: aliceblue;
-
+  
 }
 .center {
   text-align: center;

@@ -1,7 +1,6 @@
 <template>
   <div>
     <router-view/>
-    <!-- <button @click="hello()">click</button> -->
   </div>
 </template>
 
@@ -32,15 +31,9 @@
 </style>
 
 <script>
-import axios from 'axios'
-
 export default {
 
   methods:{
-
-    hello(){
-      axios.get('http://localhost:8080/returnObj').then(res => {console.log(res)})
-    }
   }
 }
 </script>
