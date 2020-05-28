@@ -157,12 +157,29 @@ export default {
         //           }
         //       }
         //   } )
-        if (value == "Owen"){
-          this.registerUN = false
-            callback(new Error("Username is used."))
-        }
+        let userList
+        axios.get('http://localhost:3000/user/getuserlist').then((res) => {
+          userList = res.data.users.users
+          for (var user of userList){
+            if (user.username === value.username){
+              console.log("Execute false")
+              return Promise.reject()
+            }
+          }
+          console.log("Execute true")
+          this.registerUN = true
           this.basic.username = value
-          callback()         
+          callback()
+        }).catch( () => {
+          this.registerUN = false
+          callback(new Error("Username is used."))
+        })
+        // if (value == "Owen"){
+        //   this.registerUN = false
+        //     callback(new Error("Username is used."))
+        // }
+        //   this.basic.username = value
+        //   callback()         
       }
   }
 }

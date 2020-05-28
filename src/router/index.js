@@ -34,11 +34,20 @@ Vue.use(VueRouter)
           path: 'basicEditor',  // children route cannot add '/'
           name: 'BasicEditor',
           component: () => import('@/views/EditorModule/BasicEditor')
+        },{
+          path: 'userinterface',  // children route cannot add '/'
+          name: 'Userinterface',
+          component: () => import('@/views/LayoutModule/UserLayout'),
+          children: [
+            {
+              path: '/settings',
+              name :'Settings',
+              component: () => import('@/views/UserModule/Settings')
+            }
+          ]
         }
       ]
-    }
-
-
+    },
 ]
 
 const router = new VueRouter({

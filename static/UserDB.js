@@ -20,15 +20,15 @@ function closeConnection() {
 
 module.exports = {
 
-    add: function (username, password) {
+    add: function (username, password, sex, age) {
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [username, password];
+            let params = [username, password, sex, age];
 
-            let sql = 'insert into user (user_name, password) values (?, ?);';
+            let sql = 'insert into user (user_name, password, sex, age) values (?, ?, ?, ?);';
 
             connection.query(sql, params, function (err, result) {
 
