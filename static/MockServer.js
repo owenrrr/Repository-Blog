@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const userDB = require('./UserDB');
+const FavoriteDB = require('./FavoriteDB');
 
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
@@ -14,7 +15,7 @@ app.all('*', function (req, res, next) {
     next();
 });
 
-const port = 3000;
+const port = 3001;
 
 app.get('/', (req, res) => res.send('Hello World'));
 
@@ -29,7 +30,7 @@ app.get('/user/getuser', jsonParser, async (req, res) => {
         let userInfo = await userDB.get(username);
         user = JSON.parse(userInfo);
         console.log(user);
-        res.json({
+        await res.json({
             user
         })
     }
@@ -39,7 +40,7 @@ app.get('/user/getuserlist', jsonParser, async (req, res) => {
     let userlist = await userDB.getAll();
     let users = JSON.parse(userlist);
     console.log(users);
-    res.json({
+    await res.json({
         users
     })
 });
@@ -57,7 +58,7 @@ app.post('/user/adduser', jsonParser, async (req, res) => {
     if (JSON.stringify(userInfo) === '{}') {
         console.log('添加成功 无重复用户名');
         let userid = JSON.parse(await userDB.add(username, password, sex, age));
-        res.json({
+        await res.json({
             statue: 1,
             userinfo: {
                 userid,
@@ -70,7 +71,7 @@ app.post('/user/adduser', jsonParser, async (req, res) => {
     }
     else {
         console.log('添加失败 已有重复用户名');
-        res.json({
+        await res.json({
             statue: 0,
             userinfo: {}
         })
@@ -90,8 +91,8 @@ app.post('/user/updateuser', jsonParser, async (req, res) => {
 
     if (JSON.stringify(userInfo) === '{}') {
         console.log('更新成功 无重复用户名');
-        userDB.update(userid, username, password, sex, age);
-        res.json({
+        await userDB.update(userid, username, password, sex, age);
+        await res.json({
             statue: 1,
             userinfo: {
                 userid,
@@ -104,11 +105,62 @@ app.post('/user/updateuser', jsonParser, async (req, res) => {
     }
     else {
         console.log('更新失败 已有重复用户名');
-        res.json({
+        await res.json({
             statue: 0,
             userinfo: {}
         })
     }
+});
+
+app.post('/favorite/addfavorite', jsonParser, async (req, res) => {
+    let userId = req.body.userId;
+    let paperId = req.body.paperId;
+    let createTime = req.body.createTime;
+
+    let favoriteId = await FavoriteDB.add(userId, paperId, createTime);
+    console.log('收藏成功');
+
+    await res.json({
+        statue: 1,
+        favorite: {
+            favoriteId,
+            userId,
+            paperId
+        }
+    })
+
+});
+
+app.post('/favorite/removefavorite', jsonParser, async (req, res) => {
+    let userId = req.body.userId;
+    let paperId = req.body.paperId;
+
+    await FavoriteDB.remove(userId, paperId);
+    console.log('删除成功');
+
+    await res.json({
+        statue: 1,
+    })
+});
+
+app.get('/favorite/getuserlist', jsonParser, async (req, res) => {
+    let paperId = req.query.paperId;
+    let userList = await FavoriteDB.getUserList(paperId);
+    let users = JSON.parse(userList);
+    console.log(users);
+    await  res.json({
+        users
+    })
+});
+
+app.get('/favorite/getpaperlist', jsonParser, async (req, res) => {
+    let userId = req.query.userId;
+    let paperList = await FavoriteDB.getPaperList(userId);
+    let papers = JSON.parse(paperList);
+    console.log(papers);
+    await res.json({
+        papers
+    })
 });
 
 app.listen(port, () => console.log(`Listening port ${port}`));

@@ -1,19 +1,10 @@
 let mysql = require('mysql');
-
 let connection;
-
-
+let userConfig = require('./databaseInfoConfig');
 
 function openConnection() {
 
-    connection = mysql.createConnection({
-
-        host: 'localhost',
-        user: 'root',
-        password: 'owen890628',
-        database: 'Blog'
-
-    });
+    connection = mysql.createConnection(userConfig.user);
 
 }
 
@@ -29,15 +20,15 @@ function closeConnection() {
 
 module.exports = {
 
-    add: function (username, password, sex, age) {
+    add: function (username, password) {
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [username, password, sex, age];
+            let params = [username, password];
 
-            let sql = 'insert into user (user_name, password, sex, age) values (?, ?, ?, ?);';
+            let sql = 'insert into user (user_name, password) values (?, ?);';
 
             connection.query(sql, params, function (err, result) {
 
@@ -79,7 +70,7 @@ module.exports = {
 
     },
 
-    update: function (userid, username, password, sex, age) {
+    update: function (userid, username, password, sex, age, imgURL) {
 
         return new Promise((resolve, reject) => {
 
@@ -95,7 +86,9 @@ module.exports = {
 
             sex='${sex}',
 
-            age='${age}'
+            age='${age}',
+            
+            imgURL='${imgURL}'
 
             where user_id='${userid}';`;
 
@@ -151,6 +144,10 @@ module.exports = {
 
                 }
 
+                console.log('[GET-SUCCESS] ')
+
+                console.log(res);
+
                 resolve(res);
 
             });
@@ -174,6 +171,8 @@ module.exports = {
                     age: value[0].age,
 
                     sex: value[0].sex,
+
+                    imgURL: value[0].imgURL
 
                 };
 
@@ -219,8 +218,6 @@ module.exports = {
 
                     resolve(res);
 
-
-
                     console.log('[GETALL-SUCCESS]');
 
                     console.log(res);
@@ -251,7 +248,9 @@ module.exports = {
 
                         sex: value[i].sex,
 
-                        age: value[i].age
+                        age: value[i].age,
+
+                        imgURL: value[i].imgURL
 
                     };
 
