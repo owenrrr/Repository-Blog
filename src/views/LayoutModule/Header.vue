@@ -31,16 +31,16 @@
         name: "Header",
         methods: {
             jumpToHome() {
-                this.$router.push({name: 'BlogList'})
+                this.$router.push({name: 'BlogList'}).catch(err => {err})
             },
             jumpToEdit() {
-                this.$router.push('/MyBlog/basicEditor')
+                this.$router.push('/MyBlog/basicEditor').catch(err => {err})
             },
             jumpToStar() {
 
             },
             jumpToUser() {
-
+                this.$router.push('/MyBlog/userinterface').catch(err => {err})
             },
             onSearch() {
 

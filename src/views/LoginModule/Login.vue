@@ -138,6 +138,8 @@ import axios from 'axios'
           for (var user of userList){
             if (user.username === values.username && user.password === values.password){
               console.log("Execute true")
+              this.$store.commit('setUsername', user.username)
+              console.log("Execute the set function")
               return Promise.reject()
             }
           }
@@ -174,7 +176,7 @@ import axios from 'axios'
             })
           }
         }
-      }
+      },
     },
   };
 </script>

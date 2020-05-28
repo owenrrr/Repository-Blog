@@ -2,8 +2,6 @@ let mysql = require('mysql');
 
 let connection;
 
-
-
 function openConnection() {
 
     connection = mysql.createConnection({

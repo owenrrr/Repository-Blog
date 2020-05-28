@@ -17,10 +17,8 @@
 
 </style>
 
-
 <script>
     import Header from './Header'
-
     export default {
         name: "Layout",
         components: {
@@ -28,14 +26,12 @@
         }
     }
 </script>
-
 <style scoped>
     .main-content {
         padding: 0 50px;
         margin: 64px auto auto;
         width: 80%;
     }
-
     .con {
         background: #fff;
         padding: 24px;
