@@ -34,7 +34,7 @@
         </span>
     </h1>
     <h1 class="h1display">Password : 
-        <span v-if="state == 'show'" style="display: inline-block">{{basic.password}}</span>
+        <span v-if="state == 'show'" class="inlineattribute">{{basic.password}}</span>
         <span>
             <a-input 
             v-if="state == 'modify'" 
