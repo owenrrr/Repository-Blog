@@ -138,7 +138,7 @@ import axios from 'axios'
           for (var user of userList){
             if (user.username === values.username && user.password === values.password){
               console.log("Execute true")
-              this.$store.commit('setUsername', user.username)
+              this.$store.commit('setUserid', user.userid)
               console.log("Execute the set function")
               return Promise.reject()
             }

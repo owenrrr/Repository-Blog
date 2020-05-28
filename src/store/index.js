@@ -5,15 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tempUsername: '',
+    tempUserid: '',
   },
   mutations: {
-    setUsername (state, username){
-      state.tempUsername = username
+    setUserid (state, userid){
+      state.tempUserid = userid
     }
   },
   getters: {
-    getUsername: (state) => state.tempUsername
+    getUserid: (state) => state.tempUserid
   },
   actions: {
   },

@@ -6,7 +6,7 @@
         <span v-if="state == 'show'" class="inlineattribute">{{basic.username}}</span>
         <span><a-input 
                 v-if="state == 'modify'" 
-                :placeholder="username" 
+                :placeholder="basic.username" 
                 style="background: lightgray; width: 30%" 
                 allow-clear 
                 class="inlineattribute" 
@@ -20,6 +20,7 @@
                 <a-select-option value="Female">Female</a-select-option>
             </a-select>
         </span>
+        <span v-if="state == 'show'" class="inlineattribute">(0: Female 1: Male)</span>
     </h1>
     <h1 class="h1display">Age : 
         <span v-if="state == 'show'" class="inlineattribute">{{basic.age}}</span>
@@ -89,12 +90,12 @@ export default {
             axios.get('http://localhost:3000/user/getuserlist').then((res) => {
                 console.log("Excute the constructor function!")
               userList = res.data.users.users
-              this.basic.username = this.$store.getters.getUsername
+              this.basic.userid = this.$store.getters.getUserid
               console.log(this.basic.username)
               for (var user of userList){
-                if (user.username == this.basic.username){
+                if (user.userid == this.basic.userid){
                     this.basic.password = user.password
-                    this.basic.userid = user.userid
+                    this.basic.username = user.username
                     if (user.sex != null){
                         this.basic.sex = user.sex
                     }
@@ -110,6 +111,7 @@ export default {
                 this.$message.warning('Age is not allowed.', 3);
                 this.stateCancel()
             }else{
+                console.log("Here is handleUsernamecheck before")
                 this.handleUsernameCheck()
             }
             
@@ -131,13 +133,14 @@ export default {
             axios.get('http://localhost:3000/user/getuserlist').then((res) => {
             userList = res.data.users.users
             for (var user of userList){
-                if (user.username == this.basic.username){
+                if (user.username == this.basic.username && user.userid != this.basic.userid){
                     console.log("Execute false")
                     return Promise.reject()
                 }
             }
                 this.$message.success('Modify successfully !', 3)
                 console.log(this.basic.username)
+                console.log(this.basic.userid)
                 this.changeUser()
                 this.state = 'show'
             }).catch(() => {
@@ -146,8 +149,25 @@ export default {
             })
         },
         changeUser(){
-            axios.post('http://localhost:3000/user/updateuser', this.basic)
-            this.$store.commit('setUsername', this.basic.username)
+            console.log(this.basic)
+            if (this.basic.sex == "Male"){
+                axios.post('http://localhost:3000/user/updateuser', {
+                    username: this.basic.username,
+                    age: this.basic.age,
+                    sex: 1,
+                    password: this.basic.password,
+                    userid: this.basic.userid,
+                })
+            }else{
+                axios.post('http://localhost:3000/user/updateuser', {
+                    username: this.basic.username,
+                    age: this.basic.age,
+                    sex: 0,
+                    password: this.basic.password,
+                    userid: this.basic.userid,
+                })
+            }
+            
         },
     },
 }
