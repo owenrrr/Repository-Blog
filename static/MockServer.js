@@ -15,7 +15,7 @@ app.all('*', function (req, res, next) {
     next();
 });
 
-const port = 3001;
+const port = 3000;
 
 app.get('/', (req, res) => res.send('Hello World'));
 

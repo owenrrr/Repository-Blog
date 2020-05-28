@@ -146,7 +146,8 @@ import axios from 'axios'
           console.log("Execute false")
           this.form.resetFields()
           this.$message.warning('Login Failed! Wrong account or password.', 3);
-        }).catch(() => {
+        }).catch((err) => {
+          console.log(err);
           this.$message.success('Login Success! Welcom Back ' + this.form.getFieldValue('username') + '!', 3);
           this.$router.push('/MyBlog')
         })
