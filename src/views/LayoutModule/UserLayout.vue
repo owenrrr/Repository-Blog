@@ -7,13 +7,9 @@
           <a-icon type="user" />
           <span>Settings</span>
         </a-menu-item>
-        <a-menu-item key="2">
-          <a-icon type="video-camera" />
-          <span>nav 2</span>
-        </a-menu-item>
-        <a-menu-item key="3">
-          <a-icon type="upload" />
-          <span>nav 3</span>
+        <a-menu-item key="2"  @click="jumptoFol">
+          <a-icon type="team"/>
+          <span>Followers</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
@@ -43,7 +39,11 @@ export default {
   methods: {
       jumptoSet(){
           this.$router.push({name: 'Settings'})
-      }
+      },
+      jumptoFol(){
+        console.log("Here is jumptoFol")
+          this.$router.push({name: 'Followers'})
+      },
   }
 };
 </script>

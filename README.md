@@ -34,3 +34,6 @@
     
 - 2020/05/29: commit by lxy
     - 修改update
+
+- 2020/05/29: commit by lzy
+    - 实现个人中心-搜索followers功能（添加/删除还未作）
