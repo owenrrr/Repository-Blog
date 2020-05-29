@@ -20,7 +20,6 @@
                 <a-select-option value="Female">Female</a-select-option>
             </a-select>
         </span>
-        <span v-if="state == 'show'" class="inlineattribute">(0: Female 1: Male)</span>
     </h1>
     <h1 class="h1display">Age : 
         <span v-if="state == 'show'" class="inlineattribute">{{basic.age}}</span>
@@ -97,7 +96,11 @@ export default {
                     this.basic.password = user.password
                     this.basic.username = user.username
                     if (user.sex != null){
-                        this.basic.sex = user.sex
+                        if (user.sex == 0){
+                            this.basic.sex = 'Female'
+                        }else{
+                            this.basic.sex = 'Male'
+                        }
                     }
                     if (user.age != null){
                         this.basic.age = user.age
