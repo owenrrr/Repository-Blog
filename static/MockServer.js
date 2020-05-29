@@ -85,11 +85,24 @@ app.post('/user/updateuser', jsonParser, async (req, res) => {
     let sex = req.body.sex;
     let age = req.body.age;
 
-    let userInfo = await userDB.get(username);
-    userInfo = JSON.parse(userInfo);
-    console.log(userInfo);
+    console.log('更新成功');
+    await userDB.update(userid, username, password, sex, age);
+    await res.json({
+        statue: 1,
+        userinfo: {
+            userid,
+            username,
+            password,
+            sex,
+            age
+        }
+    });
 
-    if (JSON.stringify(userInfo) === '{}') {
+    /*let userInfo = await userDB.get(username);
+    userInfo = JSON.parse(userInfo);
+    console.log(userInfo);*/
+
+    /*if (JSON.stringify(userInfo) === '{}') {
         console.log('更新成功 无重复用户名');
         await userDB.update(userid, username, password, sex, age);
         await res.json({
@@ -109,7 +122,7 @@ app.post('/user/updateuser', jsonParser, async (req, res) => {
             statue: 0,
             userinfo: {}
         })
-    }
+    }*/
 });
 
 app.post('/favorite/addfavorite', jsonParser, async (req, res) => {

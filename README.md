@@ -31,3 +31,6 @@
 
 - 2020/05/26: commit by lzy
     - 新增EditorModule-BasicEditor基本功能（还未链接数据库）
+    
+- 2020/05/29: commit by lxy
+    - 修改update
