@@ -54,6 +54,7 @@ export default{
             // axios operation
 
             this.addPaper()
+            this.$message.success('Submit success!', 2);
             this.jumptosubmitpage()
         },
         addPaper(){

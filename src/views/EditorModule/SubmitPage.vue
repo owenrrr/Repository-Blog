@@ -1,8 +1,8 @@
 <template>
 <!-- <form action="[URL]" method="post"> -->
 <div>
-    <h1 style="display: inline-block" >Success Submit!</h1>
-    <h1 style="display: inline-block" >The page will be automatically changed in <p>{{ secs }}</p> seconds</h1>
+    <h1 style="text-align:center">Success Submit!</h1>
+    <h1 style="text-align:center; margin: 20px 0px">The page will be automatically changed in <p style="display: inline-block">{{ secs }}</p> seconds</h1>
 
 </div>
   
@@ -19,19 +19,20 @@ export default {
         };
     },
     mounted (){
+        this.secs = 5
         this.autoDec()
     },
     methods:{
         autoDec(){
+            this.secs--
             console.log("This is inside function.")
-           this.secs = 5
-           for (var i=0; i<5; i++) {
-            (function (i) {
-                setTimeout(() => this.secs--, 1000*i)
-                console.log("operate on : " + this.secs + "secs .")
-             })(i)
-             if (i == 4) this.jumpToEdit()
-            }     
+            console.log("this is secs:" + this.secs)
+
+            if (this.secs <= 0){
+                this.jumpToEdit()
+            }else{
+                setTimeout(this.autoDec, 1000)
+            } 
         },
         jumpToEdit(){
             console.log("operate in jumpfunc")
