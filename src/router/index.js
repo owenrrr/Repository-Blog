@@ -35,6 +35,10 @@ Vue.use(VueRouter)
           name: 'BasicEditor',
           component: () => import('@/views/EditorModule/BasicEditor')
         },{
+          path: 'submitpage',
+          name: 'SubmitPage',
+          component: () => import('@/views/EditorModule/SubmitPage')
+        },{
           path: 'userinterface',  // children route cannot add '/'
           name: 'Userinterface',
           component: () => import('@/views/LayoutModule/UserLayout'),
