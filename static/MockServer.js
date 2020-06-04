@@ -50,6 +50,7 @@ app.post('/user/adduser', jsonParser, async (req, res) => {
     let password = req.body.password;
     let sex = req.body.sex;
     let age = req.body.age;
+    let description = req.body.description;
 
     let userInfo = await userDB.get(username);
     userInfo = JSON.parse(userInfo);
@@ -57,13 +58,14 @@ app.post('/user/adduser', jsonParser, async (req, res) => {
     console.log(typeof  userInfo);
     if (JSON.stringify(userInfo) === '{}') {
         console.log('添加成功 无重复用户名');
-        let userid = JSON.parse(await userDB.add(username, password, sex, age));
+        let userid = JSON.parse(await userDB.add(username, password, description, sex, age));
         await res.json({
             statue: 1,
             userinfo: {
                 userid,
                 username,
                 password,
+                description,
                 sex,
                 age
             }
@@ -84,15 +86,17 @@ app.post('/user/updateuser', jsonParser, async (req, res) => {
     let password = req.body.password;
     let sex = req.body.sex;
     let age = req.body.age;
+    let description = req.body.description;
 
     console.log('更新成功');
-    await userDB.update(userid, username, password, sex, age);
+    await userDB.update(userid, username, password, description, sex, age);
     await res.json({
         statue: 1,
         userinfo: {
             userid,
             username,
             password,
+            description,
             sex,
             age
         }

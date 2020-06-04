@@ -43,6 +43,18 @@
             v-model="basic.password"/>
         </span>
     </h1>
+    <h1 class="h1display">Description : 
+        <span v-if="state == 'show'" class="inlineattribute" style="">{{basic.description}}</span>
+        <span>
+            <a-textarea
+                v-if="state == 'modify'" 
+                v-model="basic.description"
+                placeholder="Description"
+                :auto-size="{ minRows: 3, maxRows: 5 }"
+                style="background: lightgray; display: inline-block;"
+            />
+        </span>
+    </h1>
     <div>
         <a-button v-if="state == 'show'" type="danger" style="margin-left: 45%" @click="stateModify">Modify</a-button>
         <a-button v-if="state == 'modify'" style="margin-left: 35%; margin-top: 20px" @click="stateCancel">Cancel</a-button>
@@ -52,6 +64,7 @@
 </template>
 
 <script>
+// He/She is too lazy, nothing left ( ˘•ω•˘ )
 import Avatar from 'vue-avatar'
 import axios from 'axios'
 export default {
@@ -62,6 +75,7 @@ export default {
                 userid: null,
                 username: '',
                 sex: 'Male',
+                description: '',
                 age: 0,
                 password: '',
             },
@@ -70,6 +84,7 @@ export default {
                 userid: null,
                 username: '',
                 sex: 'Male',
+                description: '',
                 age: 0,
                 password: '',
             },
@@ -105,6 +120,7 @@ export default {
                     if (user.age != null){
                         this.basic.age = user.age
                     }
+                    this.basic.description = (user.description == null? "He/She is too lazy, nothing left ( ˘•ω•˘ )": user.description)
                 }
               }
             })
@@ -158,6 +174,7 @@ export default {
                     username: this.basic.username,
                     age: this.basic.age,
                     sex: 1,
+                    description: this.basic.description,
                     password: this.basic.password,
                     userid: this.basic.userid,
                 })
@@ -166,6 +183,7 @@ export default {
                     username: this.basic.username,
                     age: this.basic.age,
                     sex: 0,
+                    description: this.basic.description,
                     password: this.basic.password,
                     userid: this.basic.userid,
                 })
