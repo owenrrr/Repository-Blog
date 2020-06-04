@@ -40,3 +40,6 @@
 
 - 2020/06/04：commit bu lzy
     - 添加user中的description
+
+- 2020/06/04：commit bu lzy
+    - 添加editor功能（为实现上传图片）

@@ -64,7 +64,6 @@
 </template>
 
 <script>
-// He/She is too lazy, nothing left ( ˘•ω•˘ )
 import Avatar from 'vue-avatar'
 import axios from 'axios'
 export default {
@@ -188,7 +187,6 @@ export default {
                     userid: this.basic.userid,
                 })
             }
-            
         },
     },
 }
