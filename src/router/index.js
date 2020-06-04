@@ -43,6 +43,10 @@ Vue.use(VueRouter)
               path: '/settings',
               name :'Settings',
               component: () => import('@/views/UserModule/Settings')
+            },{
+              path: '/followers',
+              name :'Followers',
+              component: () => import('@/views/UserModule/Followers')
             }
           ]
         }

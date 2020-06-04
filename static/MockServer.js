@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const userDB = require('./UserDB');
 const FavoriteDB = require('./FavoriteDB');
+const paperDB = require('./PaperDB');
 
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
@@ -18,6 +19,8 @@ app.all('*', function (req, res, next) {
 const port = 3000;
 
 app.get('/', (req, res) => res.send('Hello World'));
+
+// Table `user` operation
 
 app.get('/user/getuser', jsonParser, async (req, res) => {
     let username = req.query.username;
@@ -50,6 +53,7 @@ app.post('/user/adduser', jsonParser, async (req, res) => {
     let password = req.body.password;
     let sex = req.body.sex;
     let age = req.body.age;
+    let description = req.body.description;
 
     let userInfo = await userDB.get(username);
     userInfo = JSON.parse(userInfo);
@@ -57,13 +61,14 @@ app.post('/user/adduser', jsonParser, async (req, res) => {
     console.log(typeof  userInfo);
     if (JSON.stringify(userInfo) === '{}') {
         console.log('添加成功 无重复用户名');
-        let userid = JSON.parse(await userDB.add(username, password, sex, age));
+        let userid = JSON.parse(await userDB.add(username, password, description, sex, age));
         await res.json({
             statue: 1,
             userinfo: {
                 userid,
                 username,
                 password,
+                description,
                 sex,
                 age
             }
@@ -84,15 +89,17 @@ app.post('/user/updateuser', jsonParser, async (req, res) => {
     let password = req.body.password;
     let sex = req.body.sex;
     let age = req.body.age;
+    let description = req.body.description;
 
     console.log('更新成功');
-    await userDB.update(userid, username, password, sex, age);
+    await userDB.update(userid, username, password, description, sex, age);
     await res.json({
         statue: 1,
         userinfo: {
             userid,
             username,
             password,
+            description,
             sex,
             age
         }
@@ -124,6 +131,8 @@ app.post('/user/updateuser', jsonParser, async (req, res) => {
         })
     }*/
 });
+
+// Table `favorite` operation
 
 app.post('/favorite/addfavorite', jsonParser, async (req, res) => {
     let userId = req.body.userId;
@@ -175,5 +184,57 @@ app.get('/favorite/getpaperlist', jsonParser, async (req, res) => {
         papers
     })
 });
+
+// Table `paper` operation
+
+app.get('/paper/getpaper', jsonParser, async (req, res) => {
+    let paperid = req.query.paperid;
+    let paper;
+    console.log(paperid);
+    if (paperid === undefined) {
+        res.send('undefined');
+    }
+    else {
+        let paperInfo = await paperDB.get(paperid);
+        paper = JSON.parse(paperInfo);
+        console.log(paper);
+        await res.json({
+            paper
+        })
+    }
+});
+
+app.get('/paper/getpaperlist', jsonParser, async (req, res) => {
+    let paperlist = await paperDB.getAll();
+    let papers = JSON.parse(paperlist);
+    console.log(papers);
+    await res.json({
+        papers
+    })
+});
+
+app.post('/paper/addpaper', jsonParser, async (req, res) => {
+
+    let userid = req.body.userid;
+    let title = req.body.title;
+    let createtime = req.body.createtime;
+    let content = req.body.content;
+
+    // add operation always be correct
+
+    console.log('添加文章成功');
+    let paperid = JSON.parse(await paperDB.add(userid, title, createtime, content));
+    await res.json({
+        statue: 1,
+        paperinfo: {
+            paperid,
+            userid,
+            title,
+            createtime,
+            content,
+        }
+    })
+});
+
 
 app.listen(port, () => console.log(`Listening port ${port}`));

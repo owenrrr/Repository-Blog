@@ -70,7 +70,7 @@ module.exports = {
 
     },
 
-    update: function (userid, username, password, sex, age, imgURL) {
+    update: function (userid, username, password, description, sex, age, imgURL) {
 
         return new Promise((resolve, reject) => {
 
@@ -83,6 +83,8 @@ module.exports = {
             user_name='${username}', 
 
             password='${password}',
+
+            description='${description}',
 
             sex='${sex}',
 
@@ -168,6 +170,8 @@ module.exports = {
 
                     password: value[0].password,
 
+                    description: value[0].description,
+
                     age: value[0].age,
 
                     sex: value[0].sex,
@@ -245,6 +249,8 @@ module.exports = {
                         username: value[i].user_name,
 
                         password: value[i].password,
+
+                        description: value[i].description,
 
                         sex: value[i].sex,
 

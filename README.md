@@ -34,3 +34,12 @@
     
 - 2020/05/29: commit by lxy
     - 修改update
+
+- 2020/05/29: commit by lzy
+    - 实现个人中心-搜索followers功能（添加/删除还未作）
+
+- 2020/06/04：commit bu lzy
+    - 添加user中的description
+
+- 2020/06/04：commit bu lzy
+    - 添加editor功能（为实现上传图片）
