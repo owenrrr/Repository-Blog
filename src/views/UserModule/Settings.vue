@@ -97,7 +97,12 @@ export default {
                     this.basic.password = user.password
                     this.basic.username = user.username
                     if (user.sex != null){
-                        this.basic.sex = user.sex
+                        if (user.sex === 0) {
+                            this.basic.sex = 'Female'
+                        }
+                        else {
+                            this.basic.sex = 'Male'
+                        }
                     }
                     if (user.age != null){
                         this.basic.age = user.age
