@@ -24,7 +24,10 @@
             <div v-html="paper.content" style="float: left; margin-left: 50px;">
             </div>
         </a-layout-content>
-        <a-layout-footer>Design ©2020 Created by Lzy</a-layout-footer>
+        <a-layout-footer style="text-align: center">
+            <comment style="width: 100%; height: auto; display: inline-block"></comment>
+            <div style="display: inline-block">Design ©2020 Created by Lzy</div>
+        </a-layout-footer>
     </a-layout>
 </a-layout>
 </div>
@@ -56,6 +59,7 @@
 
 <script>
 import axios from 'axios'
+import comment from './comment'
 export default{
     data(){
         return {
@@ -195,6 +199,9 @@ export default{
         Promise.all([this.getPaper(), this.getstar(), this.getlike()])
 
     },
+    components:{
+        comment,
+    }
 
 }
 
