@@ -3,6 +3,8 @@ const app = express();
 const userDB = require('./UserDB');
 const FavoriteDB = require('./FavoriteDB');
 const paperDB = require('./PaperDB');
+const LikeDB = require('./LikeDB');
+const Blog_CommentDB = require('./Blog_CommentDB');
 
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
@@ -187,6 +189,61 @@ app.get('/favorite/getpaperlist', jsonParser, async (req, res) => {
     })
 });
 
+// Table `like` operation
+
+app.post('/like/addlike', jsonParser, async (req, res) => {
+    let userId = req.body.userId;
+    let paperId = req.body.paperId;
+    let createTime = req.body.createTime;
+
+    console.log(userId + " " + paperId + " " + createTime);
+
+    let likeId = JSON.parse(await LikeDB.add(userId, paperId, createTime));
+
+    console.log('点赞成功');
+
+    await res.json({
+        statue: 1,
+        like: {
+            likeId,
+            userId,
+            paperId
+        }
+    });
+});
+
+app.post('/like/removelike', jsonParser, async (req, res)  => {
+    let userId = req.body.userId;
+    let paperId = req.body.paperId;
+
+    await LikeDB.remove(userId, paperId);
+    console.log('删除成功');
+
+    await res.json({
+        statue: 1,
+    });
+});
+
+app.get('/like/getuserlist', jsonParser, async (req, res) => {
+    let paperId = req.query.paperId;
+    let userList = await LikeDB.getUserList(paperId);
+    let users = JSON.parse(userList);
+    console.log(users);
+    await  res.json({
+        users
+    });
+});
+
+app.get('/favorite/getpaperlist', jsonParser, async (req, res) => {
+    let userId = req.query.userId;
+    let paperList = await LikeDB.getPaperList(userId);
+    let papers = JSON.parse(paperList);
+    console.log(papers);
+    await res.json({
+        papers
+    });
+});
+
 // Table `paper` operation
 
 app.get('/paper/getpaper', jsonParser, async (req, res) => {
@@ -264,6 +321,52 @@ app.post('/paper/updatepaper', jsonParser, async (req, res) => {
         }
     });
 
-}),
+});
+
+// Table `blog_comment` operation
+
+app.post('/blog_comment/add_blog_comment', async function (req, res) {
+    let userId = req.body.userId;
+    let paperId = req.body.paperId;
+    let content = req.body.content;
+    let createTime = req.body.createTime;
+
+    let blogCommentId = JSON.parse(await Blog_CommentDB.add(userId, paperId, content, createTime));
+    console.log('添加成功');
+    await res.json({
+        statue: 1,
+        commentInfo: {
+            blogCommentId,
+            userId,
+            paperId,
+            content,
+            createTime
+        }
+    });
+});
+
+app.post('/blog_comment/remove_blog_comment', async function (req, res) {
+    let userId = req.body.userId;
+    let paperId = req.body.paperId;
+
+    await Blog_CommentDB.remove(userId, paperId);
+    console.log('删除成功');
+    await res.json({
+        statue: 1
+    });
+});
+
+app.get('/blog_comment/get_user_comments', async function (req, res) {
+    let paperId = req.query.paperId;
+
+    let commentList = await Blog_CommentDB.getUserComments(paperId);
+    let comments = JSON.parse(commentList);
+
+    console.log(comments);
+
+    await res.json({
+        comments
+    });
+});
 
 app.listen(port, () => console.log(`Listening port ${port}`));

@@ -66,29 +66,55 @@ LOCK TABLES `like` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `comment`
+-- Table structure for table `blog_comment`
 --
 
-DROP TABLE IF EXISTS `comment`;
+DROP TABLE IF EXISTS `blog_comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 SET character_set_client = utf8mb4 ;
-CREATE TABLE `comment` (
-  `c_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `blog_comment` (
+  `blog_comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
   `paper_id` int(10) unsigned NOT NULL,
-  `comment_content` text NOT NULL,
-  `create_time` datetime NOT NULL,
-  PRIMARY KEY (`c_id`)
+  `blog_comment_content` text NOT NULL,
+  `blog_comment_create_time` datetime NOT NULL,
+  PRIMARY KEY (`blog_comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `comment`
+-- Dumping data for table `blog_comment`
 --
 
-LOCK TABLES `comment` WRITE;
-/*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-/*!40000 ALTER TABLE `comment` ENABLE KEYS */;
+LOCK TABLES `blog_comment` WRITE;
+/*!40000 ALTER TABLE `blog_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blog_comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `comment_comment`
+--
+
+DROP TABLE IF EXISTS `comment_comment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+SET character_set_client = utf8mb4 ;
+CREATE TABLE `comment_comment` (
+                                `comment_comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                `user_id` int(10) unsigned NOT NULL,
+                                `comment_comment_content` text NOT NULL,
+                                `comment_comment_create_time` datetime NOT NULL,
+                                `reply_id` int(10) unsigned default null,
+                                PRIMARY KEY (`comment_comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `comment_comment`
+--
+
+LOCK TABLES `comment_comment` WRITE;
+/*!40000 ALTER TABLE `comment_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `comment_comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
