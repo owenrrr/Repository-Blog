@@ -47,7 +47,7 @@
         <span v-if="state == 'show'" style="align-text: center; display: inline-block; margin-right: 150px">{{basic.description}}</span>
         <span>
             <a-textarea
-                v-if="state == 'modify'" 
+                v-if="state == 'modify'"
                 v-model="basic.description"
                 placeholder="Description"
                 :auto-size="{ minRows: 3, maxRows: 5 }"
