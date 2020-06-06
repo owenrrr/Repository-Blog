@@ -18,7 +18,7 @@
 
 ## ID 2
 
-- url:  '/user/getuselist'
+- url:  '/user/getuserlist'
 
 - method: get
 

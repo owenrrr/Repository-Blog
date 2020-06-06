@@ -54,6 +54,8 @@ export default{
             // axios operation
 
             this.addPaper()
+            this.$message.success('Submit success!', 2);
+            this.jumptosubmitpage()
         },
         addPaper(){
             const addpaper = {userid: null, title: null, createtime: null, content: null}
@@ -75,6 +77,9 @@ export default{
             var seconds = ('0' + (d.getSeconds())).slice(-2)
             return year + "-" + month + "-" + day + " " + hour + "-" + minutes + "-" + seconds
         },
+        jumptosubmitpage(){
+            this.$router.push('/MyBlog/submitpage').catch(err => {err})
+        }
     },
     actions:{
     },

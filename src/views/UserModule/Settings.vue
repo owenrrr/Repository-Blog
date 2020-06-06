@@ -44,7 +44,7 @@
         </span>
     </h1>
     <h1 class="h1display">Description :
-        <span v-if="state == 'show'" class="inlineattribute" style="">{{basic.description}}</span>
+        <span v-if="state == 'show'" style="align-text: center; display: inline-block; margin-right: 150px">{{basic.description}}</span>
         <span>
             <a-textarea
                 v-if="state == 'modify'"
@@ -187,7 +187,6 @@ export default {
                     userid: this.basic.userid,
                 })
             }
-            
         },
     },
 }

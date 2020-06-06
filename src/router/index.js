@@ -35,6 +35,10 @@ Vue.use(VueRouter)
           name: 'BasicEditor',
           component: () => import('@/views/EditorModule/BasicEditor')
         },{
+          path: 'submitpage',
+          name: 'SubmitPage',
+          component: () => import('@/views/EditorModule/SubmitPage')
+        },{
           path: 'userinterface',  // children route cannot add '/'
           name: 'Userinterface',
           component: () => import('@/views/LayoutModule/UserLayout'),
@@ -47,11 +51,26 @@ Vue.use(VueRouter)
               path: '/followers',
               name :'Followers',
               component: () => import('@/views/UserModule/Followers')
+            },{
+              path: '/myarticles',
+              name: 'myArticles',
+              components: () => import('@/views/UserModule/myArticles'),
+              children : [
+                {
+                  path: '/article',
+                  name: 'article',
+                  components: () => import('@/views/UserModule/article')
+                }
+              ]
             }
           ]
         }
       ]
-    },
+    },{
+      path: './Article',
+      name: 'Article',
+      component: () => import('@/views/Article')
+    }
 ]
 
 const router = new VueRouter({
