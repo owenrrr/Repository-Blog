@@ -51,11 +51,26 @@ Vue.use(VueRouter)
               path: '/followers',
               name :'Followers',
               component: () => import('@/views/UserModule/Followers')
+            },{
+              path: '/myarticles',
+              name: 'myArticles',
+              components: () => import('@/views/UserModule/myArticles'),
+              children : [
+                {
+                  path: '/article',
+                  name: 'article',
+                  components: () => import('@/views/UserModule/article')
+                }
+              ]
             }
           ]
         }
       ]
-    },
+    },{
+      path: './Article',
+      name: 'Article',
+      component: () => import('@/views/Article')
+    }
 ]
 
 const router = new VueRouter({

@@ -11,6 +11,10 @@
           <a-icon type="team"/>
           <span>Followers</span>
         </a-menu-item>
+        <a-menu-item key="3"  @click="jumptoArt">
+          <a-icon type="form"/>
+          <span>My Articles</span>
+        </a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -41,9 +45,11 @@ export default {
           this.$router.push({name: 'Settings'})
       },
       jumptoFol(){
-        console.log("Here is jumptoFol")
           this.$router.push({name: 'Followers'})
       },
+      jumptoArt(){
+          this.$router.push({name: 'myArticles'})
+      }
   }
 };
 </script>

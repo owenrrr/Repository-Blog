@@ -43,8 +43,8 @@
             v-model="basic.password"/>
         </span>
     </h1>
-    <h1 class="h1display">Description : 
-        <span v-if="state == 'show'" class="inlineattribute" style="">{{basic.description}}</span>
+    <h1 class="h1display">Description :
+        <span v-if="state == 'show'" style="align-text: center; display: inline-block; margin-right: 150px">{{basic.description}}</span>
         <span>
             <a-textarea
                 v-if="state == 'modify'" 
