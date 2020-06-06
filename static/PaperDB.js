@@ -241,6 +241,64 @@ module.exports = {
 
         });
 
-    }
+    },
+
+    //paper upadte
+
+    update: function (paperid, userid, starnum, likenum, commentnum, title, createtime, content) {
+
+        return new Promise((resolve, reject) => {
+
+            openConnection();
+
+            let sql = `update paper
+
+            set 
+
+            user_id='${userid}',
+
+            star_num='${starnum}',
+
+            like_num='${likenum}',
+
+            comment_num='${commentnum}',
+            
+            title='${title}',
+
+            create_time = '${createtime}',
+
+            content='${content}'
+
+            where paper_id='${paperid}';`;
+
+            connection.query(sql, function (err, res) {
+
+                if (err) {
+
+                    console.log('[UPDATE-ERROR]' + err.message);
+
+                    return;
+
+                }
+
+                console.log('[UPDATE-SUCCESS] ' + res.affectedRows);
+
+                resolve();
+
+            });
+
+            closeConnection();
+
+        }).then(() => {
+
+            console.log('success update');
+
+        }).catch((err) => {
+
+            console.log(err);
+
+        });
+
+    },
 
 }

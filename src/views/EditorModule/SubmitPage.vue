@@ -25,9 +25,6 @@ export default {
     methods:{
         autoDec(){
             this.secs--
-            console.log("This is inside function.")
-            console.log("this is secs:" + this.secs)
-
             if (this.secs <= 0){
                 this.jumpToEdit()
             }else{
@@ -35,7 +32,6 @@ export default {
             } 
         },
         jumpToEdit(){
-            console.log("operate in jumpfunc")
             this.$router.push('/MyBlog/basicEditor').catch(err => {err})
         },
     }

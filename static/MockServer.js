@@ -139,6 +139,8 @@ app.post('/favorite/addfavorite', jsonParser, async (req, res) => {
     let paperId = req.body.paperId;
     let createTime = req.body.createTime;
 
+    console.log(userId + " " + paperId + " " + createTime)
+
     let favoriteId = await FavoriteDB.add(userId, paperId, createTime);
     console.log('收藏成功');
 
@@ -236,5 +238,32 @@ app.post('/paper/addpaper', jsonParser, async (req, res) => {
     })
 });
 
+app.post('/paper/updatepaper', jsonParser, async (req, res) => {
+    let paperid = req.body.paperid;
+    let userid = req.body.userid;
+    let starnum = req.body.starnum;
+    let likenum = req.body.likenum;
+    let commentnum = req.body.commentnum;
+    let title = req.body.title;
+    let createtime = req.body.createtime;
+    let content = req.body.content;
+
+    console.log('更新成功');
+    await paperDB.update(paperid, userid, starnum, likenum, commentnum, title, createtime, content);
+    await res.json({
+        statue: 1,
+        paperinfo: {
+            paperid,
+            userid,
+            starnum,
+            likenum,
+            commentnum,
+            title,
+            createtime,
+            content
+        }
+    });
+
+}),
 
 app.listen(port, () => console.log(`Listening port ${port}`));
