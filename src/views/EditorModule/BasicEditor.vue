@@ -58,6 +58,7 @@ export default{
             this.jumptosubmitpage()
         },
         addPaper(){
+            console.log("This is addPaper operation")
             const addpaper = {userid: null, title: null, createtime: null, content: null}
             addpaper.userid = this.userid
             addpaper.title = this.title
@@ -72,7 +73,7 @@ export default{
             var year = d.getFullYear()
             var month = ('0' + (d.getMonth() + 1)).slice(-2)
             var day = ('0' + (d.getDate())).slice(-2)
-            var hour = ('0' + (d.getHours())).slice(-2)
+            var hour = ('0' + ((d.getHours() + 8) % 24)).slice(-2)  // UTC +08:00
             var minutes = ('0' + (d.getMinutes())).slice(-2)
             var seconds = ('0' + (d.getSeconds())).slice(-2)
             return year + "-" + month + "-" + day + " " + hour + "-" + minutes + "-" + seconds

@@ -65,3 +65,13 @@
 - req: userid, title, createtime, content
 - res: { statue: (1 or 0), paperinfo: { paperid, userid, title, createtime, content } }
 - 根据信息添加文章
+
+
+
+
+
+
+
+
+
+

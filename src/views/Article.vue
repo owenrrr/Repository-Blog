@@ -12,21 +12,16 @@
                         <a-icon type="calendar" style="margin-right: 10px;" />{{ date_ymd + " " + date_hms }}
                     </span>
                     <span style="margin-right: 20px; float: right;">
-                        <a-icon type="star" style="margin-right: 10px" @click="addStar(starstate)"/>{{ paper.starnum }}
+                        <a-icon type="star" style="margin-right: 10px" @click="addStar"/>{{ paper.starnum }}
                     </span>
                     <span style="margin-right: 20px; float: right;">
-                        <a-icon type="like" style="margin-right: 10px" @click="addLike(liekstate)"/>{{ paper.likenum }}
+                        <a-icon type="like" style="margin-right: 10px" />{{ paper.likenum }}
                     </span>
                 </div>
             </div>
         </a-layout-header>
         <a-layout-content>
             <div v-html="paper.content" style="float: left; margin-left: 50px;">
-            </div>
-            <div style="float: left; width: 100%; position: relative; top: 200px">
-                <a-back-top />Click
-                    <strong style="color:lightgray"> Here </strong>
-                backTop.
             </div>
         </a-layout-content>
         <a-layout-footer>Design ©2020 Created by Lzy</a-layout-footer>
@@ -74,17 +69,11 @@ export default{
         }
     },
     methods:{
-        constructor(){
-            console.log("This is in constructor()")
-            this.paperid = this.$store.getters.getPaperid
-            console.log()
-            this.getPaper()
-            console.log("Paper:" + this.paper.title + " ; Username :" + this.username)
-        },
         getPaper(){
             let paperlist
-            axios.get('http://localhost:3000/paper/getpaperlist').then((res) => {
+            return axios.get('http://localhost:3000/paper/getpaperlist').then((res) => {
                 console.log("This is in getpaper()")
+                this.paperid = this.$store.getters.getPaperid
                 paperlist = res.data.papers.papers
                 for (var paper of paperlist){
                     if (paper.paperid == this.paperid){
@@ -129,30 +118,82 @@ export default{
                 console.log("Username :" + this.username)
             })
         },
-        // addStar(){
-        //     if (this.starstate == 0){
-        //         this.paper.starnum++
-        //         this.starstate = 1
-        //         setTimeout(this.$message.success("Store Success !", 2), 2000).then(() => {
-        //             // axios.post(/add)
+        addStar(){
+            if (this.starstate == 0){
+                console.log("This is starstate = 0 operation")
+                this.$message.success("Store Success !", 2)
+                console.log("Userid : " + this.$store.getters.getUserid)
+                axios.post('http://localhost:3000/favorite/addfavorite', {
+                    paperId: this.paper.paperid, 
+                    userId: this.$store.getters.getUserid, 
+                    createTime: this.date_ymd + " " + this.date_hms,
+                }).then(() => {
+                    console.log("This is in add-star operation")
+                    this.paper.starnum++
+                    this.starstate = 1
+                }).then(() => {this.savePaperState()})
 
-        //         })
-
-                
-
-        //     }else{
-        //         this.paper.starnum--
-        //         this.starstate = 0
-                
-        //     }
-            
-        // },
+            }else{
+                axios.post('http://localhost:3000/favorite/removefavorite', {
+                    userId: this.$store.getters.getUserid,
+                    paperId: this.paper.paperid,
+                }).then(() => {
+                    console.log("This is in cancel-star operation")
+                    this.paper.starnum--
+                    this.starstate = 0
+                }).then(() => {this.savePaperState()})
+            }
+        },
         // addLike(){
         //     this.paper.likenum++
         // },
+        savePaperState(){
+            console.log(typeof(this.paper.paperid))
+            //  在此组件中只会出现star,like,comment改变，其余不变
+            axios.post('http://localhost:3000/paper/updatepaper',{
+                paperid: this.paper.paperid,
+                userid: this.paper.userid,
+                starnum: this.paper.starnum,
+                likenum: this.paper.likenum,
+                commentnum: this.paper.commentnum,
+                title: this.paper.title,
+                createtime: this.date_ymd + " " + this.date_hms,
+                content: this.paper.content
+            }).then(()=>{
+                console.log("This is in save-paper-state operation")
+            })
+        },
+        getstar(){
+            return axios.get('http://localhost:3000/favorite/getuserlist',{params:{
+                paperId: this.paperid
+            }}).then((res) => {
+                console.log("This is in get-star operation")
+                console.log(res)
+                var userlist = res.data.userlist
+                console.log(userlist)
+                var userid = this.$store.getters.getUserid
+                for (var user of userlist){
+                    if (userid == user.userId){
+                        this.starstate = 1
+                        return new Promise()
+                    }
+                }
+                this.starstate = 0
+                return new Promise()
+            }).catch((err) => {
+                console.log("This article isn't been stored yet")
+                this.starstate = 0
+                console.log(err)
+            })
+        },
+        getlike(){
+            console.log("This is in get-like operation")
+        },
     },
     mounted(){
-        this.constructor()
+
+        Promise.all([this.getPaper(), this.getstar(), this.getlike()])
+
     },
 
 }
