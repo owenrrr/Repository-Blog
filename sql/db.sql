@@ -41,6 +41,31 @@ LOCK TABLES `favorite` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `like`
+--
+
+DROP TABLE IF EXISTS `like`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+SET character_set_client = utf8mb4 ;
+CREATE TABLE `like` (
+                            `like_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                            `user_id` int(10) unsigned NOT NULL,
+                            `paper_id` int(10) unsigned NOT NULL,
+                            `create_time` datetime NOT NULL,
+                            PRIMARY KEY (`like_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `like`
+--
+
+LOCK TABLES `like` WRITE;
+/*!40000 ALTER TABLE `like` DISABLE KEYS */;
+/*!40000 ALTER TABLE `like` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `comment`
 --
 
