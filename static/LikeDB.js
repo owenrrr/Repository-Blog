@@ -2,7 +2,7 @@ let mysql = require('mysql');
 
 let connection;
 
-let userConfig = require('databaseInfoConfig');
+let userConfig = require('./databaseInfoConfig');
 
 function openConnection() {
 

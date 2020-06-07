@@ -5,6 +5,7 @@ const FavoriteDB = require('./FavoriteDB');
 const paperDB = require('./PaperDB');
 const LikeDB = require('./LikeDB');
 const Blog_CommentDB = require('./Blog_CommentDB');
+const Comment_CommentDB = require('./Comment_CommentDB');
 
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
@@ -363,6 +364,53 @@ app.get('/blog_comment/get_user_comments', async function (req, res) {
     let comments = JSON.parse(commentList);
 
     console.log(comments);
+
+    await res.json({
+        comments
+    });
+});
+
+// Table `comment_comment` operation
+
+app.post('/comment_comment/add_comment_comment', async function (req, res) {
+    let blogCommentId = req.body.blogCommentId;
+    let userId = req.body.userId;
+    let commentCommentContent = req.body.commentCommentContent;
+    let commentCommentCreateTime = req.body.commentCommentCreateTime;
+    let replyId = req.body.replyId;
+
+    let commentCommentId = JSON.parse(await Comment_CommentDB.add(blogCommentId, userId, commentCommentContent, commentCommentCreateTime, replyId));
+    console.log('添加成功');
+    await res.json({
+        statue: 1,
+        commentInfo: {
+            commentCommentId,
+            blogCommentId,
+            userId,
+            commentCommentContent,
+            commentCommentCreateTime,
+            replyId
+        }
+    });
+});
+
+app.post('/comment_comment/remove_comment_comment', async function (req, res) {
+    let blogCommentId = req.body.blogCommentId;
+    let userId = req.body.userId;
+    let replyId = req.body.replyId;
+
+    await Comment_CommentDB.remove(blogCommentId, userId, replyId);
+    console.log('删除成功');
+    await res.json({
+        statue: 1
+    });
+});
+
+app.get('/comment_comment/get_user_comments', async function (req, res) {
+    let blogCommentId = req.body.blogCommentId;
+
+    let commentList = await Comment_CommentDB.getUserComments(blogCommentId);
+    let comments = JSON.parse(commentList);
 
     await res.json({
         comments

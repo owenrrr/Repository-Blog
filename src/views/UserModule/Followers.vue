@@ -51,7 +51,7 @@ export default{
                 this.userid = this.$store.getters.getUserid
                 console.log(this.userid)
               for (var user of userList){
-                if (user.userid == this.userid){
+                if (user.userid === this.userid){
                    continue
                 }
                 let tmp = {title: null, description: null}
@@ -67,7 +67,7 @@ export default{
             let userList
             axios.get('http://localhost:3000/user/getuserlist').then((res) => {
                 console.log(value)
-                if (this.state == 'show'){
+                if (this.state === 'show'){
                     for (var t of this.data){  
                         //先备份defaultlist
                         this.defaultData.push(t)

@@ -18,15 +18,15 @@ function closeConnection() {
 
 module.exports = {
 
-    add: function (userId, paperId, content, createTime) {
+    add: function (blogCommentId ,userId, commentCommentContent, commentCommentCreateTime, replyId) {
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [userId, paperId, content, createTime];
+            let params = [userId, commentCommentContent, commentCommentCreateTime, replyId];
 
-            let sql = 'insert into `blog_comment` (user_id, paper_id, blog_comment_content, blog_comment_create_time) values (?, ?, ?, ?);';
+            let sql = 'insert into `comment_comment` (blog_comment_id ,user_id, comment_comment_content, comment_comment_create_time, reply_id) values (?, ?, ?, ?, ?);';
 
             connection.query(sql, params, function (err, res) {
 
@@ -66,15 +66,15 @@ module.exports = {
 
     },
 
-    remove: function (userId, paperId) {
+    remove: function (blogCommentId ,userId, replyId) {
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [userId, paperId];
+            let params = [blogCommentId ,userId, replyId];
 
-            let sql = 'delete from `blog_comment` where user_id = ? and paper_id = ?;';
+            let sql = 'delete from comment_comment where blog_comment_id = ? and user_id = ? and reply_id = ?;';
 
             connection.query(sql, params, function (err, res) {
 
@@ -110,27 +110,27 @@ module.exports = {
 
     },
 
-    getUserComments: function (paperId) {
+    getUserComments: function (blogCommentId) {
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [paperId];
+            let params = [blogCommentId];
 
-            let sql = 'select * from blog_comment where paper_id = ?;';
+            let sql = 'select * from comment_comment where blog_comment_id = ?;';
 
             connection.query(sql, params, function (err, res) {
 
                 if (err) {
 
-                    console.log('[GET-USER-COMMENT-FAILED] ' + err.message);
+                    console.log('[GET-USER-COMMENTS-FAILED]');
 
                     return;
 
                 }
 
-                console.log('[GET-USER-COMMENT-SUCCESS] ');
+                console.log('[GET-USER-COMMENTS-SUCCESS] ');
 
                 console.log(res);
 
@@ -146,24 +146,27 @@ module.exports = {
 
                 let total = value.length;
 
-                let commentList = [];
+                let comments = [];
 
                 for (let i = 0; i < total; i++) {
 
                     let comment = {
 
+                        commentCommentId: value[i].comment_comment_id,
+
                         blogCommentId: value[i].blog_comment_id,
 
                         userId: value[i].user_id,
 
-                        paperId: value[i].paper_id,
+                        commentCommentContent: value[i].comment_comment_content,
 
-                        blogCommentContent: value[i].blog_comment_content,
+                        commentCommentCreateTime: value[i].comment_comment_create_time,
 
-                        blogCommentCreateTime: value[i].blog_comment_create_time,
-                    }
+                        replyId: value[i].reply_id,
 
-                    commentList.push(comment);
+                    };
+
+                    comments.push(comment);
 
                 }
 
@@ -171,7 +174,7 @@ module.exports = {
 
                     total,
 
-                    commentList
+                    comments
 
                 });
 
@@ -179,13 +182,13 @@ module.exports = {
 
             else {
 
-                console.log('UserCommentList is empty');
+                console.log('userComments is empty!');
 
                 return JSON.stringify({
 
                     total: 0,
 
-                    commentList: []
+                    comments: [],
 
                 });
 
@@ -198,4 +201,5 @@ module.exports = {
         });
 
     }
+
 }

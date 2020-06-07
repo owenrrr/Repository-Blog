@@ -100,6 +100,7 @@ DROP TABLE IF EXISTS `comment_comment`;
 SET character_set_client = utf8mb4 ;
 CREATE TABLE `comment_comment` (
                                 `comment_comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                `blog_comment_id` int(10) unsigned NOT NULL,
                                 `user_id` int(10) unsigned NOT NULL,
                                 `comment_comment_content` text NOT NULL,
                                 `comment_comment_create_time` datetime NOT NULL,
