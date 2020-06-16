@@ -11,11 +11,11 @@
                     <span style="margin-right: 20px; float: right;">
                         <a-icon type="calendar" style="margin-right: 10px;" />{{ date_ymd + " " + date_hms }}
                     </span>
-                    <span style="margin-right: 20px; float: right;">
-                        <a-icon type="star" style="margin-right: 10px" @click="addStar"/>{{ paper.starnum }}
+                    <span style="margin-right: 20px; float: right;" >
+                        <a-icon type="star" v-bind:theme="isfavourite()" style="margin-right: 10px" @click="addStar"/>{{ paper.starnum }}
                     </span>
                     <span style="margin-right: 20px; float: right;">
-                        <a-icon type="like" style="margin-right: 10px" />{{ paper.likenum }}
+                        <a-icon type="like" v-bind:theme="islike()" style="margin-right: 10px"  @click="addLike"/>{{ paper.likenum }}
                     </span>
                 </div>
             </div>
@@ -69,10 +69,29 @@ export default{
             date_ymd:'',
             date_hms:'',
             starstate: 0, // 0: 没加 ; 1：有加
-            liekstate: 0,
+            likestate: 0,
         }
     },
     methods:{
+
+        isfavourite(){
+            if(this.starstate==1){
+                return "twoTone"
+            }
+            else{
+                return "outlined"
+            }
+        },
+
+        islike(){
+            if(this.likestate==1){
+                return "twoTone"
+            }
+            else{
+                return "outlined"
+            }
+        },
+
         getPaper(){
             let paperlist
             return axios.get('http://localhost:3000/paper/getpaperlist').then((res) => {
@@ -151,6 +170,34 @@ export default{
         // addLike(){
         //     this.paper.likenum++
         // },
+        addLike(){
+            if(this.likestate==0){
+                console.log("This is likestate = 0 operation")
+                this.$message.success("Like Success!", 2)
+                console.log("Userid : "+this.$store.getters.getUserid)
+                axios.post('http://localhost:3000/like/addlike',{
+                    paperId:this.paper.paperid,
+                    userId:this.$store.getters.getUserid,
+                    createTime:this.date_ymd+" "+this.date_hms,
+                }).then(()=>{
+                    console.log("This is in add like operation")
+                    this.paper.likenum++
+                    this.likestate = 1
+                }).then(()=>{this.savePaperState()})
+            }
+            else{
+                this.$message.success("Like Removed",2)
+                axios.post('http://localhost:3000/like/removelike',{
+                    paperId:this.paper.paperid,
+                    userId:this.$store.getters.getUserid,
+                }).then(()=>{
+                    console.log("This is in remove like operation")
+                    this.paper.likenum--
+                    this.likestate = 0
+                }).then(()=>{this.savePaperState()})
+            }
+        },
+
         savePaperState(){
             console.log(typeof(this.paper.paperid))
             //  在此组件中只会出现star,like,comment改变，其余不变
@@ -194,10 +241,10 @@ export default{
             console.log("This is in get-like operation")
         },
     },
-    mounted(){
-
-        Promise.all([this.getPaper(), this.getstar(), this.getlike()])
-
+    async mounted(){
+        await this.getPaper();
+        await this.getstar();
+        await this.getlike();
     },
     components:{
         comment,
