@@ -15,7 +15,7 @@
                         <a-icon type="star" style="margin-right: 10px" @click="addStar"/>{{ paper.starnum }}
                     </span>
                     <span style="margin-right: 20px; float: right;">
-                        <a-icon type="like" style="margin-right: 10px" />{{ paper.likenum }}
+                        <a-icon type="like" style="margin-right: 10px" @click="addLike"/>{{ paper.likenum }}
                     </span>
                 </div>
             </div>
@@ -114,7 +114,7 @@ export default{
                 console.log("This is in getUsername()")
                 userlist = res.data.users.users
                 for (var user of userlist){
-                    if (user.userid == userid){
+                    if (user.userid === userid){
                         this.username = user.username
                         break
                     }
@@ -123,7 +123,7 @@ export default{
             })
         },
         addStar(){
-            if (this.starstate == 0){
+            if (this.starstate === 0){
                 console.log("This is starstate = 0 operation")
                 this.$message.success("Store Success !", 2)
                 console.log("Userid : " + this.$store.getters.getUserid)
@@ -148,9 +148,9 @@ export default{
                 }).then(() => {this.savePaperState()})
             }
         },
-        // addLike(){
-        //     this.paper.likenum++
-        // },
+        addLike(){
+
+        },
         savePaperState(){
             console.log(typeof(this.paper.paperid))
             //  在此组件中只会出现star,like,comment改变，其余不变
@@ -173,31 +173,47 @@ export default{
             }}).then((res) => {
                 console.log("This is in get-star operation")
                 console.log(res)
-                var userlist = res.data.userlist
+                var userlist = res.data.users.userlist
                 console.log(userlist)
                 var userid = this.$store.getters.getUserid
                 for (var user of userlist){
-                    if (userid == user.userId){
+                    if (userid === user.userId){
+                        console.log('user has already stared this paper');
                         this.starstate = 1
-                        return new Promise()
                     }
                 }
-                this.starstate = 0
-                return new Promise()
+                console.log("paper hasn't been stored by this user");
+                this.starstate = 0;
             }).catch((err) => {
-                console.log("This article isn't been stored yet")
-                this.starstate = 0
                 console.log(err)
             })
         },
         getlike(){
-            console.log("This is in get-like operation")
+            return axios.get('http://localhost:3000/like/getuserlist',
+                { params: { paperId: this.paperId}}
+            ).then((res) => {
+                console.log("This is in get-like operation");
+                console.log(res);
+                let userList = res.data.users.userList;
+                console.log(userList);
+                let userId = this.$store.getters.getUserid;
+                for (let user of userList) {
+                    if (userId === user) {
+                        console.log('user has already liked this paper');
+                        this.liekstate = 1;
+                    }
+                }
+                console.log("paper hasn't been stored by this user");
+                this.liekstate = 0;
+            }).catch(err => {
+                console.log(err);
+            });
         },
     },
-    mounted(){
-
-        Promise.all([this.getPaper(), this.getstar(), this.getlike()])
-
+    async mounted(){
+        await this.getPaper();
+        await this.getstar();
+        await this.getlike();
     },
     components:{
         comment,
