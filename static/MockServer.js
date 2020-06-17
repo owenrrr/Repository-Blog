@@ -328,6 +328,7 @@ app.post('/paper/updatepaper', jsonParser, async (req, res) => {
 
 app.post('/blog_comment/add_blog_comment', async function (req, res) {
     let userId = req.body.userId;
+    console.log(userId)
     let paperId = req.body.paperId;
     let content = req.body.content;
     let createTime = req.body.createTime;

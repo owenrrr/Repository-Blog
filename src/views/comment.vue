@@ -1,90 +1,89 @@
 <template>
-<div>
-    <avatar :username="username" style="margin: 0px 0px; display:inline-block; float:left" color="rgb(255, 255, 255)"></avatar>
-    <a-input style="width:80% ; height:40px ; margin:5px 10px ; display: inline-block" type="text" placeholder="comment"></a-input>
-    <a-button type="primary" @click="submit">submit</a-button>
-    <div>
-        <a-list item-layout="horizontal" :data-source="data">
-    <a-list-item style ="width: 100%" slot="renderItem" slot-scope="item">
-      <a-list-item-meta
-        description="???"
-      >
-        <a slot="title" href="https://www.antdv.com/">{{ item.title }}</a>
-        <a-avatar
-          slot="avatar"
-          src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-        />
-      </a-list-item-meta>
-    </a-list-item>
-  </a-list>
-    </div>
-</div>
+    <a-list
+            class="comment-list"
+            :header="`${data.length} replies`"
+            item-layout="horizontal"
+            :data-source="data"
+    >
+        <a-list-item slot="renderItem" slot-scope="item">
+            <a-comment :author="item.author" :avatar="item.avatar">
+                <template slot="actions">
+                    <span v-for="action in item.actions" :key="action">{{ action }}</span>
+                </template>
+                <p slot="content">
+                    {{ item.content }}
+                </p>
+                <a-tooltip slot="datetime" :title="item.datetime.format('YYYY-MM-DD HH:mm:ss')">
+                    <span style="color: grey">{{ item.datetime.fromNow() }}</span>
+                </a-tooltip>
+            </a-comment>
+        </a-list-item>
+        <a-input style="width:80% ; height:40px ; margin:5px 10px ; display: inline-block" type="text" placeholder="comment" v-model="content"></a-input>
+        <a-button type="primary" @click="submitcomment">submit</a-button>
+    </a-list>
 </template>
-    
 <script>
-import axios from 'axios'
-import Avatar from 'vue-avatar'
+    import moment from 'moment';
+    import axios from 'axios'
+    export default {
+        data() {
+            return {
+                data: [
+                    {
+                        actions: ['Reply to'],
+                        author: 'Han Solo',
+                        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                        content:
+                            'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+                        datetime: moment().subtract(1, 'days'),
+                    },
+                    {
+                        actions: ['Reply to'],
+                        author: 'Han Solo',
+                        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                        content:
+                            'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+                        datetime: moment().subtract(2, 'days'),
+                    },
+                ],
+                moment,
+                content:'',
+            };
+        },
 
-const data = [
-  {
-    title: 'Ant Design Title 1',
-  },
-  {
-    title: 'Ant Design Title 2',
-  },
-  {
-    title: 'Ant Design Title 3',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-];
-export default {
+        methods:{
 
-    name: 'comment',
 
-    data(){
-        return {
-            username: '',
-            userid: '',
-            listdata:[],
-            data,
+            submitcomment(){
+                console.log("submit")
+                console.log(this.content)
+                this.addcomment()
+                this.$message.success('Submit success!', 2)
+            },
+
+            addcomment(){
+                console.log("This is addcomment operation")
+                const addcomment={userId:null,paperId:null,content:null,createTime:null}
+                addcomment.userId=this.$store.getters.getUserid
+                addcomment.content=this.content
+                var time=this.getServerTime()
+                addcomment.createTime=time
+                addcomment.paperId=this.$store.getters.getPaperid
+                console.log(addcomment)
+                axios.post('http://localhost:3000/blog_comment/add_blog_comment',addcomment)
+            },
+
+            getServerTime(){
+                var d = new Date()
+                var year = d.getFullYear()
+                var month = ('0' + (d.getMonth() + 1)).slice(-2)
+                var day = ('0' + (d.getDate())).slice(-2)
+                var hour = ('0' + ((d.getHours() + 8) % 24)).slice(-2)  // UTC +08:00
+                var minutes = ('0' + (d.getMinutes())).slice(-2)
+                var seconds = ('0' + (d.getSeconds())).slice(-2)
+                return year + "-" + month + "-" + day + " " + hour + "-" + minutes + "-" + seconds
+            },
+
         }
-    },
-    methods:{
-        getUser(){
-            axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-                this.userid = this.$store.getters.getUserid
-                var userlist = res.data.users.users
-                for (var user of userlist){
-                    if (user.userid == this.userid){
-                        this.username = user.username
-                        break
-                    }
-                }
-            })
-        },
-        getData(){
-
-        },
-
-        submit(){
-            console.log("Submit comment")
-
-        },
-
-    },
-    mounted(){
-        Promise.all([this.getUser(), ])
-    },
-    components:{
-        Avatar
-    }
-}
-
+    };
 </script>
-
-<style>
-
-
-</style>
