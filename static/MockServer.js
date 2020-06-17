@@ -326,7 +326,7 @@ app.post('/paper/updatepaper', jsonParser, async (req, res) => {
 
 // Table `blog_comment` operation
 
-app.post('/blog_comment/add_blog_comment', async function (req, res) {
+app.post('/blog_comment/add_blog_comment', jsonParser, async function (req, res) {
     let userId = req.body.userId;
     console.log(userId)
     let paperId = req.body.paperId;
@@ -347,7 +347,7 @@ app.post('/blog_comment/add_blog_comment', async function (req, res) {
     });
 });
 
-app.post('/blog_comment/remove_blog_comment', async function (req, res) {
+app.post('/blog_comment/remove_blog_comment', jsonParser, async function (req, res) {
     let userId = req.body.userId;
     let paperId = req.body.paperId;
 
@@ -358,7 +358,7 @@ app.post('/blog_comment/remove_blog_comment', async function (req, res) {
     });
 });
 
-app.get('/blog_comment/get_user_comments', async function (req, res) {
+app.get('/blog_comment/get_user_comments', jsonParser, async function (req, res) {
     let paperId = req.query.paperId;
 
     let commentList = await Blog_CommentDB.getUserComments(paperId);
@@ -373,7 +373,7 @@ app.get('/blog_comment/get_user_comments', async function (req, res) {
 
 // Table `comment_comment` operation
 
-app.post('/comment_comment/add_comment_comment', async function (req, res) {
+app.post('/comment_comment/add_comment_comment', jsonParser, async function (req, res) {
     let blogCommentId = req.body.blogCommentId;
     let userId = req.body.userId;
     let commentCommentContent = req.body.commentCommentContent;
@@ -395,7 +395,7 @@ app.post('/comment_comment/add_comment_comment', async function (req, res) {
     });
 });
 
-app.post('/comment_comment/remove_comment_comment', async function (req, res) {
+app.post('/comment_comment/remove_comment_comment', jsonParser, async function (req, res) {
     let blogCommentId = req.body.blogCommentId;
     let userId = req.body.userId;
     let replyId = req.body.replyId;
@@ -407,7 +407,7 @@ app.post('/comment_comment/remove_comment_comment', async function (req, res) {
     });
 });
 
-app.get('/comment_comment/get_user_comments', async function (req, res) {
+app.get('/comment_comment/get_user_comments', jsonParser, async function (req, res) {
     let blogCommentId = req.body.blogCommentId;
 
     let commentList = await Comment_CommentDB.getUserComments(blogCommentId);

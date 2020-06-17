@@ -20,6 +20,8 @@ module.exports = {
 
     add: function (userId, paperId, content, createTime) {
 
+        console.log(userId + ' ' + paperId + ' ' + content + ' ' + createTime)
+
         return new Promise((resolve, reject) => {
 
             openConnection();
