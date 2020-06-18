@@ -3,7 +3,7 @@
             class="comment-list"
             :header="`${data.length} replies`"
             item-layout="horizontal"
-            :data-source="data"
+            :data-source=showData
     >
         <a-list-item slot="renderItem" slot-scope="item">
             <a-comment :author="item.author" :avatar="item.avatar">
@@ -13,8 +13,8 @@
                 <p slot="content">
                     {{ item.content }}
                 </p>
-                <a-tooltip slot="datetime" :title="item.datetime.format('YYYY-MM-DD HH:mm:ss')">
-                    <span style="color: grey">{{ item.datetime.fromNow() }}</span>
+                <a-tooltip slot="datetime">
+                    <span style="color: grey">{{ item.datetime}}</span>
                 </a-tooltip>
             </a-comment>
         </a-list-item>
@@ -23,7 +23,7 @@
     </a-list>
 </template>
 <script>
-    import moment from 'moment';
+
     import axios from 'axios'
     export default {
         data() {
@@ -33,35 +33,77 @@
                         actions: ['Reply to'],
                         author: 'Han Solo',
                         avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                        content:
-                            'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-                        datetime: moment().subtract(1, 'days'),
-                    },
-                    {
-                        actions: ['Reply to'],
-                        author: 'Han Solo',
-                        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                        content:
-                            'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-                        datetime: moment().subtract(2, 'days'),
-                    },
+                        content: '',
+                        datetime: ''
+                    }
                 ],
-                moment,
+
                 content:'',
+                commentlist:[],
             };
+        },
+
+        computed:{
+            showData:{
+                get: function(){
+                    return this.data
+                },
+                set: function(commentlist){
+                    this.data.splice(0)
+                    for(let i=0;i<commentlist.length;i++){
+                        let comment = {
+                            actions: ['Reply to'],
+                            author: commentlist[i].userId,
+                            avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                            content: commentlist[i].blogCommentContent,
+                            datetime: commentlist[i].blogCommentCreateTime
+                        }
+                        this.data.push(comment)
+                    }
+                }
+            }
         },
 
         methods:{
 
 
-            submitcomment(){
+            getUsername(userid){
+                let userlist
+                axios.get('http://localhost:3000/user/getuserlist').then((res) => {
+                    console.log("This is in getUsername()")
+                    userlist = res.data.users.users
+                    for (var user of userlist){
+                        if (user.userid === userid){
+                            console.log(user.username)
+                            return user.username
+                        }
+                    }
+                })
+            },
+
+            setcommentlist(){
+                return axios.get('http://localhost:3000/blog_comment/get_user_comments',{params:{paperId:this.$store.getters.getPaperid}}).then((res)=>{
+                    console.log("getting comments")
+                    console.log(res);
+                    this.commentlist=res.data.comments.commentList
+                    console.log(this.commentlist);
+                })
+            },
+
+
+            async submitcomment(){
                 console.log("submit")
                 console.log(this.content)
-                this.addcomment()
+                console.log(this.commentlist);
+                await this.addcomment()
+                console.log(this.commentlist);
+                await this.setcommentlist()
+                console.log(this.commentlist)
+                this.showData=this.commentlist
                 this.$message.success('Submit success!', 2)
             },
 
-            addcomment(){
+            async addcomment(){
                 console.log("This is addcomment operation")
                 const addcomment={userId:null,paperId:null,content:null,createTime:null}
                 addcomment.userId=this.$store.getters.getUserid
@@ -84,6 +126,11 @@
                 return year + "-" + month + "-" + day + " " + hour + "-" + minutes + "-" + seconds
             },
 
+        },
+
+        async mounted(){
+            await this.setcommentlist()
+            this.showData=this.commentlist
         }
     };
 </script>

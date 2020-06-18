@@ -360,10 +360,9 @@ app.post('/blog_comment/remove_blog_comment', jsonParser, async function (req, r
 
 app.get('/blog_comment/get_user_comments', jsonParser, async function (req, res) {
     let paperId = req.query.paperId;
-
+    console.log(paperId);
     let commentList = await Blog_CommentDB.getUserComments(paperId);
     let comments = JSON.parse(commentList);
-
     console.log(comments);
 
     await res.json({
