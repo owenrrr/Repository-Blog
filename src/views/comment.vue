@@ -96,11 +96,6 @@
                 console.log(this.content)
                 console.log(this.commentlist);
                 await this.addcomment()
-                console.log(this.commentlist);
-                await this.setcommentlist()
-                console.log(this.commentlist)
-                this.showData=this.commentlist
-                this.$message.success('Submit success!', 2)
             },
 
             async addcomment(){
@@ -112,7 +107,16 @@
                 addcomment.createTime=time
                 addcomment.paperId=this.$store.getters.getPaperid
                 console.log(addcomment)
-                axios.post('http://localhost:3000/blog_comment/add_blog_comment',addcomment)
+                axios.post('http://localhost:3000/blog_comment/add_blog_comment',addcomment).then(() => {
+                    axios.get('http://localhost:3000/blog_comment/get_user_comments',{params:{paperId:this.$store.getters.getPaperid}}).then((res)=>{
+                        console.log("getting comments")
+                        console.log(res);
+                        this.commentlist=res.data.comments.commentList
+                        console.log(this.commentlist);
+                        this.showData=this.commentlist
+                        this.$message.success('Submit success!', 2)
+                    })
+                })
             },
 
             getServerTime(){
