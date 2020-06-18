@@ -18,7 +18,7 @@
                 </a-tooltip>
             </a-comment>
         </a-list-item>
-        <a-input style="width:80% ; height:40px ; margin:5px 10px ; display: inline-block" type="text" placeholder="comment" v-model="content"></a-input>
+        <a-input style="width:80% ; height:40px ; margin:5px 10px ; display: inline-block" type="text" placeholder="Enter comment" v-model="content"></a-input>
         <a-button type="primary" @click="submitcomment">submit</a-button>
     </a-list>
 </template>
@@ -40,6 +40,8 @@
 
                 content:'',
                 commentlist:[],
+                username:[],
+                userlist:[]
             };
         },
 
@@ -51,12 +53,15 @@
                 set: function(commentlist){
                     this.data.splice(0)
                     for(let i=0;i<commentlist.length;i++){
+                        let date = commentlist[i].blogCommentCreateTime.split("T")
+                        let date_ymd = date[0]
+                        let date_hms = date[1].substring(0,8)
                         let comment = {
                             actions: ['Reply to'],
-                            author: commentlist[i].userId,
+                            author: commentlist[i].username,
                             avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
                             content: commentlist[i].blogCommentContent,
-                            datetime: commentlist[i].blogCommentCreateTime
+                            datetime: date_ymd+" "+date_hms
                         }
                         this.data.push(comment)
                     }
@@ -67,26 +72,34 @@
         methods:{
 
 
-            getUsername(userid){
-                let userlist
-                axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-                    console.log("This is in getUsername()")
-                    userlist = res.data.users.users
-                    for (var user of userlist){
-                        if (user.userid === userid){
-                            console.log(user.username)
-                            return user.username
-                        }
-                    }
+            getUserlist(){
+                return axios.get('http://localhost:3000/user/getuserlist').then((res)=>{
+                    console.log("getting userlist")
+                    this.userlist=res.data.users.users
+                    console.log(this.userlist)
                 })
             },
 
+
             setcommentlist(){
                 return axios.get('http://localhost:3000/blog_comment/get_user_comments',{params:{paperId:this.$store.getters.getPaperid}}).then((res)=>{
-                    console.log("getting comments")
-                    console.log(res);
+                    console.log("setting comments")
                     this.commentlist=res.data.comments.commentList
                     console.log(this.commentlist);
+                    for(let i=0;i<this.commentlist.length;i++){
+                        for(let j=0;j<this.userlist.length;j++){
+                            if(this.userlist[j].userid==this.commentlist[i].userId){
+                                let comment ={
+                                    username:this.userlist[j].username,
+                                    blogCommentContent: this.commentlist[i].blogCommentContent,
+                                    blogCommentCreateTime: this.commentlist[i].blogCommentCreateTime
+                                }
+                                console.log(comment);
+                                this.commentlist[i]=comment
+                                break
+                            }
+                        }
+                    }
                 })
             },
 
@@ -97,6 +110,7 @@
                 console.log(this.commentlist);
                 await this.addcomment()
             },
+
 
             addcomment(){
                 console.log("This is addcomment operation")
@@ -110,14 +124,28 @@
                 axios.post('http://localhost:3000/blog_comment/add_blog_comment',addcomment).then(() => {
                     axios.get('http://localhost:3000/blog_comment/get_user_comments',{params:{paperId:this.$store.getters.getPaperid}}).then((res)=>{
                         console.log("getting comments")
-                        console.log(res);
                         this.commentlist=res.data.comments.commentList
-                        console.log(this.commentlist);
+                        for(let i=0;i<this.commentlist.length;i++){
+                            for(let j=0;j<this.userlist.length;j++){
+                                if(this.userlist[j].userid==this.commentlist[i].userId){
+                                    let comment ={
+                                        username:this.userlist[j].username,
+                                        blogCommentContent: this.commentlist[i].blogCommentContent,
+                                        blogCommentCreateTime: this.commentlist[i].blogCommentCreateTime
+                                    }
+                                    console.log(comment);
+                                    this.commentlist[i]=comment
+                                    break
+                                }
+                            }
+                        }
                         this.showData=this.commentlist
                         this.$message.success('Submit success!', 2)
+                        this.content=''
                     })
                 })
             },
+
 
             getServerTime(){
                 var d = new Date()
@@ -132,9 +160,13 @@
 
         },
 
+
         async mounted(){
+            await this.getUserlist()
             await this.setcommentlist()
             this.showData=this.commentlist
         }
+
+
     };
 </script>
