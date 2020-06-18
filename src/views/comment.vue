@@ -103,7 +103,7 @@
                 this.$message.success('Submit success!', 2)
             },
 
-            async addcomment(){
+            addcomment(){
                 console.log("This is addcomment operation")
                 const addcomment={userId:null,paperId:null,content:null,createTime:null}
                 addcomment.userId=this.$store.getters.getUserid
