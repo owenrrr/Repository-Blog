@@ -34,7 +34,11 @@ Vue.use(VueRouter)
           path: 'basicEditor',  // children route cannot add '/'
           name: 'BasicEditor',
           component: () => import('@/views/EditorModule/BasicEditor')
-        },{
+        }, {
+          path: 'favourite',
+          name: 'Favourite',
+          component: () => import('@/views/Favourite')
+        }, {
           path: 'submitpage',
           name: 'SubmitPage',
           component: () => import('@/views/EditorModule/SubmitPage')

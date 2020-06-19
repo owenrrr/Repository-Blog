@@ -37,7 +37,7 @@
                 this.$router.push('/MyBlog/basicEditor').catch(err => {err})
             },
             jumpToStar() {
-
+                this.$router.push('/MyBlog/favourite').catch(err => {err})
             },
             jumpToUser() {
                 this.$router.push('/MyBlog/userinterface').catch(err => {err})
