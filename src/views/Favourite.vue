@@ -49,14 +49,16 @@
                 actions :[],
                 userList: [],
                 paperList: [],
+                allpaper: []
             };
         },
 
 
-        mounted(){
-            Promise.all([this.setUserList(),this.setPaperList()]).then((res) => {
-                this.constructors(res[0],res[1])
-            })
+        async mounted(){
+            await this.setAllpaper()
+            await this.setUserList()
+            await this.setPaperList()
+            await this.constructors(this.userList,this.paperList)
         },
 
 
@@ -73,26 +75,40 @@
                 this.setListData(paperlist,userlist)
             },
 
+            setAllpaper(){
+               console.log("setAllpaper")
+               return axios.get('http://localhost:3000/paper/getpaperlist').then((res) => {
+                   this.allpaper = res.data.papers.papers
+                   console.log(this.allpaper);
+               })
+            },
+
             setUserList(){
-                let userlist
-                return axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-                    console.log("This is in setUserList")
-                    userlist = res.data.users.users
-                    return new Promise( function(resolve){
-                        resolve(userlist)
-                    })
+                return axios.get('http://localhost:3000/user/getuserlist').then((res)=>{
+                    console.log("getting userlist")
+                    console.log(res);
+                    this.userList=res.data.users.users
+                    console.log(this.userList)
                 })
             },
 
             setPaperList(){
-                let paperlist
+                let paperidlist
+                console.log("This is in setPaperList")
                 return axios.get('http://localhost:3000/favorite/getpaperlist',{params:{userId: this.$store.getters.getUserid}}).then((res) => {
-                    console.log("This is in setPaperList")
-                    console.log(res)
-                    paperlist = res.data.papers.paperList
-                    return new Promise( function(resolve) {
-                        resolve(paperlist)
-                    })
+                    paperidlist = res.data.papers.paperList
+                    console.log(paperidlist);
+                }).then(()=>{
+                    for(let i=0; i<paperidlist.length; i++){
+                        for(let j=0; j<this.allpaper.length; j++){
+                            if(paperidlist[i]==this.allpaper[j].paperid){
+                                console.log("pushing")
+                                console.log(this.allpaper[j])
+                                this.paperList.push(this.allpaper[j])
+                                break
+                            }
+                        }
+                    }
                 })
             },
 

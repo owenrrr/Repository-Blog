@@ -118,7 +118,7 @@ module.exports = {
 
             let params = [userId];
 
-            let sql = 'select * from favorite where user_id = ?;';
+            let sql = 'select * from `favorite` where user_id = ?;';
 
             connection.query(sql, params, function (err, res) {
 
@@ -136,7 +136,7 @@ module.exports = {
 
                 resolve(res);
 
-            })
+            });
 
             closeConnection();
 
@@ -150,23 +150,15 @@ module.exports = {
 
                 for (let i = 0; i < total; i++) {
 
-                    let paper = {
-
-                        paperId: value[i].paper_id,
-
-                    }
-
-                    paperList.push(paper);
+                    paperList.push(value[i].paper_id);
 
                 }
 
                 return JSON.stringify({
 
-                    total,
-
                     paperList
 
-                });
+                })
 
             }
 
@@ -178,7 +170,7 @@ module.exports = {
 
                     total: 0,
 
-                    paperList: []
+                    paperList: [],
 
                 });
 
@@ -188,7 +180,8 @@ module.exports = {
 
             console.log(err);
 
-        })
+        });
+
     },
 
     getUserList: function (paperId) {

@@ -224,8 +224,6 @@ module.exports = {
 
         }).then(value => {
 
-            console.log("thenthenthen")
-
             if (value.length !== 0) {
 
                 let total = value.length;
@@ -238,49 +236,13 @@ module.exports = {
 
                 }
 
-                return new Promise((resolve,reject) => {
-
-                    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-
-                    openConnection();
-
-                    let sql = 'select * from `paper` where paper_id = ?;';
-
-                    let temp = []
-
-                    for(let k=0; k<paperList.length; k++){
-
-                        connection.query(sql,[paperList[k]],function(err,res){
-
-                            if(err){
-
-                                console.log('[GET-PAPER-LIST-Favourite-FAILED] ' + err.message)
-
-                                return;
-
-                            }
-
-                            console.log('[GET-PAPER-LIST-Favourite-SUCCESS] ')
-
-                            temp.push(res)
-
-                        })
-
-                    }
-
-                    resolve(temp)
-
-                    closeConnection()
-
-                })
-
-                /*return JSON.stringify({
+                return JSON.stringify({
 
                     total,
 
                     paperList,
 
-                });*/
+                });
 
             }
 
@@ -298,39 +260,6 @@ module.exports = {
 
             }
 
-        }).then(result => {
-
-            let PaperList = [];
-
-            for(let j=0; j<result.length; j++){
-                let tmp = {
-
-                    paperid: result[j].paper_id,
-
-                    userid: result[j].user_id,
-
-                    starnum: result[j].star_num,
-
-                    likenum: result[j].like_num,
-
-                    commentnum: result[j].comment_num,
-
-                    title: result[j].title,
-
-                    createtime: result[j].create_time,
-
-                    content: result[j].content
-                }
-
-                PaperList.push(tmp)
-
-            }
-
-            return JSON.stringify({
-
-                PaperList
-
-            })
         }).catch(err => {
 
             console.log(err);

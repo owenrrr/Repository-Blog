@@ -184,7 +184,6 @@ app.get('/favorite/getpaperlist', jsonParser, async (req, res) => {
     let userId = req.query.userId;
     let paperList = await FavoriteDB.getPaperList(userId);
     let papers = JSON.parse(paperList);
-    console.log(papers);
     await res.json({
         papers
     })
@@ -235,7 +234,7 @@ app.get('/like/getuserlist', jsonParser, async (req, res) => {
     });
 });
 
-app.get('/favorite/getpaperlist', jsonParser, async (req, res) => {
+app.get('/like/getpaperlist', jsonParser, async (req, res) => {
     let userId = req.query.userId;
     let paperList = await LikeDB.getPaperList(userId);
     let papers = JSON.parse(paperList);
