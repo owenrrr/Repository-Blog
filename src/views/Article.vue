@@ -70,9 +70,37 @@ export default{
             date_hms:'',
             starstate: 0, // 0: 没加 ; 1：有加
             likestate: 0,
+            like: [],
+            favourite: []
         }
     },
     methods:{
+
+        async setlike(){
+            const res = await axios.get('http://localhost:3000/like/getuserlist',{params:{paperId:this.$store.getters.getPaperid}})
+            this.like = res.data.users.userList
+        },
+
+        async setfavourite(){
+            const res = await axios.get('http://localhost:3000/favorite/getuserlist',{params:{paperId:this.$store.getters.getPaperid}})
+            this.favourite = res.data.users.userList
+        },
+
+        checkstate(){
+            let user = this.$store.getters.getUserid
+            for(let i=0; i<this.like.length; i++){
+                if(user==this.like[i].userId){
+                    this.likestate=1
+                    break
+                }
+            }
+            for(let i=0; i<this.favourite.length; i++){
+                if(user==this.favourite[i].userId){
+                    this.starstate=1
+                    break
+                }
+            }
+        },
 
         isfavourite(){
             if(this.starstate==1){
@@ -256,6 +284,9 @@ export default{
         },
     },
     async mounted(){
+        await this.setlike()
+        await this.setfavourite()
+        this.checkstate()
         await this.getPaper();
         await this.getstar();
         await this.getlike();
