@@ -16,16 +16,16 @@
             </a-list-item-meta>
             <template>
         <span>
-          <a-icon type="star-o" style="margin-right: 8px" />
-          {{ actions[item.paperid-1].text1 }}
+          <a-icon type="star-o" style="margin-right: 8px" theme="twoTone" />
+          {{ actions[item.index].text1 }}
         </span>
                 <span>
-          <a-icon type="like-o" style="margin-right: 8px" />
-          {{ actions[item.paperid-1].text2 }}
+          <a-icon type="like-o" style="margin-right: 8px" theme="twoTone"/>
+          {{ actions[item.index].text2 }}
         </span>
                 <span>
-          <a-icon type="message" style="margin-right: 8px" />
-          {{ actions[item.paperid-1].text3 }}
+          <a-icon type="message" style="margin-right: 8px"/>
+          {{ actions[item.index].text3 }}
         </span>
             </template>
         </a-list-item>
@@ -129,8 +129,10 @@
 
             setListData(paperList,userList){
                 console.log("This is in setListData")
+                let index = 0
                 for (var paper of paperList){
-                    var tmp = {paperid: paper.paperid, userid: paper.userid, title: paper.title, starnum: paper.starnum, likenum: paper.likenum, commentnum: paper.commentnum, createtime: paper.createtime, username: null}
+                    var tmp = {paperid: paper.paperid, userid: paper.userid, title: paper.title, starnum: paper.starnum, likenum: paper.likenum, commentnum: paper.commentnum, createtime: paper.createtime, username: null , index: index}
+                    index++
                     for (var user of userList){
                         if (tmp.userid == user.userid){
                             tmp.username = user.username
@@ -139,7 +141,8 @@
                         }
                     }
                 }
-                console.log("This is after setListData :" + this.listData)
+                console.log("This is after setListData :")
+                console.log(this.listData);
             },
         },
 
