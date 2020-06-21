@@ -51,7 +51,7 @@ import axios from 'axios'
                 paperList: [],
             };
         },
-        mounted(){
+        async mounted(){
             Promise.all([this.setUserList(),this.setPaperList()]).then((res) => {
                 this.constructors(res[0],res[1])
             })

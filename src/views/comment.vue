@@ -9,7 +9,7 @@
         <a-list-item slot="renderItem" slot-scope="item">
             <a-comment :author="item.author" :avatar="item.avatar">
                 <template slot="actions">
-                    <span v-for="action in item.actions" :key="action" @click="reply">{{ action }}</span>
+                    <a href="#reply" v-for="action in item.actions" :key="action" @click="reply">{{ action }}</a>
                 </template>
                 <p slot="content" style="width:60%" align="left">
                     {{ item.content }}
@@ -19,7 +19,7 @@
                 </a-tooltip>
             </a-comment>
         </a-list-item>
-        <a-input style="width:80% ; height:40px ; margin:5px 10px ; display: inline-block" type="text" placeholder="Enter comment" v-model="content"></a-input>
+        <a-input id="reply" style="width:80% ; height:40px ; margin:5px 10px ; display: inline-block" type="text" placeholder="Enter comment" v-model="content" defaultValue=content></a-input>
         <a-button type="primary" @click="submitcomment">submit</a-button>
     </a-list>
 </template>
@@ -42,7 +42,7 @@
                     onChange: page => {
                         console.log(page);
                     },
-                    pageSize: 3,
+                    pageSize: 5,
                 },
                 content:'',
                 commentlist:[],
@@ -216,7 +216,9 @@
             },
 
             reply(){
-                console.log("gogogo")
+                console.log("reply")
+                this.content = "Reply to Owen :"
+
             }
 
         },

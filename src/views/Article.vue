@@ -21,7 +21,7 @@
             </div>
         </a-layout-header>
         <a-layout-content>
-            <div v-html="paper.content" style="float: left; margin-left: 50px;">
+            <div v-html="paper.content" style="float: left; margin-left: 50px; width:80%;" align="left">
             </div>
         </a-layout-content>
         <a-layout-footer style="text-align: center">
