@@ -87,7 +87,7 @@
                 return axios.get('http://localhost:3000/user/getuserlist').then((res)=>{
                     console.log("getting userlist")
                     console.log(res);
-                    this.userList=res.data.users.users
+                    this.userList=res.data.userList
                     console.log(this.userList)
                 })
             },

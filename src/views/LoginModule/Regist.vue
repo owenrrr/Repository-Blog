@@ -159,7 +159,7 @@ export default {
         //   } )
         let userList
         axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-          userList = res.data.users.users
+          userList = res.data.userList
           for (var user of userList){
             if (user.username === value.username){
               console.log("Execute false")

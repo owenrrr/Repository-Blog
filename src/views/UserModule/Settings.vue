@@ -102,7 +102,7 @@ export default {
             let userList
             axios.get('http://localhost:3000/user/getuserlist').then((res) => {
                 console.log("Excute the constructor function!")
-              userList = res.data.users.users
+              userList = res.data.userList
               this.basic.userid = this.$store.getters.getUserid
               console.log(this.basic.username)
               for (var user of userList){

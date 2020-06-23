@@ -117,14 +117,6 @@ import axios from 'axios'
           if (!err) {
             console.log('Received values of form: ', values);
             this.checkLoginInfo(values)
-            // if (this.checkLoginInfo(values)) {
-            //   this.$message.success('Login Success! Welcom Back ' + this.form.getFieldValue('username') + '!', 3);
-            //   this.$router.push('/MyBlog')
-            // }
-            // else {
-            //   this.form.resetFields()
-            //   this.$message.warning('Login Failed! Wrong account or password.', 3);
-            // }
           }
         });
       },
@@ -134,7 +126,8 @@ import axios from 'axios'
       returnCheckBool(values){
         let userList
         axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-          userList = res.data.users.users
+          console.log(res)
+          userList = res.data.userList
           for (var user of userList){
             if (user.username === values.username && user.password === values.password){
               console.log("Execute true")

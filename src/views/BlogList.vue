@@ -1,35 +1,38 @@
 <template>
-    <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="listData">
-        <!-- <div slot="footer"><b>ant design vue</b> footer part</div> -->
-        <a-list-item slot="renderItem" key="item.title" slot-scope="item">
-             <!-- v-for="{ type1, text1, type2, text2, type3, text3 } in actions" slot="actions" -->
-            <img
-                    slot="extra"
-                    width="272"
-                    alt="logo"
-                    src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-            />
-            <a-list-item-meta :description="item.username">
-                <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
-                <a slot="title" @click="commitpaperid(item.paperid)">{{ item.title }}</a>  
-                <!-- <a-avatar slot="avatar" :src="item.avatar" /> -->
-            </a-list-item-meta>
-            <template>
-        <span>
-          <a-icon type="star-o" style="margin-right: 8px" />
-          {{ actions[item.paperid-1].text1 }}
-        </span>
-        <span>
-          <a-icon type="like-o" style="margin-right: 8px" />
-          {{ actions[item.paperid-1].text2 }}
-        </span>
-        <span>
-          <a-icon type="message" style="margin-right: 8px" />
-          {{ actions[item.paperid-1].text3 }}
-        </span>
-            </template>
-        </a-list-item>
-    </a-list>
+    <div>
+        <a-input-search placeholder="搜My Blog" enter-button @search="onSearch" class="search"/>
+        <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="listData">
+            <!-- <div slot="footer"><b>ant design vue</b> footer part</div> -->
+            <a-list-item slot="renderItem" key="item.title" slot-scope="item">
+                 <!-- v-for="{ type1, text1, type2, text2, type3, text3 } in actions" slot="actions" -->
+                <img
+                        slot="extra"
+                        width="272"
+                        alt="logo"
+                        src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                />
+                <a-list-item-meta :description="item.username">
+                    <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
+                    <a slot="title" @click="commitpaperid(item.paperid)">{{ item.title }}</a>
+                    <!-- <a-avatar slot="avatar" :src="item.avatar" /> -->
+                </a-list-item-meta>
+                <template>
+            <span>
+              <a-icon type="star-o" style="margin-right: 8px" />
+              {{ actions[item.paperid-1].text1 }}
+            </span>
+            <span>
+              <a-icon type="like-o" style="margin-right: 8px" />
+              {{ actions[item.paperid-1].text2 }}
+            </span>
+            <span>
+              <a-icon type="message" style="margin-right: 8px" />
+              {{ actions[item.paperid-1].text3 }}
+            </span>
+                </template>
+            </a-list-item>
+        </a-list>
+    </div>
 </template>
 
 <script>
@@ -70,7 +73,9 @@ import axios from 'axios'
                 let userlist
                 return axios.get('http://localhost:3000/user/getuserlist').then((res) => {
                     console.log("This is in setUserList")
-                    userlist = res.data.users.users
+                    console.log(res)
+                    userlist = res.data.userList
+                    console.log(userlist)
                     return new Promise( function(resolve){
                         resolve(userlist)
                     })
@@ -102,6 +107,8 @@ import axios from 'axios'
             },
             setListData(paperList,userList){
                 console.log("This is in setListData")
+                console.log(paperList)
+                console.log(userList)
                 for (var paper of paperList){
                     var tmp = {paperid: paper.paperid, userid: paper.userid, title: paper.title, starnum: paper.starnum, likenum: paper.likenum, commentnum: paper.commentnum, createtime: paper.createtime, username: null}
                     for (var user of userList){

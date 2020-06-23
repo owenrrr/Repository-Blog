@@ -1,9 +1,6 @@
 <template>
     <div>
-        <div class="left">
-            左边
-        </div>
-        <div class="right">
+        <div>
             <BlogList></BlogList>
         </div>
     </div>
@@ -21,12 +18,5 @@
 </script>
 
 <style scoped>
-    .left {
-        width: 20%;
-        float: left;
-    }
-    .right {
-        width: 75%;
-        float: right;
-    }
+
 </style>

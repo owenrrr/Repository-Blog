@@ -42,12 +42,12 @@ app.get('/user/getuser', jsonParser, async (req, res) => {
     }
 });
 
+
 app.get('/user/getuserlist', jsonParser, async (req, res) => {
-    let userlist = await userDB.getAll();
-    let users = JSON.parse(userlist);
-    console.log(users);
+    console.log('/user/getuserlist')
+    let userList = await userDB.getAll();
     await res.json({
-        users
+        userList
     })
 });
 
@@ -235,6 +235,7 @@ app.get('/like/getuserlist', jsonParser, async (req, res) => {
 });
 
 app.get('/like/getpaperlist', jsonParser, async (req, res) => {
+    console.log('/like/getpaperlist')
     let userId = req.query.userId;
     let paperList = await LikeDB.getPaperList(userId);
     let papers = JSON.parse(paperList);
@@ -247,6 +248,7 @@ app.get('/like/getpaperlist', jsonParser, async (req, res) => {
 // Table `paper` operation
 
 app.get('/paper/getpaper', jsonParser, async (req, res) => {
+    console.log('/paper/getpaper')
     let paperid = req.query.paperid;
     let paper;
     console.log(paperid);
@@ -264,9 +266,8 @@ app.get('/paper/getpaper', jsonParser, async (req, res) => {
 });
 
 app.get('/paper/getpaperlist', jsonParser, async (req, res) => {
-    let paperlist = await paperDB.getAll();
-    let papers = JSON.parse(paperlist);
-    console.log(papers);
+    console.log('/paper/getpaperlist')
+    let papers = await paperDB.getAll();
     await res.json({
         papers
     })
@@ -331,8 +332,11 @@ app.post('/blog_comment/add_blog_comment', jsonParser, async function (req, res)
     let paperId = req.body.paperId;
     let content = req.body.content;
     let createTime = req.body.createTime;
+    let type = req.body.commentType;
+    let replyId = req.body.blogCommentId;
+    console.log(replyId)
 
-    let blogCommentId = JSON.parse(await Blog_CommentDB.add(userId, paperId, content, createTime));
+    let blogCommentId = await Blog_CommentDB.add(userId, paperId, content, createTime, type, replyId);
     console.log('添加成功');
     await res.json({
         statue: 1,
@@ -358,16 +362,18 @@ app.post('/blog_comment/remove_blog_comment', jsonParser, async function (req, r
 });
 
 app.get('/blog_comment/get_user_comments', jsonParser, async function (req, res) {
+    console.log('/blog_comment/get_user_comments')
     let paperId = req.query.paperId;
     console.log(paperId);
     let commentList = await Blog_CommentDB.getUserComments(paperId);
-    let comments = JSON.parse(commentList);
-    console.log(comments);
+
+    console.log(commentList)
 
     await res.json({
-        comments
+        commentList
     });
 });
+
 
 // Table `comment_comment` operation
 
@@ -409,10 +415,9 @@ app.get('/comment_comment/get_user_comments', jsonParser, async function (req, r
     let blogCommentId = req.body.blogCommentId;
 
     let commentList = await Comment_CommentDB.getUserComments(blogCommentId);
-    let comments = JSON.parse(commentList);
 
     await res.json({
-        comments
+        commentList
     });
 });
 

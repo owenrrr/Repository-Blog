@@ -80,13 +80,13 @@ module.exports = {
 
                 if (err) {
 
-                    console.log('[DELETE-FAILED] ' + err.message);
+                    console.log('[DELETE-FAVORITE-FAILED] ' + err.message);
 
                     return;
 
                 }
 
-                console.log('[DELETE-SUCCESS] ');
+                console.log('[DELETE-FAVORITE-SUCCESS] ');
 
                 console.log(res);
 
@@ -124,13 +124,13 @@ module.exports = {
 
                 if (err) {
 
-                    console.log('[GET-PAPER-LIST-FAILED] ' + err.message);
+                    console.log('[GET-FAVORITE-PAPER-LIST-FAILED] ' + err.message);
 
                     return;
 
                 }
 
-                console.log('[GET-PAPER-LIST-SUCCESS] ');
+                console.log('[GET-FAVORITE-PAPER-LIST-SUCCESS] ');
 
                 console.log(res);
 
@@ -198,13 +198,13 @@ module.exports = {
 
                 if (err) {
 
-                    console.log('[GET-USER-LIST-FAILED] ' + err.message);
+                    console.log('[GET-FAVORITE-USER-LIST-FAILED] ' + err.message);
 
                     return;
 
                 }
 
-                console.log('[GET-USER-LIST-SUCCESS]');
+                console.log('[GET-FAVORITE-USER-LIST-SUCCESS]');
 
                 console.log(res);
 

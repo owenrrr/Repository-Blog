@@ -21,7 +21,7 @@
             </div>
         </a-layout-header>
         <a-layout-content>
-            <div v-html="paper.content" style="float: left; margin-left: 50px; width:80%;" align="left">
+            <div v-html="paper.content" style="margin-left: 50px; width:80%;" align="left">
             </div>
         </a-layout-content>
         <a-layout-footer style="text-align: center">
@@ -31,30 +31,6 @@
     </a-layout>
 </a-layout>
 </div>
-<!-- <div>
-    <p style="height: 100px; width: 100%; color:blueviolet; font-size: 50px; font-family:PingFangSC-Regular,Verdana,Arial;">{{ paper.title }}</p>
-    <h1 style="font-style:oblique; margin: 20px 0px; display: inline-block">{{ username }}</h1>
-    <h2 style="display: inline-block">by {{ paper.createtime }}</h2>
-    <div>
-        <h1  v-html="paper.content"></h1>
-    </div>
-    <span>
-        <a-icon type="star" style="margin-right: 8px" />
-          {{ paper.starnum }}
-    </span>
-    <span>
-        <a-icon type="like" style="margin-right: 8px" />
-          {{ paper.likenum }}
-    </span>
-    <span>
-        <a-icon type="message" style="margin-right: 8px" />
-          {{ paper.commentnum }}
-    </span>
-    <a-back-top />
-    Click
-    <strong style="color: blue"> Here </strong>
-    backTop.
-</div> -->
 </template>
 
 <script>
@@ -159,7 +135,7 @@ export default{
             let userlist
             axios.get('http://localhost:3000/user/getuserlist').then((res) => {
                 console.log("This is in getUsername()")
-                userlist = res.data.users.users
+                userlist = res.data.userList
                 for (var user of userlist){
                     if (user.userid === userid){
                         this.username = user.username
@@ -246,7 +222,7 @@ export default{
             }}).then((res) => {
                 console.log("This is in get-star operation")
                 console.log(res)
-                var userlist = res.data.users.userlist
+                var userlist = res.data.users.userList
                 console.log(userlist)
                 var userid = this.$store.getters.getUserid
                 for (var user of userlist){

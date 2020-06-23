@@ -78,6 +78,8 @@ CREATE TABLE `blog_comment` (
   `paper_id` int(10) unsigned NOT NULL,
   `blog_comment_content` text NOT NULL,
   `blog_comment_create_time` datetime NOT NULL,
+  `reply_comment_id` int(10) unsigned default null,
+  `comment_type` int(1) unsigned not null,
   PRIMARY KEY (`blog_comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

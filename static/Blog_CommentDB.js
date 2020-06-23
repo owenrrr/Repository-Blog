@@ -18,17 +18,17 @@ function closeConnection() {
 
 module.exports = {
 
-    add: function (userId, paperId, content, createTime) {
+    add: function (userId, paperId, content, createTime, commentType, replyId) {
 
-        console.log(userId + ' ' + paperId + ' ' + content + ' ' + createTime)
+        console.log(userId + ' ' + paperId + ' ' + content + ' ' + createTime + ' ' + commentType + ' ' + replyId)
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [userId, paperId, content, createTime];
+            let params = [userId, paperId, content, createTime, commentType, replyId];
 
-            let sql = 'insert into `blog_comment` (user_id, paper_id, blog_comment_content, blog_comment_create_time) values (?, ?, ?, ?);';
+            let sql = 'insert into `blog_comment` (user_id, paper_id, blog_comment_content, blog_comment_create_time, comment_type, reply_comment_id)  values (?, ?, ?, ?, ?, ?);';
 
             connection.query(sql, params, function (err, res) {
 
@@ -54,17 +54,7 @@ module.exports = {
 
             closeConnection();
 
-        }).then(value => {
-
-            console.log(value);
-
-            return JSON.stringify(value);
-
-        }).catch(err => {
-
-            console.log(err);
-
-        });
+        })
 
     },
 
@@ -82,13 +72,13 @@ module.exports = {
 
                 if (err) {
 
-                    console.log('[DELETE-FAILED] ' + err.message);
+                    console.log('[DELETE-COMMENT-FAILED] ' + err.message);
 
                     return;
 
                 }
 
-                console.log('[DELETE-SUCCESS] ');
+                console.log('[DELETE-COMMENT-SUCCESS] ');
 
                 console.log(res);
 
@@ -98,17 +88,63 @@ module.exports = {
 
             closeConnection();
 
-        }).then(value => {
+        })
 
-            console.log(value);
+    },
 
-            return JSON.stringify(value);
+    getCommentById: function (commentId) {
 
-        }).catch(err => {
+        return new Promise((resolve, reject) => {
 
-            console.log(err);
+            console.log('getCommentById')
 
-        });
+            console.log(commentId)
+
+            openConnection();
+
+            let param = [commentId];
+
+            let sql = 'select * from blog_comment where blog_comment_id = ?;';
+
+            connection.query(sql, param, function (err, res) {
+
+                if (err) {
+
+                    console.log('[GET-COMMENT-BY-ID-FAILED] ' + err.message);
+
+                    return;
+
+                }
+
+                console.log('[GET-COMMENT-BY-ID-SUCCESS]')
+
+                console.log(res)
+
+                let comment = {
+
+                    blogCommentId: res.blog_comment_id,
+
+                    userId: res.user_id,
+
+                    paperId: res.paper_id,
+
+                    blogCommentContent: res.blog_comment_content,
+
+                    blogCommentCreateTime: res.blog_comment_create_time,
+
+                    commentType: res.comment_type,
+
+                    replyCommentId: res.reply_comment_id
+
+                }
+
+                resolve(comment);
+
+            })
+
+            closeConnection();
+
+        })
 
     },
 
@@ -134,70 +170,53 @@ module.exports = {
 
                 console.log('[GET-USER-COMMENT-SUCCESS] ');
 
-                console.log(res);
+                let commentList = [];
 
-                resolve(res);
+                if (res.length !== 0) {
+
+                    for (let i = 0; i < res.length; i++) {
+
+
+                        let comment = {
+
+                            blogCommentId: res[i].blog_comment_id,
+
+                            userId: res[i].user_id,
+
+                            paperId: res[i].paper_id,
+
+                            blogCommentContent: res[i].blog_comment_content,
+
+                            blogCommentCreateTime: res[i].blog_comment_create_time,
+
+                            commentType: res[i].comment_type,
+
+                            replyCommentId: res[i].reply_comment_id
+                        }
+
+                        commentList.push(comment);
+
+                    }
+
+                    resolve(commentList);
+
+                }
+
+                else {
+
+                    console.log('UserCommentList is empty');
+
+                    resolve(commentList);
+
+                }
+
+
 
             });
 
             closeConnection();
 
-        }).then(value => {
-
-            if (value.length !== 0) {
-
-                let total = value.length;
-
-                let commentList = [];
-
-                for (let i = 0; i < total; i++) {
-
-                    let comment = {
-
-                        blogCommentId: value[i].blog_comment_id,
-
-                        userId: value[i].user_id,
-
-                        paperId: value[i].paper_id,
-
-                        blogCommentContent: value[i].blog_comment_content,
-
-                        blogCommentCreateTime: value[i].blog_comment_create_time,
-                    }
-
-                    commentList.push(comment);
-
-                }
-
-                return JSON.stringify({
-
-                    total,
-
-                    commentList
-
-                });
-
-            }
-
-            else {
-
-                console.log('UserCommentList is empty');
-
-                return JSON.stringify({
-
-                    total: 0,
-
-                    commentList: []
-
-                });
-
-            }
-
-        }).catch(err => {
-
-            console.log(err);
-
-        });
+        })
 
     }
 }

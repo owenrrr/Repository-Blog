@@ -58,7 +58,7 @@ export default{
             let userlist
             axios.get('http://localhost:3000/user/getuserlist').then((res) => {
                 console.log("This is in getUsername()")
-                userlist = res.data.users.users
+                userlist = res.data.userList
                 for (var user of userlist){
                     if (user.userid == userid){
                         this.username = user.username

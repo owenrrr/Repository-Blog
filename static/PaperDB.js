@@ -83,13 +83,13 @@ module.exports = {
 
                 if (err) {
 
-                    console.log('[GET-FAILED] ' + err.message);
+                    console.log('[GET-PAPER-FAILED] ' + err.message);
 
                     return;
 
                 }
 
-                console.log('[GET-SUCCESS] ')
+                console.log('[GET-PAPER-SUCCESS] ')
 
                 console.log(res);
 
@@ -157,7 +157,7 @@ module.exports = {
 
                 if (err) {
 
-                    console.log('[GETALL-FAILED] ' + err.message);
+                    console.log('[GET-ALL-PAPER-FAILED] ' + err.message);
 
                     return;
 
@@ -165,11 +165,65 @@ module.exports = {
 
                 if (res) {
 
-                    resolve(res);
-
-                    console.log('[GETALL-SUCCESS]');
+                    console.log('[GET-ALL-PAPER-SUCCESS]');
 
                     console.log(res);
+
+                    if (res.length !== 0) {
+
+                        let papers = [];
+
+                        let total = res.length;
+
+                        for (let i = 0; i < total; i++) {
+
+                            let paper = {
+
+                                paperid: res[i].paper_id,
+
+                                userid: res[i].user_id,
+
+                                starnum: res[i].star_num,
+
+                                likenum: res[i].like_num,
+
+                                commentnum: res[i].comment_num,
+
+                                title: res[i].title,
+
+                                createtime: res[i].create_time,
+
+                                content: res[i].content,
+
+                            };
+
+                            papers.push(paper);
+
+                            resolve({
+
+                                total: total,
+
+                                papers: papers,
+
+                            })
+
+                        }
+
+                    }
+
+                    else {
+
+                        console.log('Papers not find');
+
+                        resolve({
+
+                            total: 0,
+
+                            papers: []
+
+                        })
+
+                    }
 
                 }
 
@@ -177,69 +231,7 @@ module.exports = {
 
             closeConnection();
 
-        })).then(value => {
-
-            if (value.length !== 0) {
-
-                let papers = [];
-
-                let total = value.length;
-
-                for (let i = 0; i < total; i++) {
-
-                    let paper = {
-
-                        paperid: value[i].paper_id,
-
-                        userid: value[i].user_id,
-
-                        starnum: value[i].star_num,
-
-                        likenum: value[i].like_num,
-
-                        commentnum: value[i].comment_num,
-
-                        title: value[i].title,
-
-                        createtime: value[i].create_time,
-
-                        content: value[i].content,
-
-                    };
-
-                    papers.push(paper);
-
-                }
-
-                return JSON.stringify({
-
-                    total: total,
-
-                    papers: papers,
-
-                });
-
-            }
-
-            else {
-
-                console.log('Papers not find');
-
-                return JSON.stringify({
-
-                    total: 0,
-
-                    papers: []
-
-                })
-
-            }
-
-        }).catch(err => {
-
-            console.log(err);
-
-        });
+        }))
 
     },
 

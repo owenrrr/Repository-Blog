@@ -98,13 +98,13 @@ module.exports = {
 
                 if (err) {
 
-                    console.log('[UPDATE-ERROR]' + err.message);
+                    console.log('[UPDATE-USER-ERROR]' + err.message);
 
                     return;
 
                 }
 
-                console.log('[UPDATE-SUCCESS] ' + res.affectedRows);
+                console.log('[UPDATE-USER-SUCCESS] ' + res.affectedRows);
 
                 resolve();
 
@@ -140,15 +140,13 @@ module.exports = {
 
                 if (err) {
 
-                    console.log('[GET-FAILED] ' + err.message);
+                    console.log('[GET-USER-FAILED] ' + err.message);
 
                     return;
 
                 }
 
-                console.log('[GET-SUCCESS] ')
-
-                console.log(res);
+                console.log('[GET-USER-SUCCESS] ')
 
                 resolve(res);
 
@@ -158,7 +156,6 @@ module.exports = {
 
         }).then(value => {
 
-            console.log(value);
 
             if (value.length !== 0) {
 
@@ -200,6 +197,62 @@ module.exports = {
 
     },
 
+    getById: function(userId) {
+
+        return new Promise((resolve, reject) => {
+
+            console.log('get_by_id')
+
+            console.log(userId)
+
+            openConnection();
+
+            let param = [userId];
+
+            let sql = 'select * from user where user_id = ?;';
+
+            connection.query(sql, param, function (err, res) {
+
+                if (err) {
+
+                    console.log('[GET-USER_BY-ID-FAILED] ' + err.message);
+
+                    return;
+
+                }
+
+                console.log('[GET-USER-BY-ID-SUCCESS] ')
+
+                console.log(res);
+
+                let user = {
+
+                    userId: res.user_id,
+
+                    username: res.user_name,
+
+                    password: res.password,
+
+                    description: res.description,
+
+                    age: res.age,
+
+                    sex: res.sex,
+
+                    imgURL: res.imgURL
+
+                };
+
+                resolve(user)
+
+            })
+
+            closeConnection();
+
+        })
+
+    },
+
     getAll: function(){
 
         return new Promise(((resolve, reject) => {
@@ -212,7 +265,7 @@ module.exports = {
 
                 if (err) {
 
-                    console.log('[GETALL-FAILED] ' + err.message);
+                    console.log('[GET-ALL-USER-FAILED] ' + err.message);
 
                     return;
 
@@ -220,11 +273,53 @@ module.exports = {
 
                 if (res) {
 
-                    resolve(res);
+                    console.log('[GET-ALL-USER-SUCCESS]');
 
-                    console.log('[GETALL-SUCCESS]');
+                    if (res.length !== 0) {
 
-                    console.log(res);
+                        let users = [];
+
+                        let total = res.length;
+
+                        for (let i = 0; i < total; i++) {
+
+                            let user = {
+
+                                userid: res[i].user_id,
+
+                                username: res[i].user_name,
+
+                                password: res[i].password,
+
+                                description: res[i].description,
+
+                                sex: res[i].sex,
+
+                                age: res[i].age,
+
+                                imgURL: res[i].imgURL
+
+                            };
+
+                            users.push(user);
+
+                            resolve(users)
+
+                        }
+
+                    }
+
+                    else {
+
+                        console.log('Users not find');
+
+                        resolve(
+                            []
+                        )
+
+                    }
+
+
 
                 }
 
@@ -232,67 +327,7 @@ module.exports = {
 
             closeConnection();
 
-        })).then(value => {
-
-            if (value.length !== 0) {
-
-                let users = [];
-
-                let total = value.length;
-
-                for (let i = 0; i < total; i++) {
-
-                    let user = {
-
-                        userid: value[i].user_id,
-
-                        username: value[i].user_name,
-
-                        password: value[i].password,
-
-                        description: value[i].description,
-
-                        sex: value[i].sex,
-
-                        age: value[i].age,
-
-                        imgURL: value[i].imgURL
-
-                    };
-
-                    users.push(user);
-
-                }
-
-                return JSON.stringify({
-
-                    total: total,
-
-                    users: users
-
-                });
-
-            }
-
-            else {
-
-                console.log('Users not find');
-
-                return JSON.stringify({
-
-                    total: 0,
-
-                    users: []
-
-                })
-
-            }
-
-        }).catch(err => {
-
-            console.log(err);
-
-        });
+        }))
 
     }
 
