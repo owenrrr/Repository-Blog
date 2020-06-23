@@ -249,7 +249,7 @@ app.get('/like/getpaperlist', jsonParser, async (req, res) => {
 app.get('/paper/getsearch', jsonParser, async (req, res) => {
     let text = req.query.content;
     console.log(text);
-    let papers = JSON.parse(await paperDB.getAll());
+    let papers = await paperDB.getAll();
     let List = [];
     if(text==''){
         List = papers.papers

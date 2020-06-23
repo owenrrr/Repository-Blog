@@ -219,6 +219,22 @@
                         }
                     }
                 }
+                for (let i = 0; i < this.commentlist.length; i++) {
+                    if (this.commentlist[i].commentType === 0) {
+                        this.commentlist[i].replyCommentName = null
+                    }
+                    else if (this.commentlist[i].commentType === 1) {
+                        let replyId = this.commentlist[i].replyCommentId
+                        let comment;
+                        for (let j = 0; j < this.commentlist.length; j++) {
+                            if (replyId === this.commentlist[j].blogCommentId) {
+                                comment = this.commentlist[j]
+                                break
+                            }
+                        }
+                        this.commentlist[i].replyCommentName = comment.username
+                    }
+                }
                 console.log(this.commentlist)
                 this.showData=this.commentlist
                 this.$message.success('Submit success!', 2)
