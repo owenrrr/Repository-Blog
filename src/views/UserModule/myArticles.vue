@@ -1,6 +1,6 @@
 <template>
 <div>
-     <child :paperid="paperid"></child>  
+     <child :paperid="paperid"></child>
 </div>
 </template>
 <script>
@@ -23,8 +23,8 @@ export default {
 
 <style>
 .searchInput {
-    width: 200px; 
-    float: right; 
+    width: 200px;
+    float: right;
 }
 .inline-blo {
     display: inline-block;

@@ -15,6 +15,10 @@
           <a-icon type="form"/>
           <span>My Articles</span>
         </a-menu-item>
+        <a-menu-item key="4" @click="jumptoLog">
+          <a-icon type="logout" />
+          <span>Logout</span>
+        </a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -49,6 +53,12 @@ export default {
       },
       jumptoArt(){
           this.$router.push({name: 'myArticles'})
+      },
+      jumptoLog(){
+        var msg = "Logout?"
+        if(confirm(msg)==true){
+          this.$router.push('/')
+        }
       }
   }
 };
