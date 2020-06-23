@@ -156,11 +156,7 @@
                         this.commentlist[i].replyCommentName = null
                     }
                     else if (this.commentlist[i].commentType === 1) {
-                        console.log('type===1')
-                        console.log(this.commentlist[i])
                         let replyId = this.commentlist[i].replyCommentId
-                        console.log('replyId')
-                        console.log(replyId)
                         let comment;
                         for (let j = 0; j < this.commentlist.length; j++) {
                             if (replyId === this.commentlist[j].blogCommentId) {
@@ -168,8 +164,6 @@
                                 break
                             }
                         }
-                        console.log('comment')
-                        console.log(comment)
                         this.commentlist[i].replyCommentName = comment.username
                     }
                 }
