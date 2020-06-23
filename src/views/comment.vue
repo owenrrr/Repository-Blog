@@ -102,7 +102,6 @@
                     var a1 = this.paper.createtime.split("T")
                     this.date_ymd = a1[0]
                     this.date_hms = a1[1].substring(0,8)
-                    this.getUsername(this.paper.userid)
                 }).catch((err) => {
                     console.log(err)
                     this.$message.warning("This paper is not found!" ,3)
