@@ -2,7 +2,6 @@
     <a-layout-header :style="{ position: 'fixed', zIndex: 1, width: '100%' }">
         <div class="left-content">
             <span class="head" @click="jumpToHome">My Blog</span>
-            <a-input-search placeholder="搜My Blog" enter-button @search="onSearch" class="search"/>
         </div>
         <a-menu
                 theme="dark"
@@ -42,9 +41,6 @@
             jumpToUser() {
                 this.$router.push('/MyBlog/userinterface').catch(err => {err})
             },
-            onSearch() {
-
-            }
         },
     }
 </script>

@@ -245,6 +245,28 @@ app.get('/like/getpaperlist', jsonParser, async (req, res) => {
 });
 
 // Table `paper` operation
+app.get('/paper/getsearch', jsonParser, async (req, res) => {
+    let text = req.query.content;
+    console.log(text);
+    let papers = JSON.parse(await paperDB.getAll());
+    let List = [];
+    if(text==''){
+        List = papers.papers
+        await res.json({
+            List
+        })
+    }
+    else{
+        for(let i=0; i<papers.papers.length; i++){
+            if((papers.papers)[i].title.search(text) != -1 || (papers.papers)[i].content.search(text) != -1){
+                List.push(papers.papers[i])
+            }
+        }
+        await res.json({
+            List
+        })
+    }
+});
 
 app.get('/paper/getpaper', jsonParser, async (req, res) => {
     let paperid = req.query.paperid;

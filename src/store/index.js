@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     tempUserid: '',
     tempPaperid: '',  // 用于点入文章细看
+    tempList: [],
   },
   mutations: {
     setUserid (state, userid){
@@ -14,11 +15,15 @@ export default new Vuex.Store({
     },
     setPaperid (state, paperid){
       state.tempPaperid = paperid
+    },
+    setList(state, list){
+      state.tempList = list
     }
   },
   getters: {
     getUserid: (state) => state.tempUserid,
     getPaperid: (state) => state.tempPaperid,
+    getList: (state) => state.tempList,
   },
   actions: {
   },
