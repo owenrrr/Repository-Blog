@@ -1,66 +1,97 @@
 <template>
 <div>
     <avatar :username="basic.userName" style="margin-left: 47%; margin-bottom: 40px" color="rgb(255, 255, 255)"></avatar>
-    <!-- <a-icon type="user" style="font-size: 50px; margin-left: 47% ;margin-bottom: 20px"/> -->
-    <h1 class="h1display">用户名 :
-        <span v-if="state === 'show'" class="inlineattribute">{{basic.userName}}</span>
-        <span><a-input 
-                v-if="state === 'modify'"
-                :placeholder="basic.userName"
-                style="background: lightgray; width: 30%" 
-                allow-clear 
-                class="inlineattribute" 
-                v-model="basic.userName"/></span>
-    </h1>
-    <h1 class="h1display">性别 :
-        <span v-if="state === 'show'" class="inlineattribute">{{basic.sex}}</span>
-        <span>
-            <a-select default-value="2" v-if="state === 'modify'" style="width: 20%; display: inline-block; margin-left: 42px;" @change="handleChange">
-                <a-select-option value="2">无</a-select-option>
-                <a-select-option value="1">男</a-select-option>
-                <a-select-option value="0">女</a-select-option>
-            </a-select>
-        </span>
-    </h1>
-    <h1 class="h1display">年龄 :
-        <span v-if="state === 'show'" class="inlineattribute">{{basic.age}}</span>
-        <span>
-            <a-input 
-            v-if="state === 'modify'"
-            :placeholder="duplicate.age"
-            style="background: lightgray; width:20%; display: inline-block; margin-left: 68px;" 
-            allow-clear 
-            v-model="duplicate.age"/>
-        </span>
-    </h1>
-    <h1 class="h1display">密码 :
-        <span v-if="state === 'show'" class="inlineattribute">{{basic.password}}</span>
-        <span>
-            <a-input 
-            v-if="state === 'modify'"
-            :placeholder="basic.password" 
-            style="background: lightgray; width: 30%; display: inline-block; margin-left: 27px;" 
-            allow-clear 
-            v-model="basic.password"/>
-        </span>
-    </h1>
-    <h1 class="h1display">个性签名 :
-        <span v-if="state === 'show'" style="align-text: center; display: inline-block; margin-right: 150px">{{basic.description}}</span>
-        <span>
-            <a-textarea
-                v-if="state === 'modify'"
-                v-model="basic.description"
-                placeholder="Description"
-                :auto-size="{ minRows: 3, maxRows: 5 }"
-                style="background: lightgray; display: inline-block;"
+    <a-form :form="form" style="margin-top: 40px; margin-left: 450px">
+
+        <a-form-item label="用户名" :label-col="{ span: 3 }" :wrapper-col="{ span: 8, offset: 1  }">
+            <a-input
+                    placeholder="请填写用户名"
+                    v-decorator="['userName', { rules: [{ required: true, message: '请输入用户名' }] }]"
+                    v-if="modifyInfo"
             />
-        </span>
-    </h1>
-    <div>
-        <a-button v-if="state === 'show'" type="danger" style="margin-left: 45%" @click="stateModify">修改信息</a-button>
-        <a-button v-if="state === 'modify'" style="margin-left: 35%; margin-top: 20px" @click="stateCancel">取消</a-button>
-        <a-button v-if="state === 'modify'" type="primary" style="margin-left: 10%" @click="stateConfirm">确认</a-button>
-    </div>
+            <span v-else>{{ userInfo.userName }}</span>
+        </a-form-item>
+
+        <a-form-item label="邮箱" :label-col="{ span: 3 }" :wrapper-col="{ span: 8, offset: 1 }">
+            <span>{{ userInfo.email }}</span>
+        </a-form-item>
+
+        <a-form-item label="性别" :label-col="{ span: 3 }" :wrapper-col="{ span: 8, offset: 1 }">
+            <a-select default-value="无" v-if="modifyInfo" v-decorator="['sex', { rules: [{ required: true, message: '请选择性别' }] }]">
+                <a-select-option value="无">
+                    无
+                </a-select-option>
+                <a-select-option value="男">
+                    男
+                </a-select-option>
+                <a-select-option value="女">
+                    女
+                </a-select-option>
+            </a-select>
+            <span v-else>{{ userInfo.sex}}</span>
+        </a-form-item>
+
+        <a-form-item label="年龄" :label-col="{ span: 3 }" :wrapper-col="{ span: 8, offset: 1 }">
+            <a-input
+                    placeholder="请填年龄"
+                    v-decorator="['age', { rules: [{ required: true, message: '请输入年龄' }] }]"
+                    v-if="modifyInfo"
+            />
+            <span v-else>{{ userInfo.age}}</span>
+        </a-form-item>
+
+        <a-form-item label="自我介绍" :label-col="{ span: 3 }" :wrapper-col="{ span: 8, offset: 1 }">
+            <a-input
+                    placeholder="请输入自我介绍"
+                    v-decorator="['description', { rules: [{ required: true, message: '请输入介绍' }] }]"
+                    v-if="modifyInfo"
+            />
+            <span v-else>{{ userInfo.description}}</span>
+        </a-form-item>
+
+        <a-form-item label="密码" :label-col="{ span: 3 }" :wrapper-col="{ span: 8, offset: 1 }" v-if="modifyPassword">
+            <a-input
+                    placeholder="请输入旧密码"
+                    v-decorator="['oldpassword', { rules: [{ required: true, message: '请输入旧密码' }] }]"
+            />
+            <a-input
+                    placeholder="请输入新密码"
+                    v-decorator="['newpassword', { rules: [{ required: true, message: '请输入新密码' }] }]"
+            />
+        </a-form-item>
+
+        <a-form-item :wrapper-col="{ span: 12, offset: 5 }" v-if="modifyPassword&&modifyInfo">
+            <a-button type="primary" @click="saveModifyPassword">
+                确定修改密码
+            </a-button>
+            <a-button type="default" style="margin-left: 30px" @click="cancelModifyPassword">
+                取消
+            </a-button>
+        </a-form-item>
+
+        <a-form-item :wrapper-col="{ span: 8, offset: 4 }" v-if="modifyInfo&&!modifyPassword">
+            <a-button type="primary" @click="ModifyPassword">
+                修改密码
+            </a-button>
+        </a-form-item>
+
+        <a-form-item :wrapper-col="{ span: 12, offset: 5 }" v-if="modifyInfo">
+            <a-button type="primary" @click="saveModifyInfo">
+                保存
+            </a-button>
+            <a-button type="default" style="margin-left: 30px" @click="cancelModifyInfo">
+                取消
+            </a-button>
+        </a-form-item>
+
+        <a-form-item :wrapper-col="{ span: 8, offset: 4 }" v-else>
+            <a-button type="primary" @click="ModifyInfo">
+                修改信息
+            </a-button>
+        </a-form-item>
+
+
+    </a-form>
 </div>
 </template>
 
@@ -68,17 +99,21 @@
     import Avatar from 'vue-avatar'
     import axios from 'axios'
     import {mapActions, mapGetters, mapMutations} from 'vuex'
-
     export default {
-    name : 'Settings',
+    beforeCreate() {
+      this.form = this.$form.createForm(this);
+    },
+        name : 'Settings',
     data(){
         return{
+            modifyInfo:false,
+            modifyPassword:false,
             basic: {
                 userId: 0,
                 userName: '',
                 sex: '',
                 description: '',
-                age: 0,
+                age: '',
                 password: '',
             },
             state: 'show',
@@ -87,8 +122,9 @@
                 userName: '',
                 sex: '',
                 description: '',
-                age: 0,
-                password: '',
+                age: '',
+                oldpassword: '',
+                newpassword: '',
             },
         }
     },
@@ -110,6 +146,45 @@
         ...mapActions([
             'getUserInfo'
         ]),
+        ModifyInfo(){
+            this.modifyInfo=true
+        },
+        ModifyPassword(){
+            this.modifyPassword=true
+        },
+        saveModifyInfo(){
+            console.log("saving info..........")
+            this.duplicate.userId = this.basic.userId
+            this.duplicate.userName = this.form.getFieldValue('userName')
+            this.duplicate.sex = this.form.getFieldValue('sex')
+            this.duplicate.description = this.form.getFieldValue('description')
+            this.duplicate.age = this.form.getFieldValue('age')
+            this.duplicate.oldpassword = this.basic.password
+            this.modifyInfo=false
+            if(this.modifyPassword)this.modifyPassword=false
+            console.log(this.duplicate)
+            this.Confirm()
+        },
+        cancelModifyInfo(){
+            if(this.modifyPassword)this.modifyPassword=false
+            this.modifyInfo=false
+        },
+        saveModifyPassword(){
+            console.log(this.basic)
+            this.duplicate.oldpassword = this.form.getFieldValue('oldpassword')
+            this.duplicate.newpassword = this.form.getFieldValue('newpassword')
+            this.duplicate.age = this.basic.age
+            this.duplicate.description = this.basic.description
+            this.duplicate.sex = this.basic.sex
+            this.duplicate.userId = this.basic.userId
+            this.duplicate.userName = this.basic.userName
+            this.modifyPassword=false
+            this.Confirm()
+        },
+        cancelModifyPassword(){
+            this.modifyPassword=false
+        },
+
         async constructor(){
             await this.$store.dispatch('getUserInfo')
             console.log(this.userInfo)
@@ -117,76 +192,46 @@
             this.basic.userName = this.userInfo.userName
             this.basic.age = this.userInfo.age
             if (this.userInfo.sex === null) {
-                this.basic.sex = null
+                this.basic.sex = '无'
             }
             else {
-                this.basic.sex = this.userInfo.sex === 0 ? '女' : '男'
+                this.basic.sex = this.userInfo.sex
             }
             this.basic.password = this.userInfo.password
-            this.basic.description = this.userInfo.description === null ? '这个人很懒，还没有留下什么。' : this.userInfo.description
+            this.basic.description = this.userInfo.description === '' ? '这个人很懒，还没有留下什么。' : this.userInfo.description
             console.log(this.basic)
         },
-        async stateConfirm(){
-            if (this.basic.age < 0 || this.basic.age > 120){
-                this.$message.warning('非法年龄', 3);
-                this.stateCancel()
-            }else{
-                console.log("Here is handleUsernamecheck before")
-                await this.handleUsernameCheck()
-            }
-            
-        },
-        stateModify(){
-            this.duplicate = this.basic
-            this.duplicate.sex = 2
-            this.state = 'modify'
-        },
-        stateCancel(){
-            if (this.duplicate.sex === 2) {
-                this.basic.sex = null
-            }
-            else if (this.duplicate.sex === 0) {
-                this.basic.sex = '女'
-            }
-            else if (this.duplicate.sex === 1) {
-                this.basic.sex = '男'
-            }
-            console.log(this.duplicate)
-            this.basic = this.duplicate
 
-            console.log(this.basic)
-            this.state = 'show'
+        async Confirm(){
+            if (this.duplicate.age < 0 || this.duplicate.age > 120){
+                this.$message.warning('非法年龄', 3);
+                this.cancelModifyInfo()
+            }else if(this.duplicate.oldpassword!=this.basic.password){
+                this.$message.warning('密码错误', 3);
+                this.cancelModifyPassword()
+            }else{
+                console.log("Updating..........")
+                await this.Update()
+            }
         },
-        handleChange(value){
-            console.log(value)
-            this.duplicate.sex = Number(value)
-        },
-        async handleUsernameCheck(){
-            console.log(this.basic)
+
+        async Update(){
             await axios.post('http://localhost:3000/user/updateuser', {
                 userName: this.duplicate.userName,
-                age: this.duplicate.age === null ? 0 : this.duplicate.age,
+                age: this.duplicate.age,
                 sex: this.duplicate.sex,
                 description: this.duplicate.description,
-                password: this.duplicate.password,
+                password: this.duplicate.newpassword,
                 userId: this.duplicate.userId,
+            }).then(()=>{
+                this.constructor()
             })
-            this.stateCancel()
-
         },
+
     },
 }
 </script>
 
 <style>
- .h1display {
-     font-size: 17px; 
-     margin-left: 38%;
-     margin-bottom: 20px;
-}
- .inlineattribute{
-     display: inline-block; 
-     margin-left: 20px;
-     /* background-color: dimgray; */
- }
+
 </style>
