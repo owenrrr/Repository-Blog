@@ -222,6 +222,12 @@ app.get('/like/getuserlist', jsonParser, async (req, res) => {
     });
 });
 
+app.get('like/checkLike', jsonParser, async (req, res) => {
+    let userId = req.query.userId
+    let userList = await LikeDB.getUserList()
+
+})
+
 app.get('/like/getpaperlist', jsonParser, async (req, res) => {
     console.log('/like/getpaperlist')
     let userId = req.query.userId;
@@ -276,20 +282,15 @@ app.get('/paper/getsearch', jsonParser, async (req, res) => {
 
 app.get('/paper/getpaper', jsonParser, async (req, res) => {
     console.log('/paper/getpaper')
-    let paperid = req.query.paperid;
+    let paperId = req.query.paperId;
     let paper;
-    console.log(paperid);
-    if (paperid === undefined) {
-        res.send('undefined');
-    }
-    else {
-        let paperInfo = await paperDB.get(paperid);
-        paper = JSON.parse(paperInfo);
-        console.log(paper);
-        await res.json({
-            paper
-        })
-    }
+
+    let paperInfo = await paperDB.get(paperId);
+    paper = JSON.parse(paperInfo);
+    console.log(paper);
+    await res.json(
+        paper
+    )
 });
 
 app.get('/paper/getpaperlist', jsonParser, async (req, res) => {
@@ -428,53 +429,6 @@ app.get('/blog_comment/get_user_comments', jsonParser, async function (req, res)
             commentList[i].replyCommentName = user.username
         }
     }
-
-    await res.json({
-        commentList
-    });
-});
-
-
-// Table `comment_comment` operation
-
-app.post('/comment_comment/add_comment_comment', jsonParser, async function (req, res) {
-    let blogCommentId = req.body.blogCommentId;
-    let userId = req.body.userId;
-    let commentCommentContent = req.body.commentCommentContent;
-    let commentCommentCreateTime = req.body.commentCommentCreateTime;
-    let replyId = req.body.replyId;
-
-    let commentCommentId = JSON.parse(await Comment_CommentDB.add(blogCommentId, userId, commentCommentContent, commentCommentCreateTime, replyId));
-    console.log('添加成功');
-    await res.json({
-        statue: 1,
-        commentInfo: {
-            commentCommentId,
-            blogCommentId,
-            userId,
-            commentCommentContent,
-            commentCommentCreateTime,
-            replyId
-        }
-    });
-});
-
-app.post('/comment_comment/remove_comment_comment', jsonParser, async function (req, res) {
-    let blogCommentId = req.body.blogCommentId;
-    let userId = req.body.userId;
-    let replyId = req.body.replyId;
-
-    await Comment_CommentDB.remove(blogCommentId, userId, replyId);
-    console.log('删除成功');
-    await res.json({
-        statue: 1
-    });
-});
-
-app.get('/comment_comment/get_user_comments', jsonParser, async function (req, res) {
-    let blogCommentId = req.body.blogCommentId;
-
-    let commentList = await Comment_CommentDB.getUserComments(blogCommentId);
 
     await res.json({
         commentList

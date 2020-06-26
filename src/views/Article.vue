@@ -36,10 +36,11 @@
 <script>
     import axios from 'axios'
     import comment from './comment'
+    import {mapGetters} from 'vuex'
+
     export default{
         data(){
             return {
-                paperid: 0,
                 paper: {},
                 username: '',
                 date_ymd:'',
@@ -49,6 +50,11 @@
                 like: [],
                 favourite: []
             }
+        },
+        computed: {
+            ...mapGetters([
+                'activePaperId'
+            ])
         },
         methods:{
 
@@ -96,40 +102,20 @@
                 }
             },
 
-            getPaper(){
-                let paperlist
-                return axios.get('http://localhost:3000/paper/getpaperlist').then((res) => {
-                    console.log("This is in getpaper()")
-                    this.paperid = this.$store.getters.getPaperid
-                    paperlist = res.data.papers.papers
-                    for (var paper of paperlist){
-                        if (paper.paperid == this.paperid){
-                            var tmp = {paperid: null, userid: null, title: null, starnum: null, likenum: null, commentnum: null, createtime: null, content: null}
-                            tmp.paperid = this.paperid
-                            tmp.userid = paper.userid
-                            tmp.title = paper.title
-                            tmp.starnum = paper.starnum
-                            tmp.likenum = paper.likenum
-                            tmp.commentnum = paper.commentnum
-                            tmp.createtime = paper.createtime
-                            tmp.content = paper.content
-                            this.paper = tmp
-                            break;
-                        }
-                    }
-                    console.log("This paper is paperid:" + this.paperid)
-                    console.log("This paper title is :" + this.paper.title)
-                    console.log("This is content:" + this.paper.content)
+            async getPaper(){
+                let res = axios.get('http://localhost:3000/paper/getpaper', {params: {paperId: this.activePaperId}})
+                console.log("This is in getPaper()")
+                this.paper = res.data.papers
+                console.log("This paper paperId is :" + this.paperid)
+                console.log("This paper title is :" + this.paper.title)
+                console.log("This is content:" + this.paper.content)
                     var a1 = this.paper.createtime.split("T")
                     this.date_ymd = a1[0]
                     this.date_hms = a1[1].substring(0,8)
                     console.log(this.date_ymd)
                     console.log(this.date_hms)
                     this.getUsername(this.paper.userid)
-                }).catch((err) => {
-                    console.log(err)
-                    this.$message.warning("This paper is not found!" ,3)
-                })
+
             },
             getUsername(userid){
                 let userlist
