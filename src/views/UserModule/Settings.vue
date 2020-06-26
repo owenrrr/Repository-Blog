@@ -153,17 +153,22 @@
             this.modifyPassword=true
         },
         saveModifyInfo(){
-            console.log("saving info..........")
-            this.duplicate.userId = this.basic.userId
-            this.duplicate.userName = this.form.getFieldValue('userName')
-            this.duplicate.sex = this.form.getFieldValue('sex')
-            this.duplicate.description = this.form.getFieldValue('description')
-            this.duplicate.age = this.form.getFieldValue('age')
-            this.duplicate.oldpassword = this.basic.password
-            this.modifyInfo=false
-            if(this.modifyPassword)this.modifyPassword=false
-            console.log(this.duplicate)
-            this.Confirm()
+            this.form.validateFields((err,values) => {
+                if(!err) {
+                    console.log("saving info..........")
+                    this.duplicate.userId = this.basic.userId
+                    this.duplicate.userName = this.form.getFieldValue('userName')
+                    this.duplicate.sex = this.form.getFieldValue('sex')
+                    this.duplicate.description = this.form.getFieldValue('description')
+                    this.duplicate.age = this.form.getFieldValue('age')
+                    this.duplicate.oldpassword = this.basic.password
+                    this.duplicate.newpassword = this.basic.password
+                    this.modifyInfo=false
+                    if(this.modifyPassword)this.modifyPassword=false
+                    this.Confirm()
+                    console.log(values);
+                }
+            })
         },
         cancelModifyInfo(){
             if(this.modifyPassword)this.modifyPassword=false
@@ -216,6 +221,7 @@
         },
 
         async Update(){
+
             await axios.post('http://localhost:3000/user/updateuser', {
                 userName: this.duplicate.userName,
                 age: this.duplicate.age,
