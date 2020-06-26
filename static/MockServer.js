@@ -173,7 +173,6 @@ app.get('/favorite/checkFavorite', jsonParser, async (req,res) => {
     let paperId = req.query.paperId;
     let userList = await FavoriteDB.getUserList(paperId)
     userList = JSON.parse(userList)
-
     let sign = false
     for (let user of userList) {
         if (user === userId) {

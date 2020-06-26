@@ -1,4 +1,4 @@
-<template>
+<!--<template>
 <div>
     <p style="height: 100px; width: 100%; color:blueviolet; font-size: 50px; font-family:PingFangSC-Regular,Verdana,Arial;">{{ paper.title }}</p>
     <h1 style="font-style:oblique; margin: 20px 0px; display: inline-block">{{ username }}</h1>
@@ -79,4 +79,4 @@ export default{
 
 <style>
 
-</style>
+</style>-->

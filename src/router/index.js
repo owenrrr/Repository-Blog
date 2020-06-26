@@ -72,7 +72,7 @@ Vue.use(VueRouter)
         {
           path: '/myArticles',
           name: 'myArticles',
-          components: () => import('@/views/UserModule/myArticles'),
+          component: () => import('@/views/UserModule/myArticles')
         }
       ]
     },

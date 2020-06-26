@@ -57,7 +57,8 @@
                 this.$router.push({name: 'Settings'})
             },
             jumpToMyArticles() {
-                this.$router.push('/myArticles')
+                console.log("!!!!!!!!!!!!!!!!!")
+                this.$router.push({name: 'myArticles'})
             },
             logOut() {
                 console.log("Logout")

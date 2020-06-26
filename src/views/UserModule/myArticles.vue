@@ -4,9 +4,8 @@
      </div>
 </template>
 
-<script>
+<!--<script>
      import axios from 'axios'
-
      export default {
           name: "myArticles",
           data() {
@@ -132,4 +131,4 @@
         width: 30%;
         margin-right: 10%;
     }
-</style>
+</style>-->
