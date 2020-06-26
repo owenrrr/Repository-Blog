@@ -8,7 +8,7 @@
         <a-list-item slot="renderItem" slot-scope="item" :id="item.blogCommentId" class="list-item">
             <a-comment :author="item.author" :avatar="item.avatar" style="width: 100%">
                 <template slot="actions">
-                    <a :href="'#reply'" v-for="action in item.actions" :key="action" @click="reply(item)">{{ action }}</a>
+                    <a href="#reply" v-for="action in item.actions" :key="action" @click="reply(item)">{{ action }}</a>
                 </template>
                 <div slot="content" style="width: 100%">
                     <div v-if="item.commentType">@<a :href="'#' + item.replyCommentId">{{item.replyCommentName}}</a></div>
