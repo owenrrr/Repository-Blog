@@ -1,4 +1,6 @@
 import axios from 'axios'
+import {resetRouter} from '@/router'
+import {removeToken} from '@/util/auth'
 
 const getDefaultState = () => {
     return {
@@ -14,7 +16,6 @@ const getDefaultState = () => {
             email: ''
         },
         activePaperId: 0,  // 用于点入文章细看
-        tempList: [],
     }
 }
 
@@ -34,7 +35,6 @@ const user = {
                 email: ''
             };
             state.activePaperId = 0;  // 用于点入文章细看
-            state.tempList = [];
             state.userId = 0;
         },
         set_userInfo (state, data) {
@@ -46,16 +46,19 @@ const user = {
         set_paperId (state, paperId){
             state.activePaperId = paperId
         },
-        setList(state, list){
-            state.tempList = list
-        },
     },
     actions: {
         getUserInfo: async ({state, commit}) => {
             let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: state.userId}});
             commit('set_userInfo', res.data)
             console.log(state.userInfo)
-        }
+        },
+        logOut: async({ commit }) => {
+            console.log('logOut')
+            removeToken()
+            resetRouter()
+            commit('reset_state')
+        },
     }
 }
 

@@ -25,13 +25,16 @@
                     </a>
                     <a-menu slot="overlay">
                         <a-menu-item key="1" @click="jumpToSetting">
+                            <a-icon type="user"></a-icon>
                             个人信息
                         </a-menu-item>
                         <a-menu-item key="2" @click="jumpToMyArticles">
+                            <a-icon type="profile"></a-icon>
                             我的文章
                         </a-menu-item>
-                        <a-menu-item key="3" @click="logOut">
-                            登出
+                        <a-menu-item key="3" @click="logOut" style="text-align: center">
+                            <a-icon type="poweroff"></a-icon>
+                            退出账号
                         </a-menu-item>
                     </a-menu>
                 </a-dropdown>
@@ -41,9 +44,14 @@
 </template>
 
 <script>
+    import {mapActions} from 'vuex'
+
     export default {
         name: "Header",
         methods: {
+            ...mapActions([
+                'logOut'
+            ]),
             jumpToHome() {
                 this.$router.push({name: 'BlogList'}).catch(err => {err})
             },
@@ -59,8 +67,10 @@
             jumpToMyArticles() {
                 this.$router.push('/myArticles')
             },
-            logOut() {
-                console.log("Logout")
+            async logOut() {
+                await this.$store.dispatch('logOut')
+                this.$message.success('退出成功')
+                await this.$router.push('/login')
             }
         },
     }
