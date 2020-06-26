@@ -3,9 +3,9 @@
         <a-layout>
             <a-layout>
                 <a-layout-header>
-                    <div style="float: left; font-size: 50px; width: 100%; "><i style="float: left; margin-top: 20px">{{ paper.title }}</i></div>
+                    <div style="float: left; font-size: 40px; width: 100%; "><i style="float: left; margin-top: 20px">{{ paper.title }}</i></div>
                     <div style="float: left; font-size: 15px; width: 100%;">
-                        <p style="float: left; margin-right: 200px; font-size: 25px">{{ userName }}</p>
+                        <p style="float: left; margin-right: 200px; font-size: 15px">{{'作者: ' + userName }}</p>
                         <div>
                     <span style="margin-right: 20px; float: right;">
                         <a-icon type="calendar" style="margin-right: 10px;" />{{ date_ymd + " " + date_hms }}
@@ -216,6 +216,7 @@
         font-size: 16px;
         color: #2c3e50;
         margin: 20px 20px;
+        min-height: 300px;
     }
     .content h1, h2, h3{
         text-align: center;
@@ -228,7 +229,7 @@
     #components-layout-demo-basic .ant-layout-footer,
     #components-layout-demo-basic .ant-layout-header {
         min-height: 150px;
-        background-color: #dddddd;
+        background-color: #eeeeee;
     }
 
 

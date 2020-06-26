@@ -1,28 +1,28 @@
 <template>
     <div class="main">
         <div class="list">
-            <a-input-search placeholder="搜索文章" v-model="value" enter-button @search="onSearch" />
+            <a-input-search placeholder="搜索文章" v-model="value" enter-button @search="onSearch" style="margin-bottom: 20px"/>
             <a-list item-layout="vertical" size="large" :data-source="listData">
                 <!-- <div slot="footer"><b>ant design vue</b> footer part</div> -->
-                <a-list-item slot="renderItem" key="item.title" slot-scope="item">
+                <a-list-item slot="renderItem" key="item.title" slot-scope="item" class="list-item">
                     <a-list-item-meta :description="item.userName">
                         <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
                         <a slot="title" @click="commitPaperId(item.paperId)">{{ item.title }}</a>
-                        <!-- <a-avatar slot="avatar" :src="item.avatar" /> -->
+
                     </a-list-item-meta>
                     <template>
-                <span>
-                  <a-icon type="star-o" style="margin-right: 8px" />
-                  {{ actions[item.index].text1 }}
-                </span>
-                <span>
-                  <a-icon type="like-o" style="margin-right: 8px" />
-                  {{ actions[item.index].text2 }}
-                </span>
-                <span>
-                  <a-icon type="message" style="margin-right: 8px" />
-                  {{ actions[item.index].text3 }}
-                </span>
+                        <span>
+                            <a-icon type="star-o" style="margin-right: 8px" />
+                            {{ actions[item.index].text1 }}
+                        </span>
+                        <span>
+                            <a-icon type="like-o" style="margin-right: 8px" />
+                            {{ actions[item.index].text2 }}
+                        </span>
+                        <span>
+                            <a-icon type="message" style="margin-right: 8px" />
+                            {{ actions[item.index].text3 }}
+                        </span>
                     </template>
                 </a-list-item>
             </a-list>
@@ -130,7 +130,17 @@ import {mapMutations} from 'vuex'
                 let index = 0
                 console.log("This is in setListData")
                 for (let paper of paperList){
-                    let tmp = {paperId: paper.paperId, userId: paper.userId, title: paper.title, starNum: paper.starNum, likeNum: paper.likeNum, commentNum: paper.commentNum, createTime: paper.createTime, userName: null, index:index}
+                    let tmp = {
+                        paperId: paper.paperId,
+                        userId: paper.userId,
+                        title: paper.title,
+                        starNum: paper.starNum,
+                        likeNum: paper.likeNum,
+                        commentNum: paper.commentNum,
+                        createTime: paper.createTime,
+                        userName: null,
+                        index:index,
+                    }
                     index++
                     let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: tmp.userId}})
                     tmp.userName = res.data.userName
@@ -162,5 +172,13 @@ import {mapMutations} from 'vuex'
         align-self: flex-end;
         width: 100%;
         text-align: center;
+    }
+
+    .list-item {
+        border: #eeeeee solid;
+        box-shadow: 10px 10px 5px #dddddd;
+        padding: 20px 20px;
+        border-radius: 30px;
+        margin-bottom: 10px;
     }
 </style>

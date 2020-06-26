@@ -1,11 +1,11 @@
 <template>
     <div class="main">
         <div class="list">
-            <a-menu  mode="horizontal" :defaultSelectedKeys="['0']">
+            <a-menu  mode="horizontal" :defaultSelectedKeys="['0']" class="header">
                 <a-menu-item key="0"> <a-icon type="star" />我的收藏</a-menu-item>
             </a-menu>
             <a-list item-layout="vertical" size="large" :data-source="listData">
-                <a-list-item slot="renderItem" key="item.title" slot-scope="item">
+                <a-list-item slot="renderItem" key="item.title" slot-scope="item" class="list-item">
                     <a-list-item-meta :description="item.userName">
                         <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
                         <a slot="title" @click="commitPaperId(item.paperId)">{{ item.title }}</a>
@@ -133,7 +133,7 @@
                     index++
                     console.log(tmp.userId)
                     let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: tmp.userId}})
-                    tmp.userName = res.userName
+                    tmp.userName = res.data.userName
                     this.listData.push(tmp)
                 }
                 console.log("This is after setListData :")
@@ -157,9 +157,21 @@
         width: 100%;
     }
 
+    .header {
+        margin-bottom: 10px;
+    }
+
     .page {
         align-self: flex-end;
         width: 100%;
         text-align: center;
+    }
+
+    .list-item {
+        border: #eeeeee solid;
+        box-shadow: 10px 10px 5px #dddddd;
+        padding: 20px 20px;
+        border-radius: 30px;
+        margin-bottom: 10px;
     }
 </style>

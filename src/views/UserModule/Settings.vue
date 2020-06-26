@@ -221,7 +221,6 @@
         },
 
         async Update(){
-
             await axios.post('http://localhost:3000/user/updateuser', {
                 userName: this.duplicate.userName,
                 age: this.duplicate.age,
