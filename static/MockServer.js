@@ -168,6 +168,22 @@ app.get('/favorite/getuserlist', jsonParser, async (req, res) => {
     })
 });
 
+app.get('/favorite/checkFavorite', jsonParser, async (req,res) => {
+    let userId = req.query.userId;
+    let paperId = req.query.paperId;
+    let userList = await FavoriteDB.getUserList(paperId)
+    userList = JSON.parse(userList)
+
+    let sign = false
+    for (let user of userList) {
+        if (user === userId) {
+            sign = true
+            break
+        }
+    }
+    await res.json(sign)
+})
+
 app.get('/favorite/getpaperlist', jsonParser, async (req, res) => {
     let userId = req.query.userId;
     let paperList = await FavoriteDB.getPaperList(userId);
@@ -222,10 +238,20 @@ app.get('/like/getuserlist', jsonParser, async (req, res) => {
     });
 });
 
-app.get('like/checkLike', jsonParser, async (req, res) => {
+app.get('/like/checkLike', jsonParser, async (req, res) => {
     let userId = req.query.userId
-    let userList = await LikeDB.getUserList()
+    let paperId = req.query.paperId
+    let userList = await LikeDB.getUserList(paperId)
+    userList = JSON.parse(userList)
 
+    let sign = false
+    for (let user of userList) {
+        if (user === userId) {
+            sign = true
+            break
+        }
+    }
+    await res.json(sign)
 })
 
 app.get('/like/getpaperlist', jsonParser, async (req, res) => {
@@ -341,28 +367,20 @@ app.post('/paper/addpaper', jsonParser, async (req, res) => {
 });
 
 app.post('/paper/updatepaper', jsonParser, async (req, res) => {
-    let paperid = req.body.paperid;
-    let userid = req.body.userid;
-    let starnum = req.body.starnum;
-    let likenum = req.body.likenum;
-    let commentnum = req.body.commentnum;
-    let title = req.body.title;
-    let createtime = req.body.createtime;
-    let content = req.body.content;
+    let paperId = req.body.paperId;
+    let starNum = req.body.starNum;
+    let likeNum = req.body.likeNum;
+    let commentNum = req.body.commentNum;
 
     console.log('更新成功');
-    await paperDB.update(paperid, userid, starnum, likenum, commentnum, title, createtime, content);
+    await paperDB.update(paperId, starNum, likeNum, commentNum);
     await res.json({
         statue: 1,
-        paperinfo: {
-            paperid,
-            userid,
-            starnum,
-            likenum,
-            commentnum,
-            title,
-            createtime,
-            content
+        paperInfo: {
+            paperId,
+            starNum,
+            likeNum,
+            commentNum
         }
     });
 

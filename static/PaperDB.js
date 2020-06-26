@@ -214,7 +214,7 @@ module.exports = {
 
     //paper upadte
 
-    update: function (paperid, userid, starnum, likenum, commentnum, title, createtime, content) {
+    update: function (paperId, starNum, likeNum, commentNum) {
 
         return new Promise((resolve, reject) => {
 
@@ -224,21 +224,13 @@ module.exports = {
 
             set 
 
-            user_id='${userid}',
+            star_num='${starNum}',
 
-            star_num='${starnum}',
+            like_num='${likeNum}',
 
-            like_num='${likenum}',
+            comment_num='${commentNum}'
 
-            comment_num='${commentnum}',
-            
-            title='${title}',
-
-            create_time = '${createtime}',
-
-            content='${content}'
-
-            where paper_id='${paperid}';`;
+            where paper_id='${paperId}';`;
 
             connection.query(sql, function (err, res) {
 
