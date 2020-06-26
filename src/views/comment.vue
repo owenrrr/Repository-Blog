@@ -5,13 +5,13 @@
             item-layout="horizontal"
             :data-source=showData
     >
-        <a-list-item slot="renderItem" slot-scope="item" :id="item.blogCommentId" class="list-item">
+        <a-list-item slot="renderItem" slot-scope="item" :id="'id' + item.blogCommentId" class="list-item">
             <a-comment :author="item.author" :avatar="item.avatar" style="width: 100%">
                 <template slot="actions">
-                    <a :href="'#reply'" v-for="action in item.actions" :key="action" @click="reply(item)">{{ action }}</a>
+                    <span v-for="action in item.actions" :key="action" @click="reply(item)" style="color: dodgerblue">{{ action }}</span>
                 </template>
                 <div slot="content" style="width: 100%">
-                    <div v-if="item.commentType">@<a :href="'#' + item.replyCommentId">{{item.replyCommentName}}</a></div>
+                    <span v-if="item.commentType" @click="toTargetComment(item)" style="color: dodgerblue">{{'@' + item.replyCommentName}}</span>
                     {{ item.content }}
                 </div>
                 <a-tooltip slot="datetime">
@@ -177,6 +177,22 @@
                 this.replyUser = item.author
                 this.replyId = item.blogCommentId
                 console.log(this.replyId)
+                let dom = document.querySelector('#reply')
+                dom.scrollIntoView({
+                    block: "center",
+                    behavior: 'smooth'
+                })
+                let reply = document.getElementById('reply')
+                reply.focus()
+            },
+
+            toTargetComment(item) {
+                console.log('hello')
+                let dom = document.querySelector('#id' + item.replyCommentId)
+                dom.scrollIntoView({
+                    block: "center",
+                    behavior: 'smooth'
+                })
             }
 
         },
@@ -200,4 +216,5 @@
         border-radius: 30px;
         margin-bottom: 10px;
     }
+
 </style>
