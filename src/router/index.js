@@ -121,4 +121,16 @@ router.afterEach(() => {
   NProgress.done()
 })
 
+const createRouter = () => new VueRouter({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes
+})
+
+export function resetRouter() {
+  console.log('resetRouter')
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
+
 export default router
