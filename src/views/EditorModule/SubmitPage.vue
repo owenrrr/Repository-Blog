@@ -1,9 +1,8 @@
 <template>
 <!-- <form action="[URL]" method="post"> -->
-<div>
-    <h1 style="text-align:center">Success Submit!</h1>
-    <h1 style="text-align:center; margin: 20px 0px">The page will be automatically changed in <p style="display: inline-block">{{ secs }}</p> seconds</h1>
-
+<div >
+    <h1 style="text-align:center">提交成功!</h1>
+    <h1 style="text-align:center; margin: 20px 0px">当前页面将在<p style="display: inline-block">{{ secs }}</p>秒后跳转</h1>
 </div>
   
 <!-- </form> -->
@@ -19,7 +18,7 @@ export default {
         };
     },
     mounted (){
-        this.secs = 5
+        this.secs = 3
         this.autoDec()
     },
     methods:{
@@ -39,3 +38,6 @@ export default {
 
 </script>
 
+<style scoped>
+
+</style>
