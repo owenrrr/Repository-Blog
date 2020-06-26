@@ -10,41 +10,32 @@
                 <template slot="actions">
                     <a href="#reply" v-for="action in item.actions" :key="action" @click="reply(item)">{{ action }}</a>
                 </template>
-                <div slot="content">
+                <div slot="content" style="width: 100%">
                     <div v-if="item.commentType">@<a :href="'#' + item.replyCommentId">{{item.replyCommentName}}</a></div>
                     {{ item.content }}
                 </div>
                 <a-tooltip slot="datetime">
-                    <span style="color: grey">{{ item.datetime}}</span>
+                    <span style="color: grey">{{item.datetime}}</span>
                 </a-tooltip>
             </a-comment>
         </a-list-item>
         <a-input id="reply" style="width:80% ; height:40px ; margin:5px 10px ; display: inline-block" type="text" :placeholder="replyHolder" v-model="content" defaultValue=content></a-input>
-        <a-button type="primary" @click="submitcomment">submit</a-button>
+        <a-button type="primary" @click="submitComment">提交</a-button>
     </a-list>
 </template>
 <script>
 
     import axios from 'axios'
+    import {mapGetters} from 'vuex'
 
     export default {
         data() {
             return {
                 data: [
-                    {
-                        actions: ['Reply to'],
-                        author: 'Han Solo',
-                        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                        content: '',
-                        datetime: '',
-                        commentType: 0,
-                        replyCommentId: 0,
-                    }
+
                 ],
                 content:'',
-                commentlist:[],
-                username:[],
-                userlist:[],
+                commentList:[],
                 paper: {},
                 replyHolder: '输入评论',
                 replyState: false,
@@ -54,29 +45,34 @@
         },
 
         computed:{
+            ...mapGetters([
+                'activePaperId',
+                'getUserId'
+            ]),
             showData:{
                 get: function(){
                     return this.data
                 },
-                set: function(commentlist){
+                set: function(commentList){
                     this.data.splice(0)
-                    for(let i=0;i<commentlist.length;i++){
-                        let date = commentlist[i].blogCommentCreateTime.split("T")
+                    for(let i=0;i<commentList.length;i++){
+                        let date = commentList[i].blogCommentCreateTime.split("T")
                         let date_ymd = date[0]
                         let date_hms = date[1].substring(0,8)
                         let comment = {
                             actions: ['Reply to'],
-                            author: commentlist[i].username,
+                            author: commentList[i].userName,
                             avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                            content: commentlist[i].blogCommentContent,
+                            content: commentList[i].blogCommentContent,
                             datetime: date_ymd+" "+date_hms,
-                            commentType: commentlist[i].commentType,
-                            replyCommentId: commentlist[i].replyCommentId,
-                            blogCommentId: commentlist[i].blogCommentId,
-                            replyCommentName: commentlist[i].replyCommentName
+                            commentType: commentList[i].commentType,
+                            replyCommentId: commentList[i].replyCommentId,
+                            blogCommentId: commentList[i].blogCommentId,
+                            replyCommentName: commentList[i].replyCommentName
                         }
                         this.data.push(comment)
                     }
+                    console.log(this.data)
                 }
             }
         },
@@ -85,125 +81,64 @@
 
 
             async getPaper(){
-                let paperlist
-                let res = await axios.get('http://localhost:3000/paper/getpaperlist').catch((err) => {
-                    console.log(err)
-                    this.$message.warning("This paper is not found!" ,3)
-                })
+                let res = await axios.get('http://localhost:3000/paper/getpaper', {params: {paperId: this.activePaperId}})
                 console.log('getPaper()')
                 console.log(res)
-                this.paperid = this.$store.getters.getPaperid
-                paperlist = res.data.papers.papers
-                for (var paper of paperlist){
-                    if (paper.paperid === this.paperid){
-                        var tmp = {paperid: null, userid: null, title: null, starnum: null, likenum: null, commentnum: null, createtime: null, content: null}
-                        tmp.paperid = this.paperid
-                        tmp.userid = paper.userid
-                        tmp.title = paper.title
-                        tmp.starnum = paper.starnum
-                        tmp.likenum = paper.likenum
-                        tmp.commentnum = paper.commentnum
-                        tmp.createtime = paper.createtime
-                        tmp.content = paper.content
-                        this.paper = tmp
-                        break;
-                    }
-                }
-                var a1 = this.paper.createtime.split("T")
-                this.date_ymd = a1[0]
-                this.date_hms = a1[1].substring(0,8)
+                this.paper = res.data
+                let time = this.paper.createTime.split("T")
+                this.date_ymd = time[0]
+                this.date_hms = time[1].substring(0,8)
 
             },
 
 
-            async getUserlist(){
-                console.log("getting userlist")
-
-                let res = await axios.get('http://localhost:3000/user/getuserlist')
-
-                this.userlist=res.data.userList
-
-                console.log(this.userlist)
-            },
-
-
-            async setcommentlist(){
-                console.log('setcommentlist')
-                let res = await axios.get('http://localhost:3000/blog_comment/get_user_comments',{params:{paperId:this.$store.getters.getPaperid}})
+            async setCommentList(){
+                console.log('setCommentList')
+                let res = await axios.get('http://localhost:3000/blog_comment/get_user_comments',
+                    {
+                                params:{
+                                    paperId:this.activePaperId
+                                }
+                    })
                 console.log("setting comments")
-                this.commentlist=res.data.commentList
+                this.commentlist = res.data.commentList
                 console.log(this.commentlist);
-                for(let i=0;i<this.commentlist.length;i++){
-                    for(let j=0;j<this.userlist.length;j++){
-                        if(this.userlist[j].userid===this.commentlist[i].userId){
-                            let comment ={
-                                username:this.userlist[j].username,
-                                blogCommentContent: this.commentlist[i].blogCommentContent,
-                                blogCommentCreateTime: this.commentlist[i].blogCommentCreateTime,
-                                commentType: this.commentlist[i].commentType,
-                                replyCommentId: this.commentlist[i].replyCommentId,
-                                blogCommentId: this.commentlist[i].blogCommentId,
-                                replyCommentName: this.commentlist[i].replyCommentName
-                            }
-                            console.log(comment);
-                            this.commentlist[i]=comment
-                            break
-                        }
-                    }
-                }
-                console.log(this.commentlist)
             },
 
 
-            async submitcomment(){
+            async submitComment(){
                 console.log("submit")
                 console.log(this.content)
                 console.log(this.commentlist);
-                await this.addcomment()
+                await this.addComment()
             },
 
 
-            async addcomment(){
-                this.paper.commentnum++
-                console.log("This is addcomment operation")
-                const addcomment={userId:null,paperId:null,content:null,createTime:null,commentType:null,replyCommentId:null}
-                addcomment.userId=this.$store.getters.getUserid
-                addcomment.content= this.content
-                var time=this.getServerTime()
-                addcomment.createTime=time
-                addcomment.paperId=this.$store.getters.getPaperid
-                addcomment.commentType = this.replyState ? 1 : 0
-                addcomment.blogCommentId = this.replyId === 0 ? null : this.replyId
-                console.log(addcomment)
+            async addComment(){
+                this.paper.commentNum++
+                console.log("This is addComment operation")
+                const addComment={userId:null,paperId:null,content:null,createTime:null,commentType:null,replyCommentId:null}
+                addComment.userId=this.getUserId
+                addComment.content= this.content
+                addComment.createTime=this.getServerTime()
+                addComment.paperId=this.activePaperId
+                addComment.commentType = this.replyState ? 1 : 0
+                addComment.replyCommentId = this.replyId === 0 ? null : this.replyId
+                console.log(addComment)
 
                 this.replyState = false
                 this.replyHolder = '输入评论'
                 this.replyId = 0
 
-                await axios.post('http://localhost:3000/blog_comment/add_blog_comment',addcomment)
-                let res = await axios.get('http://localhost:3000/blog_comment/get_user_comments',{params:{paperId:this.$store.getters.getPaperid}})
+                await axios.post('http://localhost:3000/blog_comment/add_blog_comment',addComment)
+                let res = await axios.get('http://localhost:3000/blog_comment/get_user_comments',
+                    {
+                                params:{
+                                    paperId:this.activePaperId
+                                }
+                    })
                 console.log("getting comments")
-                let comments = res.data.commentList
-                console.log(comments)
-                console.log(this.userlist)
-                for(let i=0;i<comments.length;i++){
-                    for(let j=0;j<this.userlist.length;j++){
-                        if(this.userlist[j].userid=== comments[i].userId){
-                            let comment ={
-                                username:this.userlist[j].username,
-                                blogCommentContent: comments[i].blogCommentContent,
-                                blogCommentCreateTime: comments[i].blogCommentCreateTime,
-                                commentType: comments[i].commentType,
-                                replyCommentId: comments[i].replyCommentId,
-                                blogCommentId: comments[i].blogCommentId,
-                                replyCommentName: comments[i].replyCommentName
-                            }
-                            console.log(comment);
-                            this.commentlist[i]=comment
-                            break
-                        }
-                    }
-                }
+                this.commentlist = res.data.commentList
                 console.log(this.commentlist)
                 this.showData=this.commentlist
                 this.$message.success('Submit success!', 2)
@@ -214,30 +149,25 @@
 
 
             getServerTime(){
-                var d = new Date()
-                var year = d.getFullYear()
-                var month = ('0' + (d.getMonth() + 1)).slice(-2)
-                var day = ('0' + (d.getDate())).slice(-2)
-                var hour = ('0' + ((d.getHours() + 8) % 24)).slice(-2)  // UTC +08:00
-                var minutes = ('0' + (d.getMinutes())).slice(-2)
-                var seconds = ('0' + (d.getSeconds())).slice(-2)
+                let d = new Date()
+                let year = d.getFullYear()
+                let month = ('0' + (d.getMonth() + 1)).slice(-2)
+                let day = ('0' + (d.getDate())).slice(-2)
+                let hour = ('0' + ((d.getHours() + 8) % 24)).slice(-2)  // UTC +08:00
+                let minutes = ('0' + (d.getMinutes())).slice(-2)
+                let seconds = ('0' + (d.getSeconds())).slice(-2)
                 return year + "-" + month + "-" + day + " " + hour + "-" + minutes + "-" + seconds
             },
 
-            savePaperState(){
-                console.log(typeof(this.paper.paperid))
-                axios.post('http://localhost:3000/paper/updatepaper',{
-                    paperid: this.paper.paperid,
-                    userid: this.paper.userid,
-                    starnum: this.paper.starnum,
-                    likenum: this.paper.likenum,
-                    commentnum: this.paper.commentnum,
-                    title: this.paper.title,
-                    createtime: this.date_ymd + " " + this.date_hms,
-                    content: this.paper.content
-                }).then(()=>{
-                    console.log("This is in save-paper-state operation")
+            async savePaperState(){
+                await axios.post('http://localhost:3000/paper/updatepaper',{
+                    paperId: this.activePaperId,
+                    starNum: this.paper.starNum,
+                    likeNum: this.paper.likeNum,
+                    commentNum: this.paper.commentNum,
                 })
+                console.log("This is in save-paper-state operation")
+
             },
 
             reply(item){
@@ -254,8 +184,7 @@
 
         async mounted(){
             await this.getPaper()
-            await this.getUserlist()
-            await this.setcommentlist()
+            await this.setCommentList()
             this.showData=this.commentlist
         }
 

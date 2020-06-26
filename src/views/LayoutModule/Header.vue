@@ -23,14 +23,14 @@
                     <a @click="e => e.preventDefault()">
                          <a-icon type="user" /> 个人
                     </a>
-                    <a-menu slot="overlay" @click="onClick">
-                        <a-menu-item key="1">
+                    <a-menu slot="overlay">
+                        <a-menu-item key="1" @click="jumpToSetting">
                             个人信息
                         </a-menu-item>
-                        <a-menu-item key="2">
+                        <a-menu-item key="2" @click="jumpToMyArticles">
                             我的文章
                         </a-menu-item>
-                        <a-menu-item key="3">
+                        <a-menu-item key="3" @click="logOut">
                             登出
                         </a-menu-item>
                     </a-menu>
@@ -56,18 +56,12 @@
             jumpToSetting() {
                 this.$router.push({name: 'Settings'})
             },
-            onClick({ key }) {
-                if(key == 1){
-                    this.$router.push({name: 'Settings'})
-                }
-                else if(key == 2){
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    this.$router.push({name: 'myArticles'})
-                }
-                else if(key == 3){
-                    console.log("Logout")
-                }
+            jumpToMyArticles() {
+                this.$router.push('/myArticles')
             },
+            logOut() {
+                console.log("Logout")
+            }
         },
     }
 </script>

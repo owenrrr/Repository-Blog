@@ -1,37 +1,3 @@
-<!--<template>
-<div>
-     <child :paperid="paperid"></child>
-</div>
-</template>
-<script>
-import child from './article'
-export default {
-
-    data() {
-        return {
-
-            paperid: null,
-        }
-    },
-    components:{
-        child
-    }
-
-}
-
-</script>
-
-<style>
-.searchInput {
-    width: 200px;
-    float: right;
-}
-.inline-blo {
-    display: inline-block;
-    width: 40%;
-}
-</style>-->
-
 <template>
      <div>
          <span class="head">My Articles</span>
@@ -61,10 +27,11 @@ export default {
 
 
           async mounted(){
-               await this.setAllpaper()
+               /*await this.setAllpaper()
                await this.setUserList()
                await this.setPaperList()
-               await this.constructors(this.userList,this.paperList)
+               await this.constructors(this.userList,this.paperList)*/
+              console.log('hello mounted')
           },
 
 

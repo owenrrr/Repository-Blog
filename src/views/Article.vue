@@ -24,7 +24,7 @@
                     </div>
                 </a-layout-content>
                 <a-layout-footer style="text-align: center">
-                    <!--<comment style="width: 100%; height: auto; display: inline-block"></comment>-->
+                    <comment style="width: 100%; height: auto; display: inline-block"></comment>
                 </a-layout-footer>
             </a-layout>
         </a-layout>
@@ -33,7 +33,7 @@
 
 <script>
     import axios from 'axios'
-    //import comment from './comment'
+    import comment from './comment'
     import {mapGetters} from 'vuex'
 
     export default{
@@ -201,7 +201,7 @@
             await this.getPaper();
         },
         components:{
-            //comment,
+            comment,
         }
 
     }
@@ -209,17 +209,27 @@
 </script>
 
 <style>
+    .content {
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 16px;
+        color: #2c3e50;
+        margin: 20px 20px;
+    }
+    .content h1, h2, h3{
+        text-align: center;
+        font-size: 30px;
+    }
 
-
-.ant-layout::-webkit-scrollbar {
-    display: none;
-}
-#components-layout-demo-basic .ant-layout-footer,
-#components-layout-demo-basic .ant-layout-header {
-    min-height: 150px;
-    background-color: lightgray;
-}
-
+    .ant-layout::-webkit-scrollbar {
+        display: none;
+    }
+    #components-layout-demo-basic .ant-layout-footer,
+    #components-layout-demo-basic .ant-layout-header {
+        min-height: 150px;
+        background-color: #dddddd;
+    }
 
 
 </style>

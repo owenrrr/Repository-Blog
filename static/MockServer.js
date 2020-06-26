@@ -395,7 +395,7 @@ app.post('/blog_comment/add_blog_comment', jsonParser, async function (req, res)
     let content = req.body.content;
     let createTime = req.body.createTime;
     let type = req.body.commentType;
-    let replyId = req.body.blogCommentId;
+    let replyId = req.body.replyCommentId;
     console.log(replyId)
 
     let blogCommentId = await Blog_CommentDB.add(userId, paperId, content, createTime, type, replyId);
@@ -432,6 +432,10 @@ app.get('/blog_comment/get_user_comments', jsonParser, async function (req, res)
     console.log(commentList)
 
     for (let i = 0; i < commentList.length; i++) {
+        let userId = commentList[i].userId
+        let user = await userDB.getById(userId)
+        user = JSON.parse(user)
+        commentList[i].userName = user.userName
         if (commentList[i].commentType === 0) {
             commentList[i].replyCommentName = null
         }
@@ -439,15 +443,17 @@ app.get('/blog_comment/get_user_comments', jsonParser, async function (req, res)
             let replyId = commentList[i].replyCommentId
             console.log(replyId)
             let comment = await Blog_CommentDB.getCommentById(replyId)
+            comment = JSON.parse(comment)
             console.log(comment)
             let userId = comment.userId
             console.log(userId)
             let user = await userDB.getById(userId)
+            user = JSON.parse(user)
             console.log(user)
-            commentList[i].replyCommentName = user.username
+            commentList[i].replyCommentName = user.userName
         }
     }
-
+    console.log(commentList)
     await res.json({
         commentList
     });
