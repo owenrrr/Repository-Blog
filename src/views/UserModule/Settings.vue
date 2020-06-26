@@ -160,6 +160,7 @@
             this.duplicate.description = this.form.getFieldValue('description')
             this.duplicate.age = this.form.getFieldValue('age')
             this.duplicate.oldpassword = this.basic.password
+            this.duplicate.newpassword = this.basic.password
             this.modifyInfo=false
             if(this.modifyPassword)this.modifyPassword=false
             console.log(this.duplicate)
