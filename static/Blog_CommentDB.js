@@ -122,21 +122,23 @@ module.exports = {
 
                 let comment = {
 
-                    blogCommentId: res.blog_comment_id,
+                    blogCommentId: res[0].blog_comment_id,
 
-                    userId: res.user_id,
+                    userId: res[0].user_id,
 
-                    paperId: res.paper_id,
+                    paperId: res[0].paper_id,
 
-                    blogCommentContent: res.blog_comment_content,
+                    blogCommentContent: res[0].blog_comment_content,
 
-                    blogCommentCreateTime: res.blog_comment_create_time,
+                    blogCommentCreateTime: res[0].blog_comment_create_time,
 
-                    commentType: res.comment_type,
+                    commentType: res[0].comment_type,
 
-                    replyCommentId: res.reply_comment_id
+                    replyCommentId: res[0].reply_comment_id
 
                 }
+
+                console.log(comment)
 
                 resolve(comment);
 

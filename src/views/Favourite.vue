@@ -1,35 +1,40 @@
 <template>
-    <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="listData">
-        <!-- <div slot="footer"><b>ant design vue</b> footer part</div> -->
-        <a-list-item slot="renderItem" key="item.title" slot-scope="item">
-            <!-- v-for="{ type1, text1, type2, text2, type3, text3 } in actions" slot="actions" -->
-            <img
-                    slot="extra"
-                    width="272"
-                    alt="logo"
-                    src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-            />
-            <a-list-item-meta :description="item.username">
-                <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
-                <a slot="title" @click="commitpaperid(item.paperid)">{{ item.title }}</a>
-                <!-- <a-avatar slot="avatar" :src="item.avatar" /> -->
-            </a-list-item-meta>
-            <template>
-        <span>
-          <a-icon type="star-o" style="margin-right: 8px" theme="twoTone" />
-          {{ actions[item.index].text1 }}
-        </span>
-                <span>
-          <a-icon type="like-o" style="margin-right: 8px" theme="twoTone"/>
-          {{ actions[item.index].text2 }}
-        </span>
-                <span>
-          <a-icon type="message" style="margin-right: 8px"/>
-          {{ actions[item.index].text3 }}
-        </span>
-            </template>
-        </a-list-item>
-    </a-list>
+    <div>
+        <a-menu  mode="horizontal" defaultSelectedKeys="0">
+            <a-menu-item key="0"> <a-icon type="star" />我的收藏</a-menu-item>
+        </a-menu>
+        <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="listData">
+            <!-- <div slot="footer"><b>ant design vue</b> footer part</div> -->
+            <a-list-item slot="renderItem" key="item.title" slot-scope="item">
+                <!-- v-for="{ type1, text1, type2, text2, type3, text3 } in actions" slot="actions" -->
+                <img
+                        slot="extra"
+                        width="272"
+                        alt="logo"
+                        src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                />
+                <a-list-item-meta :description="item.username">
+                    <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
+                    <a slot="title" @click="commitpaperid(item.paperid)">{{ item.title }}</a>
+                    <!-- <a-avatar slot="avatar" :src="item.avatar" /> -->
+                </a-list-item-meta>
+                <template>
+            <span>
+              <a-icon type="star-o" style="margin-right: 8px" theme="twoTone" />
+              {{ actions[item.index].text1 }}
+            </span>
+                    <span>
+              <a-icon type="like-o" style="margin-right: 8px" theme="twoTone"/>
+              {{ actions[item.index].text2 }}
+            </span>
+                    <span>
+              <a-icon type="message" style="margin-right: 8px"/>
+              {{ actions[item.index].text3 }}
+            </span>
+                </template>
+            </a-list-item>
+        </a-list>
+    </div>
 </template>
 
 <script>

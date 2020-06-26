@@ -20,15 +20,15 @@ function closeConnection() {
 
 module.exports = {
 
-    add: function (username, password, sex, age) {
+    add: function (username, password, email) {
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [username, password, sex, age];
+            let params = [username, password, email];
 
-            let sql = 'insert into user (user_name, password, sex, age) values (?, ?, ?, ?);';
+            let sql = 'insert into user (user_name, password, email) values (?, ?, ?);';
 
             connection.query(sql, params, function (err, result) {
 
@@ -50,27 +50,17 @@ module.exports = {
 
                 console.log('-----------------------------------------------------------------\n\n');
 
-                resolve(result.insertId);
+                resolve(JSON.stringify(result.insertId));
 
             });
 
             closeConnection()
 
-        }).then(value => {
-
-            console.log(value);
-
-            return JSON.stringify(value);
-
-        }).catch(err => {
-
-            console.log(err);
-
         })
 
     },
 
-    update: function (userid, username, password, description, sex, age, imgURL) {
+    update: function (userid, username, password, description, sex, age) {
 
         return new Promise((resolve, reject) => {
 
@@ -88,9 +78,7 @@ module.exports = {
 
             sex='${sex}',
 
-            age='${age}',
-            
-            imgURL='${imgURL}'
+            age='${age}'
 
             where user_id='${userid}';`;
 
@@ -112,29 +100,21 @@ module.exports = {
 
             closeConnection();
 
-        }).then(() => {
-
-            console.log('success update');
-
-        }).catch((err) => {
-
-            console.log(err);
-
-        });
+        })
 
     },
 
-    get: function (username) {
+    get: function (email) {
 
-        console.log(username);
+        console.log(email);
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [username];
+            let params = [email];
 
-            let sql = 'select * from user where user_name = ?;';
+            let sql = 'select * from user where email = ?;';
 
             connection.query(sql, params, function (err, res) {
 
@@ -148,52 +128,45 @@ module.exports = {
 
                 console.log('[GET-USER-SUCCESS] ')
 
-                resolve(res);
+                if (res.length !== 0) {
+
+                    let user = {
+
+                        userId: res[0].user_id,
+
+                        userName: res[0].user_name,
+
+                        password: res[0].password,
+
+                        description: res[0].description,
+
+                        age: res[0].age,
+
+                        sex: res[0].sex,
+
+                        imgURL: res[0].imgURL,
+
+                        email: res[0].email
+
+                    };
+
+                    resolve(JSON.stringify(user));
+
+                }
+
+                else {
+
+                    console.log('User not find');
+
+                    resolve(JSON.stringify({}));
+
+                }
 
             });
 
             closeConnection();
 
-        }).then(value => {
-
-
-            if (value.length !== 0) {
-
-                let user = {
-
-                    userid: value[0].user_id,
-
-                    username: value[0].user_name,
-
-                    password: value[0].password,
-
-                    description: value[0].description,
-
-                    age: value[0].age,
-
-                    sex: value[0].sex,
-
-                    imgURL: value[0].imgURL
-
-                };
-
-                return JSON.stringify(user);
-
-            }
-
-            else {
-
-                console.log('User not find');
-
-                return JSON.stringify({});
-
-            }
-
-        }).catch(err => {
-
-            console.log(err);
-
-        });
+        })
 
     },
 
@@ -227,23 +200,25 @@ module.exports = {
 
                 let user = {
 
-                    userId: res.user_id,
+                    userId: res[0].user_id,
 
-                    username: res.user_name,
+                    userName: res[0].user_name,
 
-                    password: res.password,
+                    password: res[0].password,
 
-                    description: res.description,
+                    description: res[0].description,
 
-                    age: res.age,
+                    age: res[0].age,
 
-                    sex: res.sex,
+                    sex: res[0].sex,
 
-                    imgURL: res.imgURL
+                    imgURL: res[0].imgURL,
+
+                    email: res[0].email
 
                 };
 
-                resolve(user)
+                resolve(JSON.stringify(user))
 
             })
 
@@ -285,9 +260,9 @@ module.exports = {
 
                             let user = {
 
-                                userid: res[i].user_id,
+                                userId: res[i].user_id,
 
-                                username: res[i].user_name,
+                                userName: res[i].user_name,
 
                                 password: res[i].password,
 
@@ -297,15 +272,18 @@ module.exports = {
 
                                 age: res[i].age,
 
-                                imgURL: res[i].imgURL
+                                imgURL: res[i].imgURL,
+
+                                email: res[0].email
 
                             };
 
                             users.push(user);
 
-                            resolve(users)
 
                         }
+                        resolve(JSON.stringify(users))
+
 
                     }
 
@@ -314,12 +292,10 @@ module.exports = {
                         console.log('Users not find');
 
                         resolve(
-                            []
+                            JSON.stringify([])
                         )
 
                     }
-
-
 
                 }
 

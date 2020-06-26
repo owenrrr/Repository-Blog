@@ -158,6 +158,7 @@ DROP TABLE IF EXISTS `user`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `user` (
   `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
   `user_name` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
@@ -174,7 +175,9 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'lxyeah','ZHIXINGHEYI99',null,1,20,null),(2,'owen','123456',null,1,20,null),(3,'王丽丽','654321',null,0,22,null),(4,'coder','111111',null,1,18,null),(5,'李一洲是傻逼','lyzshabi',null,1,19,null),(9,'lxp','222222',null,1,20,null),(10,'李一洲','lyzshabi',null,2,20,null),(11,'lzy','333333',null,1,21,null),(12,'bbb','bbbbbb',null,0,20,null),(13,'Charlie','123456',null,NULL,NULL,null);
+INSERT INTO `user` VALUES (1,'lxyeah@qq.com', 'lxyeah','ZHIXINGHEYI99',null,1,20,null),
+                          (2,'owen@qq.com','owen','123456',null,1,20,null),
+                          (3,'Charlie@qq.com','Charlie','123456',null,1,20,null);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -5,29 +5,32 @@
       <a-menu theme="dark" mode="inline" :default-selected-keys="['1']">
         <a-menu-item key="1" @click='jumptoSet'>
           <a-icon type="user" />
-          <span>Settings</span>
+          <span>设置</span>
         </a-menu-item>
         <a-menu-item key="2"  @click="jumptoFol">
           <a-icon type="team"/>
-          <span>Followers</span>
+          <span>关注</span>
         </a-menu-item>
         <a-menu-item key="3"  @click="jumptoArt">
           <a-icon type="form"/>
-          <span>My Articles</span>
+          <span>我的文章</span>
         </a-menu-item>
         <a-menu-item key="4" @click="jumptoLog">
           <a-icon type="logout" />
-          <span>Logout</span>
+          <span>登出</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>
-      <a-layout-header style="background: #fff; padding: 0">
-        <a-icon
-          class="trigger"
-          :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-          @click="() => (collapsed = !collapsed)"
-        />
+      <a-layout-header style="background: #fff; padding: 0;">
+        <a-button @click="() => (collapsed = !collapsed)" type="primary" style="margin-left: 20px">
+          <a-icon
+                  class="trigger"
+                  :type="collapsed ? 'menu-fold' : 'menu-unfold'"
+          />
+          <span>{{collapsed ? '展开菜单' : '收缩菜单'}}</span>
+        </a-button>
+
       </a-layout-header>
       <a-layout-content
         :style="{ margin: '24px 16px', padding: '24px', background: 'lightgray', minHeight: '280px' }"
@@ -41,7 +44,7 @@
 export default {
   data() {
     return {
-      collapsed: false,
+      collapsed: true,
     };
   },
   methods: {
@@ -60,14 +63,16 @@ export default {
           this.$router.push('/')
         }
       }
+  },
+  mounted() {
+    this.$router.push({name: 'Settings'})
   }
 };
 </script>
 <style>
 #components-layout-demo-custom-trigger .trigger {
   font-size: 18px;
-  line-height: 64px;
-  padding: 0 24px;
+  line-height: 30px;
   cursor: pointer;
   transition: color 0.3s;
 }
@@ -76,9 +81,7 @@ export default {
   color: #1890ff;
 }
 
-#components-layout-demo-custom-trigger .logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px;
+#components-layout-demo-custom-trigger {
+  min-height: 500px;
 }
 </style>

@@ -1,98 +1,113 @@
 <template>
-    <div>
-        <a-input-search placeholder="Search for related Blogs" enter-button @search="onSearch"/>
-    <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="listData">
-        <!-- <div slot="footer"><b>ant design vue</b> footer part</div> -->
-        <a-list-item slot="renderItem" key="item.title" slot-scope="item">
-             <!-- v-for="{ type1, text1, type2, text2, type3, text3 } in actions" slot="actions" -->
-            <img
-                    slot="extra"
-                    width="272"
-                    alt="logo"
-                    src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-            />
-            <a-list-item-meta :description="item.username">
-                <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
-                <a slot="title" @click="commitpaperid(item.paperid)">{{ item.title }}</a>
-                <!-- <a-avatar slot="avatar" :src="item.avatar" /> -->
-            </a-list-item-meta>
-            <template>
-        <span>
-          <a-icon type="star-o" style="margin-right: 8px" />
-          {{ actions[item.index].text1 }}
-        </span>
-        <span>
-          <a-icon type="like-o" style="margin-right: 8px" />
-          {{ actions[item.index].text2 }}
-        </span>
-        <span>
-          <a-icon type="message" style="margin-right: 8px" />
-          {{ actions[item.index].text3 }}
-        </span>
-            </template>
-        </a-list-item>
-    </a-list>
+    <div class="main">
+        <div class="list">
+            <a-input-search placeholder="搜索文章" v-model="value" enter-button @search="onSearch" />
+            <a-list item-layout="vertical" size="large" :data-source="listData">
+                <!-- <div slot="footer"><b>ant design vue</b> footer part</div> -->
+                <a-list-item slot="renderItem" key="item.title" slot-scope="item">
+                    <a-list-item-meta :description="item.userName">
+                        <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
+                        <a slot="title" @click="commitPaperId(item.paperId)">{{ item.title }}</a>
+                        <!-- <a-avatar slot="avatar" :src="item.avatar" /> -->
+                    </a-list-item-meta>
+                    <template>
+                <span>
+                  <a-icon type="star-o" style="margin-right: 8px" />
+                  {{ actions[item.index].text1 }}
+                </span>
+                <span>
+                  <a-icon type="like-o" style="margin-right: 8px" />
+                  {{ actions[item.index].text2 }}
+                </span>
+                <span>
+                  <a-icon type="message" style="margin-right: 8px" />
+                  {{ actions[item.index].text3 }}
+                </span>
+                    </template>
+                </a-list-item>
+            </a-list>
+        </div>
+        <div class="page" >
+            <a-pagination v-model="current" :total="total" @change="onChange" />
+        </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import {mapMutations} from 'vuex'
 
     export default {
         name: "BlogList",
         data() {
             return {
                 listData : [],
-                pagination: {
-                    onChange: page => {
-                        console.log(page);
-                    },
-                    pageSize: 3,
-                },
                 actions :[],
-                userList: [],
                 paperList: [],
+                current: 1,
+                total: 0,
+                value: ''
             };
         },
         async mounted(){
-            await this.setUserList()
             await this.setPaperList()
-            await this.constructors(this.userList,this.paperList)
+            await this.constructors(this.paperList)
         },
         methods:{
+            ...mapMutations([
+                'set_paperId'
+            ]),
             async onSearch(value){
                 await this.search(value)
-                await this.constructors(this.userList,this.paperList)
+                await this.constructors(this.paperList)
             },
-            search(text){
+            async onChange(page) {
+                this.current = page
+                let res = await axios.get('http://localhost:3000/paper/getsearch',
+                    {
+                        params:{
+                            current: this.current,
+                            content: this.value
+                        }
+                    })
+                console.log(res);
+                this.paperList=res.data.list
+            },
+            async search(){
                 console.log("searching...................................")
-                return axios.get('http://localhost:3000/paper/getsearch',{params:{content:text}}).then((res)=>{
-                    console.log(res);
-                    this.paperList=res.data.List
-                })
+                let res = await axios.get('http://localhost:3000/paper/getsearch',
+                    {
+                            params:{
+                                current: this.current,
+                                content: this.value
+                            }
+                    })
+                console.log(res);
+                this.paperList=res.data.list
+                this.total = res.data.total
             },
-            commitpaperid(paperid){
-                this.$store.commit('setPaperid', paperid)
-                this.$router.push({name: 'Article'}).catch((err) => {err})
+            async commitPaperId(paperId){
+                this.$store.commit('set_paperId', paperId)
+                await this.$router.push({name: 'Article'}).catch((err) => console.log(err))
             },
-            constructors(userlist, paperlist){
+            constructors(paperlist){
                 console.log("This is in constructor")
                 this.setActions(paperlist)
-                this.setListData(paperlist,userlist)
+                this.setListData(paperlist)
             },
-            setUserList(){
-                return axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-                    console.log("This is in setUserList")
-
-                    this.userList = res.data.userList
-                    console.log(this.userList);
-                })
-            },
-            setPaperList(){
-                return axios.get('http://localhost:3000/paper/getpaperlist').then((res) => {
-                    console.log("This is in setPaperList")
-                    this.paperList = res.data.papers.papers
-                })
+            async setPaperList(){
+                console.log(this.current)
+                let res = await axios.get('http://localhost:3000/paper/getsearch',
+                    {
+                            params: {
+                                current: this.current,
+                                content: this.value
+                            }
+                        })
+                console.log("This is in setPaperList")
+                console.log(res)
+                this.paperList = res.data.list
+                this.total = res.data.total
             },
             setActions(paperlist){
                 this.actions = []
@@ -100,31 +115,28 @@ import axios from 'axios'
                 console.log(paperlist)
                 for (var paper of paperlist){
                     var tmp = {text1 :null, text2 :null, text3 :null}
-                    tmp.text1 = paper.starnum
-                    tmp.text2 = paper.likenum
-                    tmp.text3 = paper.commentnum
-                    console.log("star:" + paper.starnum + "like: " + paper.likenum + "comment: " + paper.commentnum)
+                    tmp.text1 = paper.starNum
+                    tmp.text2 = paper.likeNum
+                    tmp.text3 = paper.commentNum
+                    console.log("star:" + paper.starNum + "like: " + paper.likeNum + "comment: " + paper.commentNum)
                     this.actions.push(tmp)
                 }
                 console.log("This is after setActions : ")
                 console.log(this.actions)
             },
-            setListData(paperList,userList){
+            async setListData(paperList){
                 this.listData = []
                 let index = 0
                 console.log("This is in setListData")
                 for (var paper of paperList){
-                    var tmp = {paperid: paper.paperid, userid: paper.userid, title: paper.title, starnum: paper.starnum, likenum: paper.likenum, commentnum: paper.commentnum, createtime: paper.createtime, username: null, index:index}
+                    var tmp = {paperId: paper.paperId, userId: paper.userId, title: paper.title, starNum: paper.starNum, likeNum: paper.likeNum, commentNum: paper.commentNum, createTime: paper.createTime, userName: null, index:index}
                     index++
-                    for (var user of userList){
-                        if (tmp.userid == user.userid){
-                            tmp.username = user.username
-                            this.listData.push(tmp)
-                            break;
-                        }
-                    }
+                    let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: tmp.userId}})
+                    tmp.userName = res.data.userName
+                    this.listData.push(tmp)
                 }
-                console.log("This is after setListData :" + this.listData)
+                console.log("This is after setListData :")
+                console.log(this.listData);
             },
 
         },
@@ -134,5 +146,20 @@ import axios from 'axios'
 </script>
 
 <style scoped>
+    .main {
+        display: flex;
+        min-height: 550px;
+        flex-flow: row wrap;
+    }
 
+    .list {
+        align-self: flex-start;
+        width: 100%;
+    }
+
+    .page {
+        align-self: flex-end;
+        width: 100%;
+        text-align: center;
+    }
 </style>

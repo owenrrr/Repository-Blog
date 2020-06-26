@@ -1,53 +1,54 @@
 <template>
 <div>
-    <avatar :username="basic.username" style="margin-left: 47%; margin-bottom: 40px" color="rgb(255, 255, 255)"></avatar>
+    <avatar :username="basic.userName" style="margin-left: 47%; margin-bottom: 40px" color="rgb(255, 255, 255)"></avatar>
     <!-- <a-icon type="user" style="font-size: 50px; margin-left: 47% ;margin-bottom: 20px"/> -->
-    <h1 class="h1display">Username : 
-        <span v-if="state == 'show'" class="inlineattribute">{{basic.username}}</span>
+    <h1 class="h1display">用户名 :
+        <span v-if="state === 'show'" class="inlineattribute">{{basic.userName}}</span>
         <span><a-input 
-                v-if="state == 'modify'" 
-                :placeholder="basic.username" 
+                v-if="state === 'modify'"
+                :placeholder="basic.userName"
                 style="background: lightgray; width: 30%" 
                 allow-clear 
                 class="inlineattribute" 
-                v-model="basic.username"/></span>
+                v-model="basic.userName"/></span>
     </h1>
-    <h1 class="h1display">Gender : 
-        <span v-if="state == 'show'" class="inlineattribute">{{basic.sex}}</span>
+    <h1 class="h1display">性别 :
+        <span v-if="state === 'show'" class="inlineattribute">{{basic.sex}}</span>
         <span>
-            <a-select default-value="Male" v-if="state == 'modify'" style="width: 20%; display: inline-block; margin-left: 42px;" @change="handleChange">
-                <a-select-option value="Male">Male</a-select-option>
-                <a-select-option value="Female">Female</a-select-option>
+            <a-select default-value="2" v-if="state === 'modify'" style="width: 20%; display: inline-block; margin-left: 42px;" @change="handleChange">
+                <a-select-option value="2">无</a-select-option>
+                <a-select-option value="1">男</a-select-option>
+                <a-select-option value="0">女</a-select-option>
             </a-select>
         </span>
     </h1>
-    <h1 class="h1display">Age : 
-        <span v-if="state == 'show'" class="inlineattribute">{{basic.age}}</span>
+    <h1 class="h1display">年龄 :
+        <span v-if="state === 'show'" class="inlineattribute">{{basic.age}}</span>
         <span>
             <a-input 
-            v-if="state == 'modify'" 
-            :placeholder="basic.age" 
+            v-if="state === 'modify'"
+            :placeholder="duplicate.age"
             style="background: lightgray; width:20%; display: inline-block; margin-left: 68px;" 
             allow-clear 
-            v-model="basic.age"/>
+            v-model="duplicate.age"/>
         </span>
     </h1>
-    <h1 class="h1display">Password : 
-        <span v-if="state == 'show'" class="inlineattribute">{{basic.password}}</span>
+    <h1 class="h1display">密码 :
+        <span v-if="state === 'show'" class="inlineattribute">{{basic.password}}</span>
         <span>
             <a-input 
-            v-if="state == 'modify'" 
+            v-if="state === 'modify'"
             :placeholder="basic.password" 
             style="background: lightgray; width: 30%; display: inline-block; margin-left: 27px;" 
             allow-clear 
             v-model="basic.password"/>
         </span>
     </h1>
-    <h1 class="h1display">Description :
-        <span v-if="state == 'show'" style="align-text: center; display: inline-block; margin-right: 150px">{{basic.description}}</span>
+    <h1 class="h1display">个性签名 :
+        <span v-if="state === 'show'" style="align-text: center; display: inline-block; margin-right: 150px">{{basic.description}}</span>
         <span>
             <a-textarea
-                v-if="state == 'modify'"
+                v-if="state === 'modify'"
                 v-model="basic.description"
                 placeholder="Description"
                 :auto-size="{ minRows: 3, maxRows: 5 }"
@@ -56,137 +57,122 @@
         </span>
     </h1>
     <div>
-        <a-button v-if="state == 'show'" type="danger" style="margin-left: 45%" @click="stateModify">Modify</a-button>
-        <a-button v-if="state == 'modify'" style="margin-left: 35%; margin-top: 20px" @click="stateCancel">Cancel</a-button>
-        <a-button v-if="state == 'modify'" type="primary" style="margin-left: 10%" @click="stateConfirm">Confirm</a-button>
+        <a-button v-if="state === 'show'" type="danger" style="margin-left: 45%" @click="stateModify">修改信息</a-button>
+        <a-button v-if="state === 'modify'" style="margin-left: 35%; margin-top: 20px" @click="stateCancel">取消</a-button>
+        <a-button v-if="state === 'modify'" type="primary" style="margin-left: 10%" @click="stateConfirm">确认</a-button>
     </div>
 </div>
 </template>
 
 <script>
-import Avatar from 'vue-avatar'
-import axios from 'axios'
-export default {
+    import Avatar from 'vue-avatar'
+    import axios from 'axios'
+    import {mapActions, mapGetters, mapMutations} from 'vuex'
+
+    export default {
     name : 'Settings',
     data(){
         return{
             basic: {
-                userid: null,
-                username: '',
-                sex: 'Male',
+                userId: 0,
+                userName: '',
+                sex: '',
                 description: '',
                 age: 0,
                 password: '',
             },
             state: 'show',
             duplicate:{
-                userid: null,
-                username: '',
-                sex: 'Male',
+                userId: 0,
+                userName: '',
+                sex: '',
                 description: '',
                 age: 0,
                 password: '',
             },
         }
     },
+    computed: {
+        ...mapGetters([
+            'userInfo'
+        ])
+    },
     components:{
         Avatar,
     },
-    mounted(){
-        this.constructor()  // 获取账户的资料
-    },
-    actions(){
+    async mounted(){
+        await this.constructor()  // 获取账户的资料
     },
     methods: {
-        constructor(){
-            let userList
-            axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-                console.log("Excute the constructor function!")
-              userList = res.data.userList
-              this.basic.userid = this.$store.getters.getUserid
-              console.log(this.basic.username)
-              for (var user of userList){
-                if (user.userid == this.basic.userid){
-                    this.basic.password = user.password
-                    this.basic.username = user.username
-                    if (user.sex != null){
-                        if (user.sex == 0){
-                            this.basic.sex = 'Female'
-                        }else{
-                            this.basic.sex = 'Male'
-                        }
-                    }
-                    if (user.age != null){
-                        this.basic.age = user.age
-                    }
-                    this.basic.description = (user.description == null? "He/She is too lazy, nothing left ( ˘•ω•˘ )": user.description)
-                }
-              }
-            })
+        ...mapMutations([
+
+        ]),
+        ...mapActions([
+            'getUserInfo'
+        ]),
+        async constructor(){
+            await this.$store.dispatch('getUserInfo')
+            console.log(this.userInfo)
+            this.basic.userId = this.userInfo.userId
+            this.basic.userName = this.userInfo.userName
+            this.basic.age = this.userInfo.age
+            if (this.userInfo.sex === null) {
+                this.basic.sex = null
+            }
+            else {
+                this.basic.sex = this.userInfo.sex === 0 ? '女' : '男'
+            }
+            this.basic.password = this.userInfo.password
+            this.basic.description = this.userInfo.description === null ? '这个人很懒，还没有留下什么。' : this.userInfo.description
+            console.log(this.basic)
         },
-        stateConfirm(){
+        async stateConfirm(){
             if (this.basic.age < 0 || this.basic.age > 120){
-                this.$message.warning('Age is not allowed.', 3);
+                this.$message.warning('非法年龄', 3);
                 this.stateCancel()
             }else{
                 console.log("Here is handleUsernamecheck before")
-                this.handleUsernameCheck()
+                await this.handleUsernameCheck()
             }
             
         },
         stateModify(){
-            const data = this.basic
-            this.duplicate = data
+            this.duplicate = this.basic
+            this.duplicate.sex = 2
             this.state = 'modify'
         },
         stateCancel(){
+            if (this.duplicate.sex === 2) {
+                this.basic.sex = null
+            }
+            else if (this.duplicate.sex === 0) {
+                this.basic.sex = '女'
+            }
+            else if (this.duplicate.sex === 1) {
+                this.basic.sex = '男'
+            }
+            console.log(this.duplicate)
             this.basic = this.duplicate
+
+            console.log(this.basic)
             this.state = 'show'
         },
         handleChange(value){
-            this.basic.sex = value
+            console.log(value)
+            this.duplicate.sex = Number(value)
         },
-        handleUsernameCheck(){
-            let userList
-            axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-            userList = res.data.users.users
-            for (var user of userList){
-                if (user.username == this.basic.username && user.userid != this.basic.userid){
-                    console.log("Execute false")
-                    return Promise.reject()
-                }
-            }
-                this.$message.success('Modify successfully !', 3)
-                console.log(this.basic.username)
-                console.log(this.basic.userid)
-                this.changeUser()
-                this.state = 'show'
-            }).catch(() => {
-                this.$message.warning('Username is used.', 3);
-                this.stateCancel()
-            })
-        },
-        changeUser(){
+        async handleUsernameCheck(){
             console.log(this.basic)
-            if (this.basic.sex == "Male"){
-                axios.post('http://localhost:3000/user/updateuser', {
-                    username: this.basic.username,
-                    age: this.basic.age,
-                    sex: 1,
-                    description: this.basic.description,
-                    password: this.basic.password,
-                    userid: this.basic.userid,
-                })
-            }else{
-                axios.post('http://localhost:3000/user/updateuser', {
-                    username: this.basic.username,
-                    age: this.basic.age,
-                    sex: 0,
-                    description: this.basic.description,
-                    password: this.basic.password,
-                    userid: this.basic.userid,
-                })
-            }
+            await axios.post('http://localhost:3000/user/updateuser', {
+                userName: this.duplicate.userName,
+                age: this.duplicate.age === null ? 0 : this.duplicate.age,
+                sex: this.duplicate.sex,
+                description: this.duplicate.description,
+                password: this.duplicate.password,
+                userId: this.duplicate.userId,
+            })
+            this.stateCancel()
+
         },
     },
 }

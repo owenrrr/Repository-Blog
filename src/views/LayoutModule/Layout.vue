@@ -4,7 +4,7 @@
         <a-layout-content class="main-content">
             <div class="con">
                 <transition name="fade-transform" mode="out-in">
-                    <router-view/>
+                    <router-view style="min-height: 550px"/>
                 </transition>
             </div>
         </a-layout-content>
@@ -31,11 +31,13 @@
         padding: 0 50px;
         margin: 64px auto auto;
         width: 80%;
+        min-height: 590px;
+
     }
     .con {
         background: #fff;
         padding: 24px;
-        height: auto;
+        min-height: 550px;
         overflow:hidden;
         margin-top: 2%;
     }

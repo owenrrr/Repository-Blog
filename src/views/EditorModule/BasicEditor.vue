@@ -1,9 +1,9 @@
 <template>
 <!-- <form action="[URL]" method="post"> -->
 <div>
-    <h1 style="display: inline-block" >Title :</h1>
-    <a-input style="display: inline-block" placeholder="title" v-model="title"></a-input>
-    <h1 style="display: inline-block; margin: 20px 0px" >Body : </h1>
+    <h1 style="display: inline-block" >标题 :</h1>
+    <a-input style="display: inline-block" placeholder="请输入标题" v-model="title"></a-input>
+    <h1 style="display: inline-block; margin: 20px 0px" >内容 : </h1>
     <div>
         <div name="editor" id="app" />
         <a-button
@@ -22,18 +22,22 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // import CKEditor from '@ckeditor/ckeditor5-vue'
 import axios from 'axios'
+import {mapGetters} from 'vuex'
 
 export default{
     data() {
         return {
-            userid: null,
             title: '',
             Data : 'Context here',
         };
     },
     mounted(){
-        this.userid = this.$store.getters.getUserid
         this.addEditor()
+    },
+    computed: {
+        ...mapGetters([
+            'getUserId'
+        ])
     },
     methods: {
         addEditor(){
@@ -59,13 +63,13 @@ export default{
         },
         addPaper(){
             console.log("This is addPaper operation")
-            const addpaper = {userid: null, title: null, createtime: null, content: null}
-            addpaper.userid = this.userid
+            const addpaper = {userId: null, title: null, createTime: null, content: null}
+            addpaper.userId = this.getUserId
             addpaper.title = this.title
             var tmp = this.getServerTime()
-            addpaper.createtime = tmp  //$.ajax({async:false}).getResponseHeader("Date")
+            addpaper.createTime = tmp  //$.ajax({async:false}).getResponseHeader("Date")
             addpaper.content = this.Data
-            console.log("Now is " + addpaper.createtime)
+            console.log("Now is " + addpaper.createTime)
             axios.post('http://localhost:3000/paper/addpaper', addpaper)
         },
         getServerTime(){

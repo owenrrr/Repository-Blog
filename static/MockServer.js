@@ -5,7 +5,6 @@ const FavoriteDB = require('./FavoriteDB');
 const paperDB = require('./PaperDB');
 const LikeDB = require('./LikeDB');
 const Blog_CommentDB = require('./Blog_CommentDB');
-const Comment_CommentDB = require('./Comment_CommentDB');
 
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
@@ -25,82 +24,96 @@ app.get('/', (req, res) => res.send('Hello World'));
 
 // Table `user` operation
 
-app.get('/user/getuser', jsonParser, async (req, res) => {
-    let username = req.query.username;
+app.get('/user/getUserById', jsonParser, async (req, res) => {
+    let userId = req.query.userId;
     let user;
-    console.log(username);
-    if (username === undefined) {
-        res.send('undefined');
-    }
-    else {
-        let userInfo = await userDB.get(username);
-        user = JSON.parse(userInfo);
-        console.log(user);
-        await res.json({
-            user
-        })
-    }
+    let userInfo = await userDB.getById(userId);
+    user = JSON.parse(userInfo);
+    await res.json(
+        user
+    )
+
 });
 
+app.get('/user/getUserByEmail', jsonParser, async (req, res) => {
+    let email = req.query.email;
+    let userInfo = await userDB.get(email);
+    userInfo = JSON.parse(userInfo);
+    await  res.json(userInfo)
+})
+
+app.post('/user/login', jsonParser, async (req, res) => {
+    let email = req.body.email
+    let password = req.body.password
+
+    let userInfo = await  userDB.get(email)
+    userInfo = JSON.parse(userInfo);
+    if (JSON.stringify(userInfo) === '{}' || userInfo.password !== password) {
+        console.log('用户名或密码错误')
+        await res.json(false)
+    }
+    else {
+        console.log('登录成功')
+        await res.json(true)
+    }
+})
 
 app.get('/user/getuserlist', jsonParser, async (req, res) => {
     console.log('/user/getuserlist')
     let userList = await userDB.getAll();
+    userList = JSON.parse(userList)
     await res.json({
         userList
     })
 });
 
+app.get('/user/checkEmail', jsonParser, async (req, res) => {
+    let email = req.query.email;
+    let userInfo = await  userDB.get(email);
+    userInfo = JSON.parse(userInfo);
+    if (JSON.stringify(userInfo) === '{}') {
+        console.log('无重复用户邮箱');
+        await res.json(true)
+    }
+    else {
+        console.log('用户邮箱已存在');
+        await res.json(false)
+    }
+})
+
 app.post('/user/adduser', jsonParser, async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
-    let sex = req.body.sex;
-    let age = req.body.age;
-    let description = req.body.description;
+    let email = req.body.email;
 
-    let userInfo = await userDB.get(username);
-    userInfo = JSON.parse(userInfo);
-    console.log(userInfo);
-    console.log(typeof  userInfo);
-    if (JSON.stringify(userInfo) === '{}') {
-        console.log('添加成功 无重复用户名');
-        let userid = JSON.parse(await userDB.add(username, password, description, sex, age));
-        await res.json({
-            statue: 1,
-            userinfo: {
-                userid,
-                username,
-                password,
-                description,
-                sex,
-                age
-            }
-        })
-    }
-    else {
-        console.log('添加失败 已有重复用户名');
-        await res.json({
-            statue: 0,
-            userinfo: {}
-        })
-    }
-});
-
-app.post('/user/updateuser', jsonParser, async (req, res) => {
-    let userid = req.body.userid;
-    let username = req.body.username;
-    let password = req.body.password;
-    let sex = req.body.sex;
-    let age = req.body.age;
-    let description = req.body.description;
-
-    console.log('更新成功');
-    await userDB.update(userid, username, password, description, sex, age);
+    console.log('添加成功');
+    let userid = JSON.parse(await userDB.add(username, password, email));
     await res.json({
         statue: 1,
         userinfo: {
             userid,
             username,
+            password,
+            email
+        }
+    })
+});
+
+app.post('/user/updateuser', jsonParser, async (req, res) => {
+    let userId = req.body.userId;
+    let userName = req.body.userName;
+    let password = req.body.password;
+    let sex = req.body.sex;
+    let age = req.body.age;
+    let description = req.body.description;
+
+    await userDB.update(userId, userName, password, description, sex, age);
+
+    await res.json({
+        statue: 1,
+        userInfo: {
+            userId,
+            userName,
             password,
             description,
             sex,
@@ -108,31 +121,6 @@ app.post('/user/updateuser', jsonParser, async (req, res) => {
         }
     });
 
-    /*let userInfo = await userDB.get(username);
-    userInfo = JSON.parse(userInfo);
-    console.log(userInfo);*/
-
-    /*if (JSON.stringify(userInfo) === '{}') {
-        console.log('更新成功 无重复用户名');
-        await userDB.update(userid, username, password, sex, age);
-        await res.json({
-            statue: 1,
-            userinfo: {
-                userid,
-                username,
-                password,
-                sex,
-                age
-            }
-        })
-    }
-    else {
-        console.log('更新失败 已有重复用户名');
-        await res.json({
-            statue: 0,
-            userinfo: {}
-        })
-    }*/
 });
 
 // Table `favorite` operation
@@ -248,23 +236,40 @@ app.get('/like/getpaperlist', jsonParser, async (req, res) => {
 // Table `paper` operation
 app.get('/paper/getsearch', jsonParser, async (req, res) => {
     let text = req.query.content;
+    let current = req.query.current;
+    let pageSize = 10;
     console.log(text);
     let papers = await paperDB.getAll();
-    let List = [];
-    if(text==''){
-        List = papers.papers
-        await res.json({
-            List
-        })
-    }
-    else{
-        for(let i=0; i<papers.papers.length; i++){
-            if((papers.papers)[i].title.search(text) != -1 || (papers.papers)[i].content.search(text) != -1){
-                List.push(papers.papers[i])
+    papers = JSON.parse(papers);
+    let total = papers.length;
+    let list = [];
+    if(text===''){
+        for (let i = (current - 1) * pageSize; i < current * pageSize; i++) {
+            if (i < total) {
+                list.push(papers[i])
             }
         }
         await res.json({
-            List
+            total,
+            list
+        })
+    }
+    else{
+        let paperList = [];
+        for(let i=0; i<total; i++){
+            if(papers[i].title.search(text) !== -1 || papers[i].content.search(text) !== -1){
+                paperList.push(papers[i])
+            }
+        }
+        total = paperList.length;
+        for (let i = (current - 1) * pageSize; i < current * pageSize; i++) {
+            if (i < total) {
+                list.push(paperList[i])
+            }
+        }
+        await res.json({
+            total,
+            list
         })
     }
 });
@@ -288,31 +293,47 @@ app.get('/paper/getpaper', jsonParser, async (req, res) => {
 });
 
 app.get('/paper/getpaperlist', jsonParser, async (req, res) => {
+    let current = req.query.current
     console.log('/paper/getpaperlist')
+
+    let pageSize = 10
     let papers = await paperDB.getAll();
+    papers = JSON.parse(papers);
+    console.log(papers)
+    let total = papers.length
+    console.log(total)
+    let paperList = []
+
+    for (let i = (current - 1) * pageSize; i < current * pageSize; i++) {
+        if (i < total) {
+            paperList.push(papers[i])
+        }
+    }
+
     await res.json({
-        papers
+        total,
+        paperList
     })
 });
 
 app.post('/paper/addpaper', jsonParser, async (req, res) => {
 
-    let userid = req.body.userid;
+    let userId = req.body.userId;
     let title = req.body.title;
-    let createtime = req.body.createtime;
+    let createTime = req.body.createTime;
     let content = req.body.content;
 
     // add operation always be correct
 
     console.log('添加文章成功');
-    let paperid = JSON.parse(await paperDB.add(userid, title, createtime, content));
+    let paperId = JSON.parse(await paperDB.add(userId, title, createTime, content));
     await res.json({
         statue: 1,
-        paperinfo: {
-            paperid,
-            userid,
+        paperInfo: {
+            paperId,
+            userId,
             title,
-            createtime,
+            createTime,
             content,
         }
     })
@@ -390,6 +411,23 @@ app.get('/blog_comment/get_user_comments', jsonParser, async function (req, res)
     let commentList = await Blog_CommentDB.getUserComments(paperId);
 
     console.log(commentList)
+
+    for (let i = 0; i < commentList.length; i++) {
+        if (commentList[i].commentType === 0) {
+            commentList[i].replyCommentName = null
+        }
+        else {
+            let replyId = commentList[i].replyCommentId
+            console.log(replyId)
+            let comment = await Blog_CommentDB.getCommentById(replyId)
+            console.log(comment)
+            let userId = comment.userId
+            console.log(userId)
+            let user = await userDB.getById(userId)
+            console.log(user)
+            commentList[i].replyCommentName = user.username
+        }
+    }
 
     await res.json({
         commentList

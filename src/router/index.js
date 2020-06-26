@@ -2,12 +2,16 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Regist from '../views/LoginModule/Regist.vue'
 import Login from '../views/LoginModule/Login.vue'
+import store from '../store'
+import { getToken } from '../util/auth'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css' // progress bar style
 
 Vue.use(VueRouter)
 
   const routes = [
     {
-      path: '/',
+      path: '/login',
       name: 'Login',
       component: Login
 
@@ -19,6 +23,10 @@ Vue.use(VueRouter)
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: Regist,
+    },
+    {
+      path: '/',
+      redirect: '/MyBlog'
     },
     {
       path: '/MyBlog',
@@ -79,6 +87,45 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes
+})
+
+const whiteList = ['/login', '/regist']
+
+router.beforeEach(async(to, from, next) => {
+  // start progress bar
+  NProgress.start()
+  // determine whether the user has logged in
+  const hasToken = getToken()
+  console.log(hasToken)
+  if (hasToken) {
+    store.commit('set_userId', hasToken)
+    if (to.path === '/login') {
+      // if is logged in, redirect to the home page
+      next({path: '/'})
+      NProgress.done()
+    } else {
+      next()
+      NProgress.done()
+    }
+  } else {
+    /* has no token*/
+
+    if (whiteList.indexOf(to.path) !== -1) {
+      // in the free login whitelist, go directly
+      next()
+    } else {
+      // other pages that do not have permission to access are redirected to the login page.
+      next(`/login?redirect=${to.path}`)
+      NProgress.done()
+    }
+
+    next()
+  }
+})
+
+router.afterEach(() => {
+  // finish progress bar
+  NProgress.done()
 })
 
 export default router

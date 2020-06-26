@@ -46,21 +46,11 @@ module.exports = {
 
                 console.log('-----------------------------------------------------------------\n\n');
 
-                resolve(res.insertId);
+                resolve(JSON.stringify(res.insertId));
 
             });
 
             closeConnection();
-
-        }).then(value => {
-
-            console.log(value);
-
-            return JSON.stringify(value);
-
-        }).catch(err => {
-
-            console.log(err);
 
         })
 
@@ -90,21 +80,11 @@ module.exports = {
 
                 console.log(res);
 
-                resolve(res);
+                resolve(JSON.stringify(res));
 
             });
 
             closeConnection();
-
-        }).then(value => {
-
-            console.log(value);
-
-            return JSON.stringify(value);
-
-        }).catch(err => {
-
-            console.log(err);
 
         })
 
@@ -134,51 +114,41 @@ module.exports = {
 
                 console.log(res);
 
-                resolve(res);
+                if (res.length !== 0) {
+
+                    let total = res.length;
+
+                    let paperList = [];
+
+                    for (let i = 0; i < total; i++) {
+
+                        paperList.push(res[i].paper_id);
+
+                    }
+
+                    resolve( JSON.stringify({
+
+                        paperList
+
+                    }))
+
+                }
+
+                else {
+
+                    console.log('PaperList is empty');
+
+                    resolve( JSON.stringify({
+
+                        paperList: [],
+
+                    }));
+
+                }
 
             });
 
             closeConnection();
-
-        }).then(value => {
-
-            if (value.length !== 0) {
-
-                let total = value.length;
-
-                let paperList = [];
-
-                for (let i = 0; i < total; i++) {
-
-                    paperList.push(value[i].paper_id);
-
-                }
-
-                return JSON.stringify({
-
-                    paperList
-
-                })
-
-            }
-
-            else {
-
-                console.log('PaperList is empty');
-
-                return JSON.stringify({
-
-                    total: 0,
-
-                    paperList: [],
-
-                });
-
-            }
-
-        }).catch(err => {
-
-            console.log(err);
 
         });
 
@@ -208,59 +178,51 @@ module.exports = {
 
                 console.log(res);
 
-                resolve(res);
+                if (res.length !== 0) {
+
+                    let total = res.length;
+
+                    let userList = [];
+
+                    for (let i = 0; i < total; i++) {
+
+                        let user = {
+
+                            userId: res[i].user_id,
+
+                        }
+
+                        userList.push(user);
+
+                    }
+
+                    resolve( JSON.stringify({
+
+                        total,
+
+                        userList
+
+                    }));
+
+                }
+
+                else {
+
+                    console.log('UserList is empty');
+
+                    resolve( JSON.stringify({
+
+                        total: 0,
+
+                        userList: []
+
+                    }));
+
+                }
 
             })
 
             closeConnection();
-
-        }).then(value => {
-
-            if (value.length !== 0) {
-
-                let total = value.length;
-
-                let userList = [];
-
-                for (let i = 0; i < total; i++) {
-
-                    let user = {
-
-                        userId: value[i].user_id,
-
-                    }
-
-                    userList.push(user);
-
-                }
-
-                return JSON.stringify({
-
-                    total,
-
-                    userList
-
-                });
-
-            }
-
-            else {
-
-                console.log('UserList is empty');
-
-                return JSON.stringify({
-
-                    total: 0,
-
-                    userList: []
-
-                });
-
-            }
-
-        }).catch(err => {
-
-            console.log(err);
 
         })
 

@@ -31,30 +31,6 @@
             </a-layout>
         </a-layout>
     </div>
-    <!-- <div>
-        <p style="height: 100px; width: 100%; color:blueviolet; font-size: 50px; font-family:PingFangSC-Regular,Verdana,Arial;">{{ paper.title }}</p>
-        <h1 style="font-style:oblique; margin: 20px 0px; display: inline-block">{{ username }}</h1>
-        <h2 style="display: inline-block">by {{ paper.createtime }}</h2>
-        <div>
-            <h1  v-html="paper.content"></h1>
-        </div>
-        <span>
-            <a-icon type="star" style="margin-right: 8px" />
-              {{ paper.starnum }}
-        </span>
-        <span>
-            <a-icon type="like" style="margin-right: 8px" />
-              {{ paper.likenum }}
-        </span>
-        <span>
-            <a-icon type="message" style="margin-right: 8px" />
-              {{ paper.commentnum }}
-        </span>
-        <a-back-top />
-        Click
-        <strong style="color: blue"> Here </strong>
-        backTop.
-    </div> -->
 </template>
 
 <script>

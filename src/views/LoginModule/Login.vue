@@ -3,8 +3,9 @@
     <a-layout-header :style="{ position: 'fixed', zIndex: 1, width: '100%' }">
       <span class="head">My Blog</span>
     </a-layout-header>
-    <a-layout-content :style="{ padding: '0 50px', marginTop: '64px' }">
-      <div :style="{ background: 'lightgray', padding: '100px', minHeight: '380px' }">
+    <a-layout-content :style="{ padding: '0 50px', marginTop: '64px'}" class="con">
+      <div :style="{ background: 'lightgray', padding: '100px', minHeight: '590px' }">
+        <span class="head1">My Blog</span>
         <a-form
                 id="components-form-demo-normal-login"
                 :form="form"
@@ -15,12 +16,17 @@
           <a-form-item>
             <a-input
               v-decorator="[
-                'username',
-                {rules: [{ required: true, message: 'Please input the account!'}]}
+                'mail',
+                {rules: [
+                        { type: 'email',message: '请输入合法邮箱!'},
+                        { required: true, message: '邮箱不能为空!'},
+                        ],
+                        validateTrigger: 'blur'
+                }
               ]"
-              placeholder="Account"
+              placeholder="邮箱"
             >
-              <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
+              <a-icon slot="prefix" type="mail" style="color: rgba(0,0,0,.25)" />
             </a-input>
           </a-form-item>
           <a-form-item>
@@ -28,38 +34,24 @@
               v-decorator="[
                 'password',
                 { rules: [
-                    { required: true, message: 'Please input the password!'},
-                    { whitespace: true, message: 'Passwords are not allowed to have spaces!' },
+                    { required: true, message: '密码不能为空!'},
+                    { whitespace: true, message: '密码不允许有空格!' },
                   ]
                 }
               ]"
               @blur="validatePassword"
               type="password"
-              placeholder="Password"
+              placeholder="密码"
             >
               <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
             </a-input>
           </a-form-item>
           <a-form-item>
-            <a-checkbox
-              v-decorator="[
-                'remember',
-                {
-                  valuePropName: 'checked',
-                  initialValue: true,
-                }
-              ]"
-            >
-              Remember me
-            </a-checkbox>
-            <a class="login-form-forgot" href="">
-              Forget Password
-            </a>
             <a-button type="primary" html-type="submit" class="login-form-button">
-              LOGIN
+              登录
             </a-button>
-            Or
-            <router-link :to = "{ path : '/regist'}">Register Now</router-link>
+            或
+            <router-link :to = "{ path : '/regist'}">立即注册</router-link>
             <!--<router-view></router-view>-->
           </a-form-item>
         </a-form>
@@ -88,6 +80,14 @@
     font-style:italic;
   }
 
+  .head1 {
+    font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+    color: #444444;
+    font-size: 30px;
+    font-style:italic;
+    margin-left: 560px;
+  }
+
   #components-form-demo-normal-login .login-form {
     max-width: 300px;
   }
@@ -97,11 +97,17 @@
   #components-form-demo-normal-login .login-form-button {
     width: 100%;
   }
+  .con {
+    min-height: 600px;
+  }
 </style>
 
 
 <script>
-import axios from 'axios'
+  import axios from 'axios'
+  import {setToken} from '@/util/auth.js'
+  import { mapGetters, mapMutations } from 'vuex'
+
   export default {
     beforeCreate() {
       this.form = this.$form.createForm(this, { name: 'normal_login' });
@@ -110,45 +116,52 @@ import axios from 'axios'
       return {
       }
     },
+    computed: {
+      ...mapGetters([
+        'userInfo'
+      ])
+    },
     methods: {
+      ...mapMutations([
+        'set_userInfo',
+        'set_userId'
+      ]),
       handleSubmit(e) {
         e.preventDefault();
-        this.form.validateFields((err, values) => {
+        this.form.validateFields(async (err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
-            this.checkLoginInfo(values)
+            await this.returnCheckBool(values)
           }
         });
       },
-      checkLoginInfo(values) {
-        this.returnCheckBool(values)
-      },
-      returnCheckBool(values){
-        let userList
-        axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-          console.log(res)
-          userList = res.data.userList
-          for (var user of userList){
-            if (user.username === values.username && user.password === values.password){
-              console.log("Execute true")
-              this.$store.commit('setUserid', user.userid)
-              console.log("Execute the set function")
-              return Promise.reject()
-            }
-          }
-          console.log("Execute false")
+      async returnCheckBool(values){
+        let param = {
+          email: values.mail,
+          password: values.password
+        }
+        let res = await axios.post('http://localhost:3000/user/login', param)
+        console.log(res)
+        if (res.data) {
+          this.$message.success('登录成功', 2)
           this.form.resetFields()
-          this.$message.warning('Login Failed! Wrong account or password.', 3);
-        }).catch((err) => {
-          console.log(err);
-          this.$message.success('Login Success! Welcom Back ' + this.form.getFieldValue('username') + '!', 3);
-          this.$router.push('/MyBlog')
-        })
+          let get = await axios.get('http://localhost:3000/user/getUserByEmail', {params: {email: values.mail}})
+          let userInfo = get.data
+          console.log(userInfo)
+          setToken(userInfo.userId)
+          this.$store.commit('set_userId', userInfo.userId)
+          this.$store.commit('set_userInfo', userInfo)
+          console.log(this.userInfo)
+          await this.$router.push('/MyBlog')
+        }
+        else {
+          this.$message.error('登录失败，邮箱或密码错误', 3)
+        }
       },
       validatePassword(e) {
         if (e.target.value.length < 6) {
           const error = [{
-            message: 'Password cannot be less than 6 digits!',
+            message: '密码不能少于6位!',
           }]
           this.form.setFields({
             password: {
@@ -160,7 +173,7 @@ import axios from 'axios'
         else {
           if (e.target.value.length > 20) {
             const error = [{
-              message: 'Password cannot be more than 20 digits!',
+              message: '密码不能大于20位!',
             }]
             this.form.setFields({
               password: {

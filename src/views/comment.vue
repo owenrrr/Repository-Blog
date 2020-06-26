@@ -143,28 +143,12 @@
                                 commentType: this.commentlist[i].commentType,
                                 replyCommentId: this.commentlist[i].replyCommentId,
                                 blogCommentId: this.commentlist[i].blogCommentId,
-
+                                replyCommentName: this.commentlist[i].replyCommentName
                             }
                             console.log(comment);
                             this.commentlist[i]=comment
                             break
                         }
-                    }
-                }
-                for (let i = 0; i < this.commentlist.length; i++) {
-                    if (this.commentlist[i].commentType === 0) {
-                        this.commentlist[i].replyCommentName = null
-                    }
-                    else if (this.commentlist[i].commentType === 1) {
-                        let replyId = this.commentlist[i].replyCommentId
-                        let comment;
-                        for (let j = 0; j < this.commentlist.length; j++) {
-                            if (replyId === this.commentlist[j].blogCommentId) {
-                                comment = this.commentlist[j]
-                                break
-                            }
-                        }
-                        this.commentlist[i].replyCommentName = comment.username
                     }
                 }
                 console.log(this.commentlist)
@@ -211,28 +195,13 @@
                                 blogCommentCreateTime: comments[i].blogCommentCreateTime,
                                 commentType: comments[i].commentType,
                                 replyCommentId: comments[i].replyCommentId,
-                                blogCommentId: comments[i].blogCommentId
+                                blogCommentId: comments[i].blogCommentId,
+                                replyCommentName: comments[i].replyCommentName
                             }
                             console.log(comment);
                             this.commentlist[i]=comment
                             break
                         }
-                    }
-                }
-                for (let i = 0; i < this.commentlist.length; i++) {
-                    if (this.commentlist[i].commentType === 0) {
-                        this.commentlist[i].replyCommentName = null
-                    }
-                    else if (this.commentlist[i].commentType === 1) {
-                        let replyId = this.commentlist[i].replyCommentId
-                        let comment;
-                        for (let j = 0; j < this.commentlist.length; j++) {
-                            if (replyId === this.commentlist[j].blogCommentId) {
-                                comment = this.commentlist[j]
-                                break
-                            }
-                        }
-                        this.commentlist[i].replyCommentName = comment.username
                     }
                 }
                 console.log(this.commentlist)

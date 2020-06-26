@@ -17,13 +17,13 @@ function closeConnection() {
 
 module.exports = {
 
-    add: function (userid, title, createTime, content) {
+    add: function (userId, title, createTime, content) {
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [userid, title, createTime, content];
+            let params = [userId, title, createTime, content];
 
             let sql = 'insert into paper (user_id, title, create_time, content) values (?, ?, ?, ?);';
 
@@ -47,35 +47,25 @@ module.exports = {
 
                 console.log('-----------------------------------------------------------------\n\n');
 
-                resolve(result.insertId);
+                resolve(JSON.stringify(result.insertId));
 
             });
 
             closeConnection()
 
-        }).then(value => {
-
-            console.log(value);
-
-            return JSON.stringify(value);
-
-        }).catch(err => {
-
-            console.log(err);
-
         })
 
     },
 
-    get: function (paperid) {
+    get: function (paperId) {
 
-        console.log(paperid);
+        console.log(paperId);
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [paperid];
+            let params = [paperId];
 
             let sql = 'select * from paper where paper_id = ?;';
 
@@ -93,55 +83,45 @@ module.exports = {
 
                 console.log(res);
 
-                resolve(res);
+                if (res.length !== 0) {
+
+                    let paper = {
+
+                        paperId: res[0].paper_id,
+
+                        userId: res[0].user_id,
+
+                        starNum: res[0].star_num,
+
+                        likeNum: res[0].like_num,
+
+                        commentNum: res[0].comment_num,
+
+                        title: res[0].title,
+
+                        createTime: res[0].create_time,
+
+                        content: res[0].content,
+
+                    };
+
+                    resolve(JSON.stringify(paper));
+
+                }
+
+                else {
+
+                    console.log('Paper not find');
+
+                    resolve(JSON.stringify({}));
+
+                }
 
             });
 
             closeConnection();
 
-        }).then(value => {
-
-            console.log(value);
-
-            if (value.length !== 0) {
-
-                let paper = {
-
-                    paperid: value[0].paper_id,
-
-                    userid: value[0].user_id,
-
-                    starnum: value[0].star_num,
-
-                    likenum: value[0].like_num,
-
-                    commentnum: value[0].comment_num,
-
-                    title: value[0].title,
-
-                    createtime: value[0].create_time,
-
-                    content: value[0].content,
-
-                };
-
-                return JSON.stringify(paper);
-
-            }
-
-            else {
-
-                console.log('Paper not find');
-
-                return JSON.stringify({});
-
-            }
-
-        }).catch(err => {
-
-            console.log(err);
-
-        });
+        })
 
     },
 
@@ -179,19 +159,19 @@ module.exports = {
 
                             let paper = {
 
-                                paperid: res[i].paper_id,
+                                paperId: res[i].paper_id,
 
-                                userid: res[i].user_id,
+                                userId: res[i].user_id,
 
-                                starnum: res[i].star_num,
+                                starNum: res[i].star_num,
 
-                                likenum: res[i].like_num,
+                                likeNum: res[i].like_num,
 
-                                commentnum: res[i].comment_num,
+                                commentNum: res[i].comment_num,
 
                                 title: res[i].title,
 
-                                createtime: res[i].create_time,
+                                createTime: res[i].create_time,
 
                                 content: res[i].content,
 
@@ -199,15 +179,13 @@ module.exports = {
 
                             papers.push(paper);
 
-                            resolve({
-
-                                total: total,
-
-                                papers: papers,
-
-                            })
-
                         }
+
+                        resolve(
+
+                            JSON.stringify(papers)
+
+                        )
 
                     }
 
@@ -215,13 +193,12 @@ module.exports = {
 
                         console.log('Papers not find');
 
-                        resolve({
+                        resolve(
 
-                            total: 0,
 
-                            papers: []
+                            JSON.stringify([])
 
-                        })
+                        )
 
                     }
 
@@ -281,15 +258,7 @@ module.exports = {
 
             closeConnection();
 
-        }).then(() => {
-
-            console.log('success update');
-
-        }).catch((err) => {
-
-            console.log(err);
-
-        });
+        })
 
     },
 

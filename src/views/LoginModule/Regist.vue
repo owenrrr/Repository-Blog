@@ -4,10 +4,11 @@
       <span class="head">My Blog</span>
     </a-layout-header>
     <a-layout-content :style="{ padding: '0 50px', marginTop: '64px' }">
-      <div :style="{ background: 'lightgray', padding: '100px', minHeight: '380px' }">
+      <div :style="{ background: 'lightgray', padding: '100px', minHeight: '590px' }">
+        <span class="head1">My Blog</span>
         <a-form
                 id="components-form-demo-normal-login"
-                :form="registerform"
+                :form="form"
                 class="login-form"
                 @submit="handleRegisterSubmit"
                 :style="{width: '300px', margin: '0 auto'}"
@@ -16,10 +17,10 @@
             <a-input
               size="large"
               type="email"
-              placeholder="Mail"
+              placeholder="邮箱"
               v-decorator="[
                   'registerUserMail',
-                  {rules: [{ required: true, type: 'email', message: 'Invalid Mail' }], validateTrigger: 'blur'}]"
+                  {rules: [{ required: true, type: 'email', message: '请输入合法邮箱' }, { validator: this.handleUserEmail }], validateTrigger: 'blur'}]"
             >
               <a-icon slot="prefix" type="mail" style="color: rgba(0,0,0,.25)" />
             </a-input>
@@ -27,10 +28,10 @@
           <a-form-item>
             <a-input
               size="large"
-              placeholder="Username"
+              placeholder="用户名"
               v-decorator="[
                   'registerUsername',
-                  {rules: [{ required: true, message: 'Invalid Username' }, { validator: this.handleUsername }], validateTrigger: 'blur'}]"
+                  {rules: [{ required: true, message: '请输入用户名' }], validateTrigger: 'blur'}]"
             >
               <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input>
@@ -39,7 +40,7 @@
             <a-input
               size="large"
               type="password"
-              placeholder="password"
+              placeholder="密码"
               v-decorator="[
                     'registerPassword', 
                     {rules: [{ required: true, message: ' ' }, { validator: this.handlePassword }], validateTrigger: 'blur'}]">
@@ -50,7 +51,7 @@
             <a-input
               size="large"
               type="password"
-              placeholder="Confirm Password"
+              placeholder="验证密码"
               v-decorator="[
                     'registerPasswordconfirm', 
                     {rules: [{ required: true, message: ' ' }, { validator: this.handlePasswordCheck }], validateTrigger: 'blur'}]">
@@ -63,7 +64,7 @@
               type="primary"
               :loading="registerLoading"
               html-type="submit"
-            >Submit</a-button>
+            >注册</a-button>
           </a-form-item>
         </a-form>
       </div>
@@ -81,52 +82,51 @@ export default {
   data(){
     return {
         basic : {
-            sex: null,
-            age: null,
             username : '',
             password: '',
+            email: '',
         },
         registerLoading : false,
         registerPW: true,
         registerUN: true,
-
-        registerform: this.$form.createForm(this),  //create form to get input-data
     }
   },
-
+  beforeCreate() {
+    this.form = this.$form.createForm(this, { name: 'regist' });
+  },
   methods :{
       handleRegisterSubmit(e){
         e.preventDefault();
 
-        this.registerform.validateFields((err, values) => {
+        this.form.validateFields(async (err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
 
             if (this.checkRegistInfo()) {
-              this.$message.success('Regist Success!');
-              this.addUser()  
-              this.$router.push('/')
+              this.$message.success('注册成功!');
+              this.basic.username = this.form.getFieldValue('registerUsername')
+              await this.addUser()
+              this.form.resetFields()
+              await this.$router.push('/')
             }
             else {
               this.form.resetFields()
-              this.$message.warning('Regist Failed! Fullfill the form please.', 3);
+              this.$message.warning('注册失败，请完成表格', 3);
             }
           }
         });
       },
-      addUser(){
-        axios.post('http://localhost:3000/user/adduser',this.basic)
+      async addUser(){
+        console.log(this.basic)
+        let res =  await axios.post('http://localhost:3000/user/adduser',this.basic)
+        console.log(res)
       },
       checkRegistInfo(){
-        if (this.registerPW && this.registerUN){
-          return true
-        }else{
-          return false
-        }
+        return this.registerPW && this.registerUN;
       },
       handlePassword(rule, value, callback) {
           if (value.length < 6){
-              callback(new Error("Password length must longer than 6"))
+              callback(new Error("密码必须大于6位"))
               this.registerPW = false
           }
           this.basic.password = value
@@ -136,50 +136,31 @@ export default {
       },
       handlePasswordCheck(rule, value, callback){
           if (!value){
-              callback(new Error("Please input your password!"))
+              callback(new Error("请输入密码"))
               if (this.registerPW){
                 this.registerPW = false
               }
-          }else if (value && this.basic.password && value.trim() != this.basic.password.trim()){
-              callback(new Error("Please input the same password!"))
+          }else if (value && this.basic.password && value.trim() !== this.basic.password.trim()){
+              callback(new Error("请输入相同密码"))
               if (this.registerPW){
                 this.registerPW = false
               }
           }
           callback()
       },
-      handleUsername(rule, value, callback){
-          // interface http://localhost:8083/returnUsername need return Username array
-        //   axios.get('http://localhost:8083/returnUsername').then(res => {
-        //       for (var i=0; i<res.length; i++){
-        //           if (res[i].trim() == value.trim()){
-        //               callback(new Error("Username is used."))
-        //           }
-        //       }
-        //   } )
-        let userList
-        axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-          userList = res.data.userList
-          for (var user of userList){
-            if (user.username === value.username){
-              console.log("Execute false")
-              return Promise.reject()
-            }
-          }
+      async handleUserEmail(rule, value, callback){
+        let res = await axios.get('http://localhost:3000/user/checkEmail', {params: {email: value}})
+        console.log(res);
+        if (res.data) {
           console.log("Execute true")
           this.registerUN = true
-          this.basic.username = value
+          this.basic.email = value
           callback()
-        }).catch( () => {
+        }
+        else {
           this.registerUN = false
-          callback(new Error("Username is used."))
-        })
-        // if (value == "Owen"){
-        //   this.registerUN = false
-        //     callback(new Error("Username is used."))
-        // }
-        //   this.basic.username = value
-        //   callback()         
+          callback(new Error("邮箱已存在"))
+        }
       }
   }
 }
@@ -188,6 +169,13 @@ export default {
 
 
 <style>
+  .head1 {
+    font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+    color: #444444;
+    font-size: 30px;
+    font-style:italic;
+    margin-left: 560px;
+  }
 
 #login {
 
