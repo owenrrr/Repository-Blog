@@ -254,4 +254,76 @@ module.exports = {
 
     },
 
+    getmypapers: function(userId) {
+
+        return new Promise((resolve,reject) => {
+
+            openConnection()
+
+            let params = [userId]
+
+            let sql = 'select * from paper where user_id = ? '
+
+            connection.query(sql, params , function (err, res) {
+
+                if (err) {
+
+                    console.log('[GET-MYPAPER-FAILED] ' + err.message);
+
+                    return;
+
+                }
+
+                console.log('[GET-MYPAPER-SUCCESS] ')
+
+                console.log(res);
+
+                if (res.length !== 0) {
+
+                    let papers = []
+
+                    for(let i=0; i<res.length; i++){
+
+                        let paper = {
+
+                            paperId: res[i].paper_id,
+
+                            userId: res[i].user_id,
+
+                            starNum: res[i].star_num,
+
+                            likeNum: res[i].like_num,
+
+                            commentNum: res[i].comment_num,
+
+                            title: res[i].title,
+
+                            createTime: res[i].create_time,
+
+                            content: res[i].content,
+
+                        };
+
+                        papers.push(paper)
+
+                    }
+
+                    resolve(JSON.stringify(papers));
+
+                }
+
+                else {
+
+                    console.log('Paper not find');
+
+                    resolve(JSON.stringify({}));
+
+                }
+
+            }),
+
+            closeConnection()
+        })
+    },
+
 }

@@ -1,134 +1,165 @@
 <template>
-     <div>
-         <span class="head">My Articles</span>
-     </div>
+    <div class="main">
+        <div class="list">
+            <a-menu  mode="horizontal" :defaultSelectedKeys="['0']">
+                <a-menu-item key="0"> <a-icon type="star" />我的文章</a-menu-item>
+            </a-menu>
+            <a-list item-layout="vertical" size="large" :data-source="listData">
+                <a-list-item slot="renderItem" key="item.title" slot-scope="item">
+                    <a-list-item-meta :description="item.userName">
+                        <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
+                        <a slot="title" @click="commitPaperId(item.paperId)">{{ item.title }}</a>
+                    </a-list-item-meta>
+                    <template>
+                        <span>
+                            <a-icon type="star-o" style="margin-right: 8px"/>
+                            {{ actions[item.index].text1 }}
+                        </span>
+                        <span>
+                            <a-icon type="like-o" style="margin-right: 8px"/>
+                            {{ actions[item.index].text2 }}
+                        </span>
+                        <span>
+                            <a-icon type="message" style="margin-right: 8px"/>
+                            {{ actions[item.index].text3 }}
+                        </span>
+                    </template>
+                </a-list-item>
+            </a-list>
+        </div>
+        <div class="page" >
+            <a-pagination v-model="current" :total="total" @change="onChange" />
+        </div>
+    </div>
 </template>
 
-<!--<script>
-     import axios from 'axios'
-     export default {
-          name: "myArticles",
-          data() {
-               return {
-                    listData : [],
-                    pagination: {
-                         onChange: page => {
-                              console.log(page);
-                         },
-                         pageSize: 3,
-                    },
-                    actions :[],
-                    userList: [],
-                    paperList: [],
-                    allpaper: []
-               };
-          },
+<script>
+    import axios from 'axios'
+    import {mapGetters, mapMutations} from 'vuex'
+
+    export default {
+        name: "BlogList",
+        data() {
+            return {
+                listData : [],
+                current: 1,
+                total: 0,
+                actions :[],
+                userList: [],
+                paperList: [],
+            };
+        },
+
+        computed: {
+            ...mapGetters([
+                'getUserId'
+            ])
+        },
+
+        async mounted(){
+            await this.setPaperList()
+            await this.constructors(this.paperList)
+        },
 
 
-          async mounted(){
-               /*await this.setAllpaper()
-               await this.setUserList()
-               await this.setPaperList()
-               await this.constructors(this.userList,this.paperList)*/
-              console.log('hello mounted')
-          },
+        methods:{
+            ...mapMutations([
+                'set_paperId'
+            ]),
 
+            async onChange(page) {
+                this.current =page
+                await this.setPaperList()
+                await this.constructors(this.paperList)
+            },
 
-          methods:{
+            async commitPaperId(paperId){
+                this.$store.commit('set_paperId', Number(paperId))
+                await this.$router.push({name: 'Article'}).catch((err) => console.log(err))
+            },
 
-               commitpaperid(paperid){
-                    this.$store.commit('setPaperid', paperid)
-                    this.$router.push({name: 'Article'}).catch((err) => {err})
-               },
+            async constructors(paperList){
+                console.log("This is in constructor")
+                this.setActions(paperList)
+                await this.setListData(paperList)
+            },
 
-               constructors(userlist, paperlist){
-                    console.log("This is in constructor")
-                    this.setActions(paperlist)
-                    this.setListData(paperlist,userlist)
-               },
-
-               setAllpaper(){
-                    console.log("setAllpaper")
-                    return axios.get('http://localhost:3000/paper/getpaperlist').then((res) => {
-                         this.allpaper = res.data.papers.papers
-                         console.log(this.allpaper);
+            async setPaperList(){
+                console.log("This is in setPaperList")
+                let res = await axios.get('http://localhost:3000/paper/getmypapers',
+                    {
+                        params:{
+                            userId: this.getUserId,
+                            current: this.current
+                        }
                     })
-               },
+                this.paperList = res.data.paperList
+                this.total = res.data.total
+                console.log(this.paperList);
+            },
 
-               setUserList(){
-                    return axios.get('http://localhost:3000/user/getuserlist').then((res)=>{
-                         console.log("getting userlist")
-                         console.log(res);
-                         this.userList=res.data.userList
-                         console.log(this.userList)
-                    })
-               },
+            setActions(paperList){
+                this.actions = []
+                console.log("This is in setActions")
+                console.log(paperList)
+                for (let paper of paperList){
+                    let tmp = {text1 :null, text2 :null, text3 :null}
+                    tmp.text1 = paper.starNum
+                    tmp.text2 = paper.likeNum
+                    tmp.text3 = paper.commentNum
+                    console.log("star:" + paper.starNum + "like: " + paper.likeNum + "comment: " + paper.commentNum)
+                    this.actions.push(tmp)
+                }
+                console.log("This is after setActions : ")
+                console.log(this.actions)
+            },
 
-               setPaperList(){
-                    let paperidlist
-                    console.log("This is in setPaperList")
-                    return axios.get('http://localhost:3000/favorite/getpaperlist',{params:{userId: this.$store.getters.getUserid}}).then((res) => {
-                         paperidlist = res.data.papers.paperList
-                         console.log(paperidlist);
-                    }).then(()=>{
-                         for(let i=0; i<paperidlist.length; i++){
-                              for(let j=0; j<this.allpaper.length; j++){
-                                   if(paperidlist[i]==this.allpaper[j].paperid){
-                                        console.log("pushing")
-                                        console.log(this.allpaper[j])
-                                        this.paperList.push(this.allpaper[j])
-                                        break
-                                   }
-                              }
-                         }
-                    })
-               },
-
-               setActions(paperlist){
-                    console.log("This is in setActions")
-                    console.log(paperlist)
-                    for (var paper of paperlist){
-                         var tmp = {text1 :null, text2 :null, text3 :null}
-                         tmp.text1 = paper.starnum
-                         tmp.text2 = paper.likenum
-                         tmp.text3 = paper.commentnum
-                         console.log("star:" + paper.starnum + "like: " + paper.likenum + "comment: " + paper.commentnum)
-                         this.actions.push(tmp)
+            async setListData(paperList){
+                this.listData = []
+                console.log("This is in setListData")
+                let index = 0
+                for (let paper of paperList){
+                    let tmp = {
+                        paperId: paper.paperId,
+                        userId: paper.userId,
+                        title: paper.title,
+                        starNum: paper.starNum,
+                        likeNum: paper.likeNum,
+                        commentNum: paper.commentNum,
+                        createTime: paper.createTime,
+                        userName: null ,
+                        index: index
                     }
-                    console.log("This is after setActions : ")
-                    console.log(this.actions)
-               },
-
-               setListData(paperList,userList){
-                    console.log("This is in setListData")
-                    let index = 0
-                    for (var paper of paperList){
-                         var tmp = {paperid: paper.paperid, userid: paper.userid, title: paper.title, starnum: paper.starnum, likenum: paper.likenum, commentnum: paper.commentnum, createtime: paper.createtime, username: null , index: index}
-                         index++
-                         for (var user of userList){
-                              if (tmp.userid == user.userid){
-                                   tmp.username = user.username
-                                   this.listData.push(tmp)
-                                   break;
-                              }
-                         }
-                    }
-                    console.log("This is after setListData :")
-                    console.log(this.listData);
-               },
-          },
+                    index++
+                    console.log(tmp.userId)
+                    let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: tmp.userId}})
+                    tmp.userName = res.userName
+                    this.listData.push(tmp)
+                }
+                console.log("This is after setListData :")
+                console.log(this.listData);
+            },
+        },
 
 
-     }
+    }
 </script>
 
 <style scoped>
-    .head {
-        font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
-        color: whitesmoke;
-        font-size: 40px;
-        font-style:italic;
-        width: 30%;
-        margin-right: 10%;
+    .main {
+        display: flex;
+        min-height: 550px;
+        flex-flow: row wrap;
     }
-</style>-->
+
+    .list {
+        align-self: flex-start;
+        width: 100%;
+    }
+
+    .page {
+        align-self: flex-end;
+        width: 100%;
+        text-align: center;
+    }
+</style>

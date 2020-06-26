@@ -341,6 +341,26 @@ app.get('/paper/getpaper', jsonParser, async (req, res) => {
     )
 });
 
+app.get('/paper/getmypapers', jsonParser, async(req,res) =>{
+    console.log("/paper/getmypapers")
+    let userId = req.query.userId;
+    let current = req.query.current;
+    let papers = await paperDB.getmypapers(userId)
+    papers = JSON.parse(papers)
+    let pageSize = 10;
+    let paperList = [];
+    for (let i = (current - 1) * pageSize; i < current * pageSize; i++) {
+        if (i < papers.length) {
+            paperList.push(papers[i])
+        }
+    }
+
+    await res.json({
+        total: paperList.length,
+        paperList
+    })
+})
+
 app.get('/paper/getpaperlist', jsonParser, async (req, res) => {
     let current = req.query.current
     console.log('/paper/getpaperlist')
