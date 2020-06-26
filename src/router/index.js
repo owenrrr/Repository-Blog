@@ -82,7 +82,7 @@ const router = new VueRouter({
   routes
 })
 
-const whiteList = ['/login', '/regist']
+const whiteList = ['/login', '/regist', '/reply']
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -90,6 +90,8 @@ router.beforeEach(async(to, from, next) => {
   // determine whether the user has logged in
   const hasToken = getToken()
   console.log(hasToken)
+  console.log(from)
+  console.log(to)
   if (hasToken) {
     store.commit('set_userId', hasToken)
     if (to.path === '/login') {
