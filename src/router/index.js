@@ -50,32 +50,18 @@ Vue.use(VueRouter)
           path: 'submitpage',
           name: 'SubmitPage',
           component: () => import('@/views/EditorModule/SubmitPage')
+        }, {
+          path: '/settings',
+          name :'Settings',
+          component: () => import('@/views/UserModule/Settings')
         },{
-          path: 'userinterface',  // children route cannot add '/'
-          name: 'Userinterface',
-          component: () => import('@/views/LayoutModule/UserLayout'),
-          children: [
-            {
-              path: '/settings',
-              name :'Settings',
-              component: () => import('@/views/UserModule/Settings')
-            },{
-              path: '/followers',
-              name :'Followers',
-              component: () => import('@/views/UserModule/Followers')
-            },{
-              path: '/myarticles',
-              name: 'myArticles',
-              components: () => import('@/views/UserModule/myArticles'),
-              children : [
-                {
-                  path: '/article',
-                  name: 'article',
-                  components: () => import('@/views/UserModule/article')
-                }
-              ]
-            }
-          ]
+          path: '/followers',
+          name :'Followers',
+          component: () => import('@/views/UserModule/Followers')
+        },{
+          path: '/myarticles',
+          name: 'myArticles',
+          components: () => import('@/views/UserModule/myArticles'),
         }
       ]
     },{

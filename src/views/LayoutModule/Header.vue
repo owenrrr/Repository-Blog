@@ -18,8 +18,23 @@
             <a-menu-item key="3" @click="jumpToStar">
                 <a-icon type="star"/>收藏
             </a-menu-item>
-            <a-menu-item key="4" @click="jumpToUser">
-                <a-icon type="user"/>个人
+            <a-menu-item key="4" @click="jumpToSetting">
+                <a-dropdown>
+                    <a @click="e => e.preventDefault()">
+                         <a-icon type="user" /> 个人
+                    </a>
+                    <a-menu slot="overlay" @click="onClick">
+                        <a-menu-item key="1">
+                            个人信息
+                        </a-menu-item>
+                        <a-menu-item key="2">
+                            我的文章
+                        </a-menu-item>
+                        <a-menu-item key="3">
+                            登出
+                        </a-menu-item>
+                    </a-menu>
+                </a-dropdown>
             </a-menu-item>
         </a-menu>
     </a-layout-header>
@@ -38,8 +53,20 @@
             jumpToStar() {
                 this.$router.push('/MyBlog/favourite').catch(err => {err})
             },
-            jumpToUser() {
-                this.$router.push('/MyBlog/userinterface').catch(err => {err})
+            jumpToSetting() {
+                this.$router.push({name: 'Settings'})
+            },
+            onClick({ key }) {
+                if(key == 1){
+                    this.$router.push({name: 'Settings'})
+                }
+                else if(key == 2){
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    this.$router.push({name: 'myArticles'})
+                }
+                else if(key == 3){
+                    console.log("Logout")
+                }
             },
         },
     }

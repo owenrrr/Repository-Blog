@@ -1,6 +1,6 @@
 <template>
   <a-layout id="components-layout-demo-custom-trigger">
-    <a-layout-sider v-model="collapsed" :trigger="null" collapsible>
+    <!--<a-layout-sider v-model="collapsed" :trigger="null" collapsible>
       <div><p>Logo</p></div>
       <a-menu theme="dark" mode="inline" :default-selected-keys="['1']">
         <a-menu-item key="1" @click='jumptoSet'>
@@ -37,7 +37,7 @@
       >
         <router-view/>
       </a-layout-content>
-    </a-layout>
+    </a-layout>-->
   </a-layout>
 </template>
 <script>
