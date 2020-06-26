@@ -122,13 +122,12 @@ module.exports = {
 
                     for (let i = 0; i < total; i++) {
 
-                        let user = {
 
-                            userId: res[i].user_id,
+                        let userId = res[i].user_id;
 
-                        };
 
-                        userList.push(user);
+
+                        userList.push(userId);
 
                     }
 
