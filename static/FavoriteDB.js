@@ -126,11 +126,11 @@ module.exports = {
 
                     }
 
-                    resolve( JSON.stringify({
+                    resolve( JSON.stringify(
 
                         paperList
 
-                    }))
+                    ))
 
                 }
 
@@ -138,11 +138,11 @@ module.exports = {
 
                     console.log('PaperList is empty');
 
-                    resolve( JSON.stringify({
+                    resolve( JSON.stringify(
 
-                        paperList: [],
+                        []
 
-                    }));
+                    ));
 
                 }
 
@@ -186,13 +186,10 @@ module.exports = {
 
                     for (let i = 0; i < total; i++) {
 
-                        let user = {
+                        let userId = res[i].user_id;
 
-                            userId: res[i].user_id,
 
-                        }
-
-                        userList.push(user);
+                        userList.push(userId);
 
                     }
 

@@ -169,8 +169,8 @@ app.get('/favorite/getuserlist', jsonParser, async (req, res) => {
 });
 
 app.get('/favorite/checkFavorite', jsonParser, async (req,res) => {
-    let userId = req.query.userId;
-    let paperId = req.query.paperId;
+    let userId = Number(req.query.userId);
+    let paperId = Number(req.query.paperId);
     let userList = await FavoriteDB.getUserList(paperId)
     userList = JSON.parse(userList)
 
@@ -186,10 +186,28 @@ app.get('/favorite/checkFavorite', jsonParser, async (req,res) => {
 
 app.get('/favorite/getpaperlist', jsonParser, async (req, res) => {
     let userId = req.query.userId;
-    let paperList = await FavoriteDB.getPaperList(userId);
-    let papers = JSON.parse(paperList);
+    let current = req.query.current;
+    let papers = await FavoriteDB.getPaperList(userId);
+    papers = JSON.parse(papers);
+
+    let tempList = [];
+    for (let paperId of papers) {
+        let paper = await paperDB.get(paperId);
+        paper = JSON.parse(paper);
+        tempList.push(paper);
+    }
+
+    let pageSize = 10;
+    let paperList = [];
+    for (let i = (current - 1) * pageSize; i < current * pageSize; i++) {
+        if (i < tempList.length) {
+            paperList.push(tempList[i])
+        }
+    }
+
     await res.json({
-        papers
+        total: paperList.length,
+        paperList
     })
 });
 
@@ -239,13 +257,18 @@ app.get('/like/getuserlist', jsonParser, async (req, res) => {
 });
 
 app.get('/like/checkLike', jsonParser, async (req, res) => {
-    let userId = req.query.userId
-    let paperId = req.query.paperId
+    let userId = Number(req.query.userId)
+    let paperId = Number(req.query.paperId)
     let userList = await LikeDB.getUserList(paperId)
     userList = JSON.parse(userList)
+    console.log(userId)
+    console.log(userList)
 
     let sign = false
     for (let user of userList) {
+        console.log(user)
+        console.log(typeof user)
+        console.log(typeof userId)
         if (user === userId) {
             sign = true
             break

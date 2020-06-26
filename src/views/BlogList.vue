@@ -72,6 +72,7 @@ import {mapMutations} from 'vuex'
                     })
                 console.log(res);
                 this.paperList=res.data.list
+                await this.constructors(this.paperList)
             },
             async search(){
                 console.log("searching...................................")
@@ -87,13 +88,13 @@ import {mapMutations} from 'vuex'
                 this.total = res.data.total
             },
             async commitPaperId(paperId){
-                this.$store.commit('set_paperId', paperId)
+                this.$store.commit('set_paperId', Number(paperId))
                 await this.$router.push({name: 'Article'}).catch((err) => console.log(err))
             },
-            constructors(paperlist){
+            constructors(paperList){
                 console.log("This is in constructor")
-                this.setActions(paperlist)
-                this.setListData(paperlist)
+                this.setActions(paperList)
+                this.setListData(paperList)
             },
             async setPaperList(){
                 console.log(this.current)
@@ -109,12 +110,12 @@ import {mapMutations} from 'vuex'
                 this.paperList = res.data.list
                 this.total = res.data.total
             },
-            setActions(paperlist){
+            setActions(paperList){
                 this.actions = []
                 console.log("This is in setActions")
-                console.log(paperlist)
-                for (var paper of paperlist){
-                    var tmp = {text1 :null, text2 :null, text3 :null}
+                console.log(paperList)
+                for (let paper of paperList){
+                    let tmp = {text1 :null, text2 :null, text3 :null}
                     tmp.text1 = paper.starNum
                     tmp.text2 = paper.likeNum
                     tmp.text3 = paper.commentNum
@@ -128,8 +129,8 @@ import {mapMutations} from 'vuex'
                 this.listData = []
                 let index = 0
                 console.log("This is in setListData")
-                for (var paper of paperList){
-                    var tmp = {paperId: paper.paperId, userId: paper.userId, title: paper.title, starNum: paper.starNum, likeNum: paper.likeNum, commentNum: paper.commentNum, createTime: paper.createTime, userName: null, index:index}
+                for (let paper of paperList){
+                    let tmp = {paperId: paper.paperId, userId: paper.userId, title: paper.title, starNum: paper.starNum, likeNum: paper.likeNum, commentNum: paper.commentNum, createTime: paper.createTime, userName: null, index:index}
                     index++
                     let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: tmp.userId}})
                     tmp.userName = res.data.userName
