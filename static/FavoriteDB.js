@@ -196,13 +196,11 @@ module.exports = {
 
                     }
 
-                    resolve( JSON.stringify({
-
-                        total,
+                    resolve( JSON.stringify(
 
                         userList
 
-                    }));
+                    ));
 
                 }
 
@@ -210,13 +208,11 @@ module.exports = {
 
                     console.log('UserList is empty');
 
-                    resolve( JSON.stringify({
+                    resolve( JSON.stringify(
 
-                        total: 0,
+                        []
 
-                        userList: []
-
-                    }));
+                    ));
 
                 }
 

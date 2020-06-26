@@ -38,19 +38,28 @@ Vue.use(VueRouter)
           path: '/home/blogList',
           name: 'BlogList',
           component: () => import('@/views/Home')
-        },{
+        },
+        {
+          path: '/Article',
+          name: 'Article',
+          component: () => import('@/views/Article')
+        },
+        {
           path: 'basicEditor',  // children route cannot add '/'
           name: 'BasicEditor',
           component: () => import('@/views/EditorModule/BasicEditor')
-        }, {
+        },
+        {
           path: 'favourite',
           name: 'Favourite',
           component: () => import('@/views/Favourite')
-        }, {
+        },
+        {
           path: 'submitpage',
           name: 'SubmitPage',
           component: () => import('@/views/EditorModule/SubmitPage')
-        },{
+        },
+        {
           path: 'userinterface',  // children route cannot add '/'
           name: 'Userinterface',
           component: () => import('@/views/LayoutModule/UserLayout'),
@@ -59,11 +68,13 @@ Vue.use(VueRouter)
               path: '/settings',
               name :'Settings',
               component: () => import('@/views/UserModule/Settings')
-            },{
+            },
+            {
               path: '/followers',
               name :'Followers',
               component: () => import('@/views/UserModule/Followers')
-            },{
+            },
+            {
               path: '/myarticles',
               name: 'myArticles',
               components: () => import('@/views/UserModule/myArticles'),
@@ -78,11 +89,7 @@ Vue.use(VueRouter)
           ]
         }
       ]
-    },{
-      path: './Article',
-      name: 'Article',
-      component: () => import('@/views/Article')
-    }
+    },
 ]
 
 const router = new VueRouter({

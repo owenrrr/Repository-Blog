@@ -132,13 +132,11 @@ module.exports = {
 
                     }
 
-                    resolve( JSON.stringify({
+                    resolve( JSON.stringify(
 
-                        total,
+                        userList
 
-                        userList,
-
-                    }));
+                    ));
 
                 }
 
@@ -146,13 +144,12 @@ module.exports = {
 
                     console.log('UserList is empty!');
 
-                    resolve( JSON.stringify({
+                    resolve( JSON.stringify(
 
-                        total: 0,
 
-                        userList: [],
+                        []
 
-                    }));
+                    ));
 
                 }
 
@@ -200,13 +197,11 @@ module.exports = {
 
                    }
 
-                   resolve( JSON.stringify({
+                   resolve( JSON.stringify(
 
-                       total,
+                       paperList
 
-                       paperList,
-
-                   }));
+                   ));
 
                }
 
@@ -214,13 +209,11 @@ module.exports = {
 
                    console.log('PaperList is empty');
 
-                   resolve( JSON.stringify({
+                   resolve( JSON.stringify(
 
-                       total: 0,
+                       []
 
-                       paperList: [],
-
-                   }));
+                   ));
 
                }
 

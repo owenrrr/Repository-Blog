@@ -1,32 +1,30 @@
 <template>
     <div id="components-layout-demo-basic">
         <a-layout>
-            <a-layout-sider></a-layout-sider>
             <a-layout>
                 <a-layout-header>
-                    <div style="float: left; font-size: 50px; width: 100%; color:blueviolet;"><i style="float: left; margin-top: 20px">{{ paper.title }}</i></div>
+                    <div style="float: left; font-size: 50px; width: 100%; "><i style="float: left; margin-top: 20px">{{ paper.title }}</i></div>
                     <div style="float: left; font-size: 15px; width: 100%;">
-                        <p style="float: left; margin-right: 200px; font-size: 25px">{{ username }}</p>
+                        <p style="float: left; margin-right: 200px; font-size: 25px">{{ userName }}</p>
                         <div>
                     <span style="margin-right: 20px; float: right;">
                         <a-icon type="calendar" style="margin-right: 10px;" />{{ date_ymd + " " + date_hms }}
                     </span>
                             <span style="margin-right: 20px; float: right;" >
-                        <a-icon type="star" v-bind:theme="isfavourite()" style="margin-right: 10px" @click="addStar"/>{{ paper.starnum }}
+                        <a-icon type="star" v-bind:theme="isFavorite()" style="margin-right: 10px" @click="addStar"/>{{ paper.starNum }}
                     </span>
                             <span style="margin-right: 20px; float: right;">
-                        <a-icon type="like" v-bind:theme="islike()" style="margin-right: 10px"  @click="addLike"/>{{ paper.likenum }}
+                        <a-icon type="like" v-bind:theme="isLike()" style="margin-right: 10px"  @click="addLike"/>{{ paper.likeNum }}
                     </span>
                         </div>
                     </div>
                 </a-layout-header>
                 <a-layout-content>
-                    <div v-html="paper.content" style="float: left; margin-left: 50px; width:80%;" align="left">
+                    <div v-html="paper.content" class="content">
                     </div>
                 </a-layout-content>
                 <a-layout-footer style="text-align: center">
-                    <comment style="width: 100%; height: auto; display: inline-block"></comment>
-                    <div style="display: inline-block">Design ©2020 Created by Lzy</div>
+                    <!--<comment style="width: 100%; height: auto; display: inline-block"></comment>-->
                 </a-layout-footer>
             </a-layout>
         </a-layout>
@@ -35,57 +33,54 @@
 
 <script>
     import axios from 'axios'
-    import comment from './comment'
+    //import comment from './comment'
     import {mapGetters} from 'vuex'
 
     export default{
         data(){
             return {
                 paper: {},
-                username: '',
+                userName: '',
                 date_ymd:'',
                 date_hms:'',
-                starstate: 0, // 0: 没加 ; 1：有加
-                likestate: 0,
-                like: [],
-                favourite: []
+                starState: false, // 0: 没加 ; 1：有加
+                likeState: false,
             }
         },
         computed: {
             ...mapGetters([
-                'activePaperId'
+                'activePaperId',
+                'getUserId'
             ])
         },
         methods:{
 
-            async setlike(){
-                const res = await axios.get('http://localhost:3000/like/getuserlist',{params:{paperId:this.$store.getters.getPaperid}})
-                this.like = res.data.users.userList
+            async setLikeState(){
+                const res = await axios.get('http://localhost:3000/like/checkLike',
+                    {
+                                params:{
+                                    paperId: this.activePaperId,
+                                    userId: this.getUserId
+                                }
+                    })
+                console.log(res)
+                this.likeState = res.data ? 1 : 0
             },
 
-            async setfavourite(){
-                const res = await axios.get('http://localhost:3000/favorite/getuserlist',{params:{paperId:this.$store.getters.getPaperid}})
-                this.favourite = res.data.users.userList
+            async setFavoriteState(){
+                const res = await axios.get('http://localhost:3000/favorite/checkFavorite',
+                    {
+                                params:{
+                                    paperId: this.activePaperId,
+                                    userId: this.getUserId
+                                }
+                    })
+                console.log(res)
+                this.starState = res.data ? 1 : 0
             },
 
-            checkstate(){
-                let user = this.$store.getters.getUserid
-                for(let i=0; i<this.like.length; i++){
-                    if(user===this.like[i].userId){
-                        this.likestate=1
-                        break
-                    }
-                }
-                for(let i=0; i<this.favourite.length; i++){
-                    if(user===this.favourite[i].userId){
-                        this.starstate=1
-                        break
-                    }
-                }
-            },
-
-            isfavourite(){
-                if(this.starstate===1){
+            isFavorite(){
+                if(this.starState===1){
                     return "twoTone"
                 }
                 else{
@@ -93,8 +88,8 @@
                 }
             },
 
-            islike(){
-                if(this.likestate===1){
+            isLike(){
+                if(this.likeState===1){
                     return "twoTone"
                 }
                 else{
@@ -103,158 +98,110 @@
             },
 
             async getPaper(){
-                let res = axios.get('http://localhost:3000/paper/getpaper', {params: {paperId: this.activePaperId}})
+                let res = await axios.get('http://localhost:3000/paper/getpaper', {params: {paperId: this.activePaperId}})
                 console.log("This is in getPaper()")
-                this.paper = res.data.papers
-                console.log("This paper paperId is :" + this.paperid)
+                console.log(res)
+                this.paper = res.data
+                console.log("This paper paperId is :" + this.paperId)
                 console.log("This paper title is :" + this.paper.title)
                 console.log("This is content:" + this.paper.content)
-                    var a1 = this.paper.createtime.split("T")
-                    this.date_ymd = a1[0]
-                    this.date_hms = a1[1].substring(0,8)
-                    console.log(this.date_ymd)
-                    console.log(this.date_hms)
-                    this.getUsername(this.paper.userid)
+                let time = this.paper.createTime.split("T")
+                this.date_ymd = time[0]
+                this.date_hms = time[1].substring(0,8)
+                console.log(this.date_ymd)
+                console.log(this.date_hms)
+                await this.getUsername()
 
             },
-            getUsername(userid){
-                let userlist
-                axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-                    console.log("This is in getUsername()")
-                    userlist = res.data.userList
-                    for (var user of userlist){
-                        if (user.userid === userid){
-                            this.username = user.username
-                            break
-                        }
-                    }
-                    console.log("Username :" + this.username)
-                })
+
+            async getUsername(){
+                let userInfo
+                let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: this.getUserId}})
+                console.log("This is in getUsername()")
+                userInfo = res.data
+                console.log(userInfo)
+                this.userName = userInfo.userName
+                console.log("Username :" + this.userName)
             },
-            addStar(){
-                if (this.starstate === 0){
-                    console.log("This is starstate = 0 operation")
-                    this.$message.success("Store Success !", 2)
-                    console.log("Userid : " + this.$store.getters.getUserid)
-                    axios.post('http://localhost:3000/favorite/addfavorite', {
-                        paperId: this.paper.paperid,
-                        userId: this.$store.getters.getUserid,
+
+            async addStar(){
+                if (this.starState === 0){
+                    console.log("This is starState = 0 operation")
+                    this.$message.success("已收藏", 2)
+                    console.log("userId : " + this.getUserId)
+                    await axios.post('http://localhost:3000/favorite/addfavorite', {
+                        paperId: this.activePaperId,
+                        userId: this.getUserId,
                         createTime: this.date_ymd + " " + this.date_hms,
-                    }).then(() => {
-                        console.log("This is in add-star operation")
-                        this.paper.starnum++
-                        this.starstate = 1
-                    }).then(() => {this.savePaperState()})
+                    })
+                    console.log("This is in add-star operation")
+                    this.paper.starNum++
+                    this.starState = 1
+                    await this.savePaperState()
 
                 }else{
-                    axios.post('http://localhost:3000/favorite/removefavorite', {
-                        userId: this.$store.getters.getUserid,
-                        paperId: this.paper.paperid,
-                    }).then(() => {
-                        console.log("This is in cancel-star operation")
-                        this.paper.starnum--
-                        this.starstate = 0
-                    }).then(() => {this.savePaperState()})
+                    console.log("This is starState = 1 operation")
+                    this.$message.success("取消收藏", 2)
+                    await axios.post('http://localhost:3000/favorite/removefavorite', {
+                        userId: this.getUserId,
+                        paperId: this.activePaperId,
+                    })
+                    console.log("This is in cancel-star operation")
+                    this.paper.starNum--
+                    this.starState = 0
+                    await this.savePaperState()
                 }
             },
 
-            addLike(){
-                if(this.likestate==0){
-                    console.log("This is likestate = 0 operation")
-                    this.$message.success("Like Success!", 2)
-                    console.log("Userid : "+this.$store.getters.getUserid)
-                    axios.post('http://localhost:3000/like/addlike',{
-                        paperId:this.paper.paperid,
-                        userId:this.$store.getters.getUserid,
+            async addLike(){
+                if(this.likeState === 0){
+                    console.log("This is likeState = 0 operation")
+                    this.$message.success("已点赞", 2)
+                    console.log("userId : "+this.getUserId)
+                    await axios.post('http://localhost:3000/like/addlike',{
+                        paperId:this.activePaperId,
+                        userId:this.getUserId,
                         createTime:this.date_ymd+" "+this.date_hms,
-                    }).then(()=>{
-                        console.log("This is in add like operation")
-                        this.paper.likenum++
-                        this.likestate = 1
-                    }).then(()=>{this.savePaperState()})
+                    })
+                    console.log("This is in add like operation")
+                    this.paper.likeNum++
+                    this.likeState = 1
+                    await this.savePaperState()
                 }
                 else{
-                    this.$message.success("Like Removed",2)
-                    axios.post('http://localhost:3000/like/removelike',{
-                        paperId:this.paper.paperid,
-                        userId:this.$store.getters.getUserid,
-                    }).then(()=>{
-                        console.log("This is in remove like operation")
-                        this.paper.likenum--
-                        this.likestate = 0
-                    }).then(()=>{this.savePaperState()})
+                    console.log("This is likeState = 1 operation")
+                    this.$message.success("取消点赞",2)
+                    await axios.post('http://localhost:3000/like/removelike',{
+                        paperId:this.activePaperId,
+                        userId:this.getUserId,
+                    })
+                    console.log("This is in remove like operation")
+                    this.paper.likeNum--
+                    this.likeState = 0
+                    await this.savePaperState()
                 }
             },
 
-            savePaperState(){
-                console.log(typeof(this.paper.paperid))
+            async savePaperState(){
                 //  在此组件中只会出现star,like,comment改变，其余不变
-                axios.post('http://localhost:3000/paper/updatepaper',{
-                    paperid: this.paper.paperid,
-                    userid: this.paper.userid,
-                    starnum: this.paper.starnum,
-                    likenum: this.paper.likenum,
-                    commentnum: this.paper.commentnum,
-                    title: this.paper.title,
-                    createtime: this.date_ymd + " " + this.date_hms,
-                    content: this.paper.content
-                }).then(()=>{
-                    console.log("This is in save-paper-state operation")
+                await axios.post('http://localhost:3000/paper/updatepaper',{
+                    paperId: this.activePaperId,
+                    starNum: this.paper.starNum,
+                    likeNum: this.paper.likeNum,
+                    commentNum: this.paper.commentNum,
                 })
+                console.log("This is in save-paper-state operation")
+
             },
-            getstar(){
-                return axios.get('http://localhost:3000/favorite/getuserlist',{params:{
-                        paperId: this.paperid
-                    }}).then((res) => {
-                    console.log("This is in get-star operation")
-                    console.log(res)
-                    var userlist = res.data.users.userlist
-                    console.log(userlist)
-                    var userid = this.$store.getters.getUserid
-                    for (var user of userlist){
-                        if (userid === user.userId){
-                            console.log('user has already stared this paper');
-                            this.starstate = 1
-                        }
-                    }
-                    console.log("paper hasn't been stored by this user");
-                    this.starstate = 0;
-                }).catch((err) => {
-                    console.log(err)
-                })
-            },
-            getlike(){
-                return axios.get('http://localhost:3000/like/getuserlist',
-                    { params: { paperId: this.paperId}}
-                ).then((res) => {
-                    console.log("This is in get-like operation");
-                    console.log(res);
-                    let userList = res.data.users.userList;
-                    console.log(userList);
-                    let userId = this.$store.getters.getUserid;
-                    for (let user of userList) {
-                        if (userId === user) {
-                            console.log('user has already liked this paper');
-                            this.liekstate = 1;
-                        }
-                    }
-                    console.log("paper hasn't been stored by this user");
-                    this.liekstate = 0;
-                }).catch(err => {
-                    console.log(err);
-                });
-            },
+
         },
         async mounted(){
-            await this.setlike()
-            await this.setfavourite()
-            this.checkstate()
+            await this.setLikeState()
+            await this.setFavoriteState()
             await this.getPaper();
-            await this.getstar();
-            await this.getlike();
         },
         components:{
-            comment,
+            //comment,
         }
 
     }
@@ -262,39 +209,17 @@
 </script>
 
 <style>
-/* body::-webkit-scrollbar {
-    display:none
-} */
-#components-layout-demo-basic {
-  text-align: center;
-}
+
+
 .ant-layout::-webkit-scrollbar {
     display: none;
 }
 #components-layout-demo-basic .ant-layout-footer,
 #components-layout-demo-basic .ant-layout-header {
     min-height: 150px;
-    background-color:lightgray;
+    background-color: lightgray;
 }
-/* #components-layout-demo-basic .ant-layout-footer {
-  line-height: 1.5;
-} */
-#components-layout-demo-basic .ant-layout-sider {
-  /* 'C:/Users/Owen Liu/Desktop/Repository-Blog/src/assets/tree.jpg' */
-  line-height: 120px;
-  min-height: 700px;
-  background: url('../assets/water.jpg');
-  background-size: cover;
-}
-#components-layout-demo-basic .ant-layout-content {
-  background-color:aliceblue;
-  min-height: 120px;
-  line-height: 120px;
-}
-/* #components-layout-demo-basic > .ant-layout {
-  margin-bottom: 48px;
-} */
-/* #components-layout-demo-basic > .ant-layout:last-child {
-  margin: 0;
-} */
+
+
+
 </style>
