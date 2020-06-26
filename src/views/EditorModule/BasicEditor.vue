@@ -11,7 +11,7 @@
             type="primary"
             @click="submit"
             style="display:block; margin:0px auto"
-        >Submit</a-button>
+        >提交</a-button>
     </div>
 </div>
   
