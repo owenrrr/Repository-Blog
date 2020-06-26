@@ -140,7 +140,7 @@ module.exports = {
 
                 console.log(comment)
 
-                resolve(comment);
+                resolve(JSON.stringify(comment));
 
             })
 

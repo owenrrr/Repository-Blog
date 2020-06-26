@@ -178,6 +178,7 @@ LOCK TABLES `user` WRITE;
 INSERT INTO `user` VALUES (1,'lxyeah@qq.com', 'lxyeah','ZHIXINGHEYI99',null,'男',20,null),
                           (2,'owen@qq.com','owen','123456',null,'男',20,null),
                           (3,'Charlie@qq.com','Charlie','123456',null,'男',20,null);
+                          (14,'123@qq.com', '李炫晔', '123456', null, '女', 20, null);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -58,16 +58,19 @@ Vue.use(VueRouter)
           path: 'submitpage',
           name: 'SubmitPage',
           component: () => import('@/views/EditorModule/SubmitPage')
-        }, {
+        },
+        {
           path: '/settings',
           name :'Settings',
           component: () => import('@/views/UserModule/Settings')
-        },{
+        },
+        {
           path: '/followers',
           name :'Followers',
           component: () => import('@/views/UserModule/Followers')
-        },{
-          path: '/myarticles',
+        },
+        {
+          path: '/myArticles',
           name: 'myArticles',
           components: () => import('@/views/UserModule/myArticles'),
         }
