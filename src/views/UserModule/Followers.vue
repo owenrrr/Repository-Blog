@@ -145,25 +145,9 @@
                         array: this.data1
                     }
                 })
-
-                /*let temp = []
-                for(let i=0; i<res.data.pageData.length; i++){
-                    if(!this.isInArray(this.data1,res.data.pageData[i])){
-                        temp.push(res.data.pageData[i])
-                    }
-                }*/
-
                 this.total2 = res.data.total
                 return res.data.pageData
             },
-            /*isInArray(arr,value){
-                for(let j=0; j<arr.length; j++){
-                    if(value.userId==arr[j].userId){
-                        return true
-                    }
-                }
-                return false
-            },*/
             async onSearch() {
                 let res = await axios.get('http://localhost:3000/user/searchUser', {
                     params: {
