@@ -84,34 +84,21 @@ app.post('/follow/removeFollow', jsonParser, async (req, res) => {
 
 // Table `user` operation
 
-app.get('/user/searchUserByName', jsonParser, async (req, res) => {
-    let text = req.query.userName
+app.get('/user/searchUser', jsonParser, async (req, res) => {
+    let text = req.query.searchInfo
     let users = await userDB.getAll();
     users = JSON.parse(users);
-    let userList = []
-    for(let user of users){
-        if(user.userName.search(text) !== -1){
-            userList.push(user)
-        }
-    }
-    await res.json({
-        userList
-    })
-})
 
-app.get('/user/searchUserByEmail', jsonParser, async (req, res) => {
-    let text = req.query.userName
-    let users = await userDB.getAll();
-    users = JSON.parse(users);
-    let userList = []
+    let tempList = []
     for(let user of users){
-        if(user.email.search(text) !== -1){
-            userList.push(user)
+        if(user.userName.search(text) !== -1 || user.email.search(text) !== -1){
+            tempList.push(user)
         }
     }
-    await res.json({
-        userList
-    })
+
+    await res.json(
+        tempList
+    )
 })
 
 app.get('/user/getUserById', jsonParser, async (req, res) => {

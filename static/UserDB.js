@@ -274,7 +274,7 @@ module.exports = {
 
                                 color: res[i].color,
 
-                                email: res[0].email
+                                email: res[i].email
 
                             };
 

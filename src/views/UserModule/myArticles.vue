@@ -2,7 +2,7 @@
     <div class="main">
         <div class="list">
             <a-list item-layout="vertical" size="large" :data-source="listData">
-                <a-list-item slot="renderItem" key="item.title" slot-scope="item" class="list-item">
+                <a-list-item slot="renderItem" key="item.title" slot-scope="item" class="articles-list-item">
                     <a-list-item-meta>
                         <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
                         <a slot="title" @click="commitPaperId(item.paperId)">{{ item.title }}</a>
@@ -174,12 +174,15 @@
         width: 100%;
     }
 
-    .list-item {
-        border: #eeeeee solid;
+    .articles-list-item {
+        border: #dddddd solid;
         box-shadow: 10px 10px 5px #dddddd;
         padding: 20px 20px;
         border-radius: 30px;
         margin-bottom: 10px;
+        background-color: #bbbbbb;
+        margin-left: 10px;
+        margin-right: 10px;
     }
 
     .page {
