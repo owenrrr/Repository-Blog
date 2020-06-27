@@ -86,7 +86,7 @@
         </a-form-item>
 
         <a-form-item :wrapper-col="{ span: 8, offset: 4 }" v-else>
-            <a-button type="primary" @click="ModifyInfo">
+            <a-button type="primary" @click="ModifyInfo" v-if="Number(getUserId) === Number(this.$route.params.userId)">
                 修改信息
             </a-button>
         </a-form-item>
@@ -99,7 +99,7 @@
 <script>
     /*import Avatar from 'vue-avatar'*/
     import axios from 'axios'
-    import {mapActions, mapGetters, mapMutations} from 'vuex'
+    import {mapGetters} from 'vuex'
     export default {
     beforeCreate() {
       this.form = this.$form.createForm(this);
@@ -117,6 +117,7 @@
                 age: '',
                 password: '',
             },
+            userInfo: {},
             state: 'show',
             duplicate:{
                 userId: 0,
@@ -131,7 +132,7 @@
     },
     computed: {
         ...mapGetters([
-            'userInfo'
+            'getUserId'
         ])
     },
     /*components:{
@@ -141,12 +142,6 @@
         await this.constructor()  // 获取账户的资料
     },
     methods: {
-        ...mapMutations([
-
-        ]),
-        ...mapActions([
-            'getUserInfo'
-        ]),
         ModifyInfo(){
             this.modifyInfo=true
         },
@@ -192,7 +187,8 @@
         },
 
         async constructor(){
-            await this.$store.dispatch('getUserInfo')
+            let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: this.$route.params.userId}})
+            this.userInfo = res.data
             console.log(this.userInfo)
             this.basic.userId = this.userInfo.userId
             this.basic.userName = this.userInfo.userName

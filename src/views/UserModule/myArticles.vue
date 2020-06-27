@@ -22,7 +22,7 @@
                             {{ actions[item.index].text3 }}
                         </span>
                         <span>
-                            <a-button type="danger" style="float: right" @click="deleteArticle(item.paperId)">删除文章</a-button>
+                            <a-button type="danger"  v-if="Number(getUserId) === Number(currentUserId)" :ghost="true" style="float: right" @click="deleteArticle(item.paperId)">删除文章</a-button>
                         </span>
                     </template>
                 </a-list-item>
@@ -48,6 +48,7 @@
                 actions :[],
                 userList: [],
                 paperList: [],
+                currentUserId: this.$route.params.userId
             };
         },
 
@@ -100,7 +101,7 @@
                 let res = await axios.get('http://localhost:3000/paper/getmypapers',
                     {
                         params:{
-                            userId: this.getUserId,
+                            userId: this.currentUserId,
                             current: this.current
                         }
                     })

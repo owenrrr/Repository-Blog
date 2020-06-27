@@ -1,31 +1,31 @@
 <template>
     <div>
         <div class="user-layout">
-        <a-menu v-model="current" mode="horizontal" @select="jumpToDetail">
-            <a-menu-item key="1">
-                <a-icon type="user">
-                </a-icon>
-                个人信息
-            </a-menu-item>
-            <a-menu-item key="2">
-                <a-icon type="profile">
-                </a-icon>
-                {{currentUserId === getUserId ? '我的文章' : '他的文章'}}
-            </a-menu-item>
-            <a-menu-item key="3">
-                <a-icon type="star">
-                </a-icon>
-                {{currentUserId === getUserId ? '我的收藏' : '他的收藏'}}
-            </a-menu-item>
-            <a-menu-item key="4">
-                <a-icon type="team">
-                </a-icon>
-                {{currentUserId === getUserId ? '我的关注' : '他的关注'}}
-            </a-menu-item>
-        </a-menu>
-        <transition name="fade-transform" mode="out-in">
-            <router-view style="min-height: 500px; margin-top: 20px"/>
-        </transition>
+            <a-menu v-model="current" mode="horizontal" @select="jumpToDetail">
+                <a-menu-item key="1">
+                    <a-icon type="user">
+                    </a-icon>
+                    个人信息
+                </a-menu-item>
+                <a-menu-item key="2">
+                    <a-icon type="profile">
+                    </a-icon>
+                    {{Number(currentUserId) === Number(getUserId) ? '我的文章' : '他的文章'}}
+                </a-menu-item>
+                <a-menu-item key="3">
+                    <a-icon type="star">
+                    </a-icon>
+                    {{Number(currentUserId) === Number(getUserId) ? '我的收藏' : '他的收藏'}}
+                </a-menu-item>
+                <a-menu-item key="4" v-if="Number(currentUserId) === Number(getUserId)">
+                    <a-icon type="team">
+                    </a-icon>
+                    我的关注
+                </a-menu-item>
+            </a-menu>
+            <transition name="fade-transform" mode="out-in">
+                <router-view style="min-height: 500px; margin-top: 20px"/>
+            </transition>
         </div>
     </div>
 </template>
@@ -37,8 +37,8 @@
         name: "UserLayout",
         data() {
             return {
-                currentUserId: this.$route.params.userId,
-                current: [this.$route.params.firstPage]
+                currentUserId: 0,
+                current: []
             }
         },
         computed: {
@@ -47,6 +47,16 @@
             ])
         },
         methods: {
+            async jumpToMine() {
+                console.log(this.getUserId)
+                await this.$router.push({
+                    name: 'userLayout',
+                    params: {
+                        userId: this.getUserId,
+                        firstPage: '1'
+                    }
+                })
+            },
             async jumpToDetail({key}) {
                 await this.jumpToPage(key)
             },
@@ -93,6 +103,9 @@
         },
         async mounted() {
             console.log('mounted');
+            this.currentUserId = this.$route.params.userId
+            this.current = [this.$route.params.firstPage]
+            console.log(this.currentUserId)
             await this.jumpToPage(this.$route.params.firstPage)
         },
         watch: {
@@ -104,8 +117,11 @@
                     to.path.search('favourite') === -1 &&
                     to.path.search('myArticles') === -1
                 ) {
-                    await this.jumpToPage(this.$route.params.firstPage)
                     this.current = [this.$route.params.firstPage]
+                    this.currentUserId = this.$route.params.userId
+                    console.log(this.current)
+                    console.log(this.currentUserId)
+                    await this.jumpToPage(this.$route.params.firstPage)
                 }
             }
         }
