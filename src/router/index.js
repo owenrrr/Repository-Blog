@@ -49,31 +49,42 @@ Vue.use(VueRouter)
           name: 'BasicEditor',
           component: () => import('@/views/EditorModule/BasicEditor')
         },
-        {
-          path: 'favourite',
-          name: 'Favourite',
-          component: () => import('@/views/Favourite')
-        },
+
         {
           path: 'submitpage',
           name: 'SubmitPage',
           component: () => import('@/views/EditorModule/SubmitPage')
         },
         {
-          path: '/settings',
-          name :'Settings',
-          component: () => import('@/views/UserModule/Settings')
+          path: '/userLayout/:userId/:firstPage',
+          name: 'userLayout',
+          component: () => import('@/views/LayoutModule/UserLayout'),
+          children: [
+            {
+              path: 'favourite/:userId',
+              name: 'favourite',
+              component: () => import('@/views/Favourite')
+            },
+            {
+              path: 'settings/:userId',
+              name :'settings',
+              component: () => import('@/views/UserModule/Settings')
+            },
+            {
+              path: 'followers/:userID',
+              name :'followers',
+              component: () => import('@/views/UserModule/Followers')
+            },
+            {
+              path: 'myArticles/:userId',
+              name: 'myArticles',
+              component: () => import('@/views/UserModule/myArticles')
+            }
+          ]
         },
-        {
-          path: '/followers',
-          name :'Followers',
-          component: () => import('@/views/UserModule/Followers')
-        },
-        {
-          path: '/myArticles',
-          name: 'myArticles',
-          component: () => import('@/views/UserModule/myArticles')
-        }
+
+
+
       ]
     },
 ]
