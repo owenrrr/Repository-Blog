@@ -5,10 +5,10 @@
             <a-list item-layout="vertical" size="large" :data-source="listData">
                 <!-- <div slot="footer"><b>ant design vue</b> footer part</div> -->
                 <a-list-item slot="renderItem" key="item.title" slot-scope="item" class="list-item">
-                    <a-list-item-meta :description="item.userName">
+                    <a-list-item-meta>
                         <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
                         <a slot="title" @click="commitPaperId(item.paperId)">{{ item.title }}</a>
-
+                        <a-avatar slot="avatar" size="large" :style="{backgroundColor: getcolor()}">{{item.userName}}</a-avatar>
                     </a-list-item-meta>
                     <template>
                         <span>
@@ -41,6 +41,7 @@ import {mapMutations} from 'vuex'
         name: "BlogList",
         data() {
             return {
+                colorList: ['#2828FF','#00BB00','#FF5809','#F9F900','#AE57A4','#FF0000','#FF60AF','#8E8E8E','#9F35FF','#00FFFF'],
                 listData : [],
                 actions :[],
                 paperList: [],
@@ -57,6 +58,9 @@ import {mapMutations} from 'vuex'
             ...mapMutations([
                 'set_paperId'
             ]),
+            getcolor(){
+                return this.colorList[Math.floor(Math.random()*10)]
+            },
             async onSearch(value){
                 await this.search(value)
                 await this.constructors(this.paperList)
