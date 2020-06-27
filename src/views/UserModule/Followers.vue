@@ -112,18 +112,6 @@
                 console.log(res.data)
                 this.data2 = res.data
             }
-            /*changeActive(e, item) {
-
-                console.log('光标移入')
-                item.state = 1
-                console.log(item)
-            },
-            removeActive(e, item) {
-
-                console.log('光标移出')
-                item.state = 0
-                console.log(item)
-            }*/
         },
     }
 </script>
@@ -156,9 +144,8 @@
 
     .title {
         border: 1px solid #dddddd;
-        border-radius: 10px 10px 10px 10px;
-        background-color: #aaaaaa;
-        box-shadow: 2px 2px 1px #aaaaaa;
+        border-radius: 10px 10px 0 0;
+        background-color: #cccccc;
     }
 
     .follow-list-item {
