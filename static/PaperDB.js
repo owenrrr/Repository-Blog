@@ -254,6 +254,40 @@ module.exports = {
 
     },
 
+    getauthorid: function(paperId) {
+
+        return new Promise((resolve, reject) => {
+
+            openConnection()
+
+            let params = [paperId]
+
+            let sql = 'select * from paper where paper_id = ?;';
+
+            connection.query(sql, params, function (err, res) {
+
+                if (err) {
+
+                    console.log('[GET-PAPERAUTHOR-FAILED] ' + err.message);
+
+                    return;
+
+                }
+
+                console.log('[GET-PAPERAUTHOR-SUCCESS] ')
+
+                console.log(res);
+
+                let authorid = res[0].user_id
+
+                resolve(JSON.stringify(authorid));
+
+            })
+
+        })
+
+    },
+
     getmypapers: function(userId) {
 
         return new Promise((resolve,reject) => {

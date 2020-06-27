@@ -5,7 +5,9 @@
                 <a-layout-header>
                     <div style="float: left; font-size: 40px; width: 100%; "><i style="float: left; margin-top: 20px">{{ paper.title }}</i></div>
                     <div style="float: left; font-size: 15px; width: 100%;">
-                        <p style="float: left; margin-right: 200px; font-size: 15px">{{'作者: ' + userName }}</p>
+                        <p style="float: left; margin-right: 20px; font-size: 15px">{{'作者: ' + userName }}</p>
+                        <a-button style="float: left; margin-top: 15px" type="dashed" v-if="followState&&!isMe" @click="removeFollow">已关注</a-button>
+                        <a-button style="float: left; margin-top: 15px" type="primary" v-if="!followState&&!isMe" @click="follow">关注作者</a-button>
                         <div>
                     <span style="margin-right: 20px; float: right;">
                         <a-icon type="calendar" style="margin-right: 10px;" />{{ date_ymd + " " + date_hms }}
@@ -39,12 +41,14 @@
     export default{
         data(){
             return {
+                isMe: false,
                 paper: {},
                 userName: '',
                 date_ymd:'',
                 date_hms:'',
                 starState: false, // 0: 没加 ; 1：有加
                 likeState: false,
+                followState: false,
             }
         },
         computed: {
@@ -54,6 +58,52 @@
             ])
         },
         methods:{
+
+            async checkisMe(){
+                const res = await axios.get('http://localhost:3000/paper/getauthorId',{params:{paperId:this.activePaperId}})
+                let author = res.data
+                if(this.getUserId==author){
+                    this.isMe = true
+                }
+            },
+
+            async isFollow(){
+                const res1 = await axios.get('http://localhost:3000/paper/getauthorId',{params:{paperId:this.activePaperId}})
+                let followid = res1.data
+                const res2 = await axios.get('http://localhost:3000/follow/check', {params:{userId:this.getUserId,followId:followid}})
+                this.followState = res2.data ? true : false
+            },
+
+            async removeFollow(){
+                var msg = "您确定要取消关注吗？"
+                if(confirm(msg)==true){
+                    this.followState=false
+                    const res = await axios.get('http://localhost:3000/paper/getauthorId',{params:{paperId:this.activePaperId}})
+                    let followid = res.data
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1取消关注")
+                    console.log(followid);
+                    await axios.post('http://localhost:3000/follow/removeFollow',{
+                        userId:this.getUserId,
+                        followId:followid
+                    })
+                    console.log("已取消关注")
+                    this.$message.success('取消关注成功', 2)
+                }
+            },
+
+            async follow(){
+                this.followState=true
+                const res = await axios.get('http://localhost:3000/paper/getauthorId',{params:{paperId:this.activePaperId}})
+                let followid = res.data
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!关注")
+                console.log(followid);
+                await axios.post('http://localhost:3000/follow/addFollow',{
+                    userId:this.getUserId,
+                    followId:followid
+                })
+                console.log("关注成功")
+                this.$message.success('关注成功', 2)
+            },
 
             async setLikeState(){
                 const res = await axios.get('http://localhost:3000/like/checkLike',
@@ -196,6 +246,8 @@
 
         },
         async mounted(){
+            await this.checkisMe()
+            await this.isFollow()
             await this.setLikeState()
             await this.setFavoriteState()
             await this.getPaper();
