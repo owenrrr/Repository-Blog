@@ -80,13 +80,11 @@
                     this.followState=false
                     const res = await axios.get('http://localhost:3000/paper/getauthorId',{params:{paperId:this.activePaperId}})
                     let followid = res.data
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1取消关注")
                     console.log(followid);
                     await axios.post('http://localhost:3000/follow/removeFollow',{
                         userId:this.getUserId,
                         followId:followid
                     })
-                    console.log("已取消关注")
                     this.$message.success('取消关注成功', 2)
                 }
             },
@@ -95,13 +93,10 @@
                 this.followState=true
                 const res = await axios.get('http://localhost:3000/paper/getauthorId',{params:{paperId:this.activePaperId}})
                 let followid = res.data
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!关注")
-                console.log(followid);
                 await axios.post('http://localhost:3000/follow/addFollow',{
                     userId:this.getUserId,
                     followId:followid
                 })
-                console.log("关注成功")
                 this.$message.success('关注成功', 2)
             },
 

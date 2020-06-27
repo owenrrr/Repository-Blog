@@ -15,14 +15,14 @@
                         >
                             <a-list-item-meta :description="item.email">
                                 <a slot="title" :href="item.href">{{ item.userName }}</a>
-                                <a-avatar
-                                        slot="avatar"
-                                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                                />
+                                <a-avatar slot="avatar" size="large" :style="{backgroundColor: item.color}">{{item.userName}}</a-avatar>
                             </a-list-item-meta>
-                            <a-button type="danger" >取消关注</a-button>
+                            <a-button type="danger" @click="removeFollow(item.userId)">取消关注</a-button>
                         </a-list-item>
                     </a-list>
+                </div>
+                <div class="page1" >
+                    <a-pagination v-model="current1" :total="total1" pageSize="3" @change="onChange1" style="margin-left: 37%"/>
                 </div>
             </div>
             <div class="right">
@@ -47,14 +47,14 @@
                         <a-list-item slot="renderItem" slot-scope="item" class="follow-list-item">
                             <a-list-item-meta :description="item.email">
                                 <a slot="title" :href="item.href">{{ item.userName }}</a>
-                                <a-avatar
-                                        slot="avatar"
-                                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                                />
+                                <a-avatar slot="avatar" size="large" :style="{backgroundColor: item.color}">{{item.userName}}</a-avatar>
                             </a-list-item-meta>
-                            <a-button type="primary">关注</a-button>
+                            <a-button type="primary" @click="follow(item.userId)">关注</a-button>
                         </a-list-item>
                     </a-list>
+                    <div class="page2" >
+                        <a-pagination v-model="current2" :total="total2" pageSize="3" @change="onChange2" style="margin-left: 37%"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,11 +64,16 @@
 <script>
 
     import axios from 'axios'
+    import {mapGetters} from "vuex";
 
     export default{
         name: 'Followers',
         data() {
             return {
+                total1: 0,
+                current1: 1,
+                total2: 0,
+                current2: 1,
                 data1: [],
                 data2: [],
                 loading1: false,
@@ -84,33 +89,93 @@
             this.data1 = await this.fetchDataMyFollowers()
             this.data2 = await this.fetchDataAddFollowers()
         },
+        computed: {
+            ...mapGetters([
+                'getUserId'
+            ]),
+        },
         methods: {
+            async onChange1(page1){
+                this.current1 = page1
+                this.data1 = await this.fetchDataMyFollowers()
+            },
+            async onChange2(page2){
+                this.current2 = page2
+                this.data2 = await this.fetchDataAddFollowers()
+            },
+            async follow(userId){
+                await axios.post('http://localhost:3000/follow/addFollow',{
+                    userId:this.getUserId,
+                    followId:userId
+                })
+                this.$message.success('关注成功', 2)
+                this.data1 = await this.fetchDataMyFollowers()
+                this.data2 = await this.fetchDataAddFollowers()
+            },
+            async removeFollow(userId){
+                var msg = "您确定要取消关注吗？"
+                if(confirm(msg)==true){
+                    await axios.post('http://localhost:3000/follow/removeFollow',{
+                        userId:this.getUserId,
+                        followId:userId
+                    })
+                    this.$message.success('取消关注成功', 2)
+                }
+                this.data1 = await this.fetchDataMyFollowers()
+                this.data2 = await this.fetchDataAddFollowers()
+            },
             async fetchDataMyFollowers() {
                 let res = await axios.get('http://localhost:3000/follow/getFollows', {
                     params: {
                         userId: this.$route.params.userId,
+                        current: this.current1
                     }
                 })
-                console.log(res.data)
-                return res.data
+                this.total1 = res.data.total
+                return res.data.pageData
             },
             async fetchDataAddFollowers() {
                 let res = await axios.get('http://localhost:3000/user/searchUser', {
                     params: {
                         searchInfo: this.input,
+                        current: this.current2,
+                        array: this.data1
                     }
                 })
-                console.log(res.data)
-                return res.data
+
+                /*let temp = []
+                for(let i=0; i<res.data.pageData.length; i++){
+                    if(!this.isInArray(this.data1,res.data.pageData[i])){
+                        temp.push(res.data.pageData[i])
+                    }
+                }*/
+
+                this.total2 = res.data.total
+                return res.data.pageData
             },
+            /*isInArray(arr,value){
+                for(let j=0; j<arr.length; j++){
+                    if(value.userId==arr[j].userId){
+                        return true
+                    }
+                }
+                return false
+            },*/
             async onSearch() {
                 let res = await axios.get('http://localhost:3000/user/searchUser', {
                     params: {
                         searchInfo: this.input,
+                        current: this.current2,
+                        array: this.data1,
                     }
                 })
-                console.log(res.data)
-                this.data2 = res.data
+                /*let temp = []
+                for(let i=0; i<res.data.pageData.length; i++){
+                    if(!this.isInArray(this.data1,res.data.pageData[i])){
+                        temp.push(res.data.pageData[i])
+                    }
+                }*/
+                this.data2 = res.data.pageData
             }
         },
     }

@@ -27,6 +27,7 @@ app.get('/', (req, res) => res.send('Hello World'));
 
 app.get('/follow/getFollows', jsonParser, async (req, res) => {
     let userId = req.query.userId;
+    let current = req.query.current
     let userList = await FollowDB.getFollows(userId);
     userList = JSON.parse(userList)
     let users = []
@@ -35,9 +36,17 @@ app.get('/follow/getFollows', jsonParser, async (req, res) => {
         temp = JSON.parse(temp)
         users.push(temp)
     }
-    await res.json(
-        users
-    )
+    let pageSize = 3
+    let pageData = []
+    for (let i = (current - 1) * pageSize; i < current * pageSize; i++) {
+        if (i < users.length) {
+            pageData.push(users[i])
+        }
+    }
+    await res.json({
+        total: users.length,
+        pageData
+    })
 })
 
 app.get('/follow/check', jsonParser, async (req, res) => {
@@ -86,6 +95,9 @@ app.post('/follow/removeFollow', jsonParser, async (req, res) => {
 
 app.get('/user/searchUser', jsonParser, async (req, res) => {
     let text = req.query.searchInfo
+    let current = req.query.current
+    let array = req.query.array
+
     let users = await userDB.getAll();
     users = JSON.parse(users);
 
@@ -96,9 +108,33 @@ app.get('/user/searchUser', jsonParser, async (req, res) => {
         }
     }
 
-    await res.json(
-        tempList
-    )
+    let userList = []
+    for(let i=0; i<tempList.length; i++){
+        let flag = true
+        for(let j=0; j<array.length; j++){
+            if(array[j].userId==tempList[i].userId){
+                flag = false
+                break
+            }
+        }
+        if(flag){
+            userList.push(tempList[i])
+        }
+    }
+
+    let pageSize = 3
+    let pageData = []
+
+    for (let i = (current - 1) * pageSize; i < current * pageSize; i++) {
+        if (i < userList.length) {
+            pageData.push(userList[i])
+        }
+    }
+
+    await res.json({
+        total: userList.length,
+        pageData
+    })
 })
 
 app.get('/user/getUserById', jsonParser, async (req, res) => {
@@ -284,7 +320,7 @@ app.get('/favorite/getpaperlist', jsonParser, async (req, res) => {
     }
 
     await res.json({
-        total: paperList.length,
+        total: tempList.length,
         paperList
     })
 });
