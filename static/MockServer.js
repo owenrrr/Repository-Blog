@@ -543,20 +543,34 @@ app.post('/paper/addpaper', jsonParser, async (req, res) => {
     })
 });
 
-app.post('/paper/updatepaper', jsonParser, async (req, res) => {
+app.post('/paper/updatePaperLikeAndStar', jsonParser, async (req, res) => {
     let paperId = req.body.paperId;
     let starNum = req.body.starNum;
     let likeNum = req.body.likeNum;
-    let commentNum = req.body.commentNum;
 
     console.log('更新成功');
-    await paperDB.update(paperId, starNum, likeNum, commentNum);
+    await paperDB.updateLikeAndStar(paperId, starNum, likeNum);
     await res.json({
         statue: 1,
         paperInfo: {
             paperId,
             starNum,
             likeNum,
+        }
+    });
+
+});
+
+app.post('/paper/updatePaperComment', jsonParser, async (req, res) => {
+    let paperId = req.body.paperId;
+    let commentNum = req.body.commentNum;
+
+    console.log('更新成功');
+    await paperDB.updateComment(paperId, commentNum);
+    await res.json({
+        statue: 1,
+        paperInfo: {
+            paperId,
             commentNum
         }
     });
