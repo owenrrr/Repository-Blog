@@ -228,9 +228,10 @@
                 description: this.duplicate.description,
                 password: this.duplicate.newpassword,
                 userId: this.duplicate.userId,
-            }).then(()=>{
-                this.constructor()
             })
+            this.$message.success('修改成功', 2)
+            this.constructor()
+
         },
 
     },

@@ -109,6 +109,7 @@ app.post('/user/updateuser', jsonParser, async (req, res) => {
 
     await userDB.update(userId, userName, password, description, sex, age);
 
+
     await res.json({
         statue: 1,
         userInfo: {
