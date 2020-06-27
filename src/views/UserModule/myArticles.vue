@@ -1,9 +1,6 @@
 <template>
     <div class="main">
         <div class="list">
-            <a-menu  mode="horizontal" :defaultSelectedKeys="['0']" class="header">
-                <a-menu-item key="0"> <a-icon type="profile" />我的文章</a-menu-item>
-            </a-menu>
             <a-list item-layout="vertical" size="large" :data-source="listData">
                 <a-list-item slot="renderItem" key="item.title" slot-scope="item" class="list-item">
                     <a-list-item-meta :description="item.userName">

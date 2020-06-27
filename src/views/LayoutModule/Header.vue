@@ -15,10 +15,7 @@
             <a-menu-item key="2" @click="jumpToEdit">
                 <a-icon type="edit"/>创作
             </a-menu-item>
-            <a-menu-item key="3" @click="jumpToStar">
-                <a-icon type="star"/>收藏
-            </a-menu-item>
-            <a-menu-item key="4" @click="jumpToSetting">
+            <a-menu-item key="3" @click="jumpToSetting">
                 <a-dropdown>
                     <a @click="e => e.preventDefault()">
                          <a-icon type="user" /> 个人
@@ -32,7 +29,11 @@
                             <a-icon type="profile"></a-icon>
                             我的文章
                         </a-menu-item>
-                        <a-menu-item key="3" @click="logOut" style="text-align: center">
+                        <a-menu-item key="3" @click="jumpToStar">
+                            <a-icon type="star"/>
+                            我的收藏
+                        </a-menu-item>
+                        <a-menu-item key="4" @click="logOut" style="text-align: center">
                             <a-icon type="poweroff"></a-icon>
                             退出账号
                         </a-menu-item>
@@ -44,10 +45,15 @@
 </template>
 
 <script>
-    import {mapActions} from 'vuex'
+    import {mapGetters, mapActions} from 'vuex'
 
     export default {
         name: "Header",
+        computed: {
+            ...mapGetters([
+                'getUserId'
+            ])
+        },
         methods: {
             ...mapActions([
                 'logOut'
@@ -59,14 +65,34 @@
                 this.$router.push('/MyBlog/basicEditor').catch(err => {err})
             },
             jumpToStar() {
-                this.$router.push('/MyBlog/favourite').catch(err => {err})
+                console.log('star')
+                this.$router.push({
+                    name: 'userLayout' ,
+                    params: {
+                        userId: this.getUserId,
+                        firstPage: '3'
+                    }
+                }).catch(err => console.log(err))
             },
             jumpToSetting() {
-                this.$router.push({name: 'Settings'})
+                console.log('setting')
+                this.$router.push({
+                    name: 'userLayout',
+                    params: {
+                        userId: this.getUserId,
+                        firstPage: '1'
+                    }
+                }).catch(err => console.log(err))
             },
             jumpToMyArticles() {
                 console.log("!!!!!!!!!!!!!!!!!")
-                this.$router.push({name: 'myArticles'})
+                this.$router.push({
+                    name: 'userLayout',
+                    params: {
+                        userId: this.getUserId,
+                        firstPage: '2'
+                    }
+                })
             },
             async logOut() {
                 await this.$store.dispatch('logOut')
