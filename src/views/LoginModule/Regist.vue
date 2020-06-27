@@ -81,10 +81,12 @@ export default {
   
   data(){
     return {
+        colorList: ['#2828FF','#00BB00','#FF5809','#F9F900','#AE57A4','#FF0000','#FF60AF','#8E8E8E','#9F35FF','#00FFFF'],
         basic : {
             username : '',
             password: '',
             email: '',
+            color: '',
         },
         registerLoading : false,
         registerPW: true,
@@ -105,6 +107,7 @@ export default {
             if (this.checkRegistInfo()) {
               this.$message.success('注册成功!');
               this.basic.username = this.form.getFieldValue('registerUsername')
+              this.basic.color = this.getcolor()
               await this.addUser()
               this.form.resetFields()
               await this.$router.push('/')
@@ -115,6 +118,9 @@ export default {
             }
           }
         });
+      },
+      getcolor(){
+        return this.colorList[Math.floor(Math.random()*10)]
       },
       async addUser(){
         console.log(this.basic)

@@ -1,7 +1,7 @@
 <template>
 <div>
     <!--<avatar :username="basic.userName" style="margin-left: 47%; margin-bottom: 40px" color="rgb(255, 255, 255)"></avatar>-->
-    <a-avatar slot="avatar" size="large" :style="{backgroundColor: getcolor()}" style="margin-left: 48%; margin-bottom: 0px">{{basic.userName}}</a-avatar>
+    <a-avatar slot="avatar" size="large" :style="{backgroundColor: this.userInfo.color}" style="margin-left: 48%; margin-bottom: 0px">{{basic.userName}}</a-avatar>
     <a-form :form="form" style="margin-top: 40px; margin-left: 450px">
 
         <a-form-item label="用户名" :label-col="{ span: 3 }" :wrapper-col="{ span: 8, offset: 1  }">
@@ -107,7 +107,6 @@
         name : 'Settings',
     data(){
         return{
-            colorList: ['#2828FF','#00BB00','#FF5809','#F9F900','#AE57A4','#FF0000','#FF60AF','#8E8E8E','#9F35FF','#00FFFF'],
             modifyInfo:false,
             modifyPassword:false,
             basic: {
@@ -148,9 +147,6 @@
         ...mapActions([
             'getUserInfo'
         ]),
-        getcolor(){
-            return this.colorList[Math.floor(Math.random()*10)]
-        },
         ModifyInfo(){
             this.modifyInfo=true
         },

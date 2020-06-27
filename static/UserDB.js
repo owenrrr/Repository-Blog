@@ -20,15 +20,15 @@ function closeConnection() {
 
 module.exports = {
 
-    add: function (username, password, email) {
+    add: function (username, password, email, color) {
 
         return new Promise((resolve, reject) => {
 
             openConnection();
 
-            let params = [username, password, email];
+            let params = [username, password, email, color];
 
-            let sql = 'insert into user (user_name, password, email) values (?, ?, ?);';
+            let sql = 'insert into user (user_name, password, email, color) values (?, ?, ?, ?);';
 
             connection.query(sql, params, function (err, result) {
 
@@ -144,7 +144,7 @@ module.exports = {
 
                         sex: res[0].sex,
 
-                        imgURL: res[0].imgURL,
+                        color: res[0].color,
 
                         email: res[0].email
 
@@ -212,7 +212,7 @@ module.exports = {
 
                     sex: res[0].sex,
 
-                    imgURL: res[0].imgURL,
+                    color: res[0].color,
 
                     email: res[0].email
 
@@ -272,7 +272,7 @@ module.exports = {
 
                                 age: res[i].age,
 
-                                imgURL: res[i].imgURL,
+                                color: res[i].color,
 
                                 email: res[i].email
 

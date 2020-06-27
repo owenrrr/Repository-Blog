@@ -4,6 +4,7 @@
             <span class="head" @click="jumpToHome">My Blog</span>
         </div>
         <a-menu
+                v-model="current"
                 theme="dark"
                 mode="horizontal"
                 :default-selected-keys="['1']"
@@ -58,17 +59,25 @@
                 'getUserId'
             ])
         },
+        data() {
+            return {
+                current: ["1"]
+            };
+        },
         methods: {
             ...mapActions([
                 'logOut'
             ]),
             jumpToHome() {
+                this.current = ["1"]
                 this.$router.push({name: 'BlogList'}).catch(err => {err})
             },
             jumpToEdit() {
+                this.current = ["2"]
                 this.$router.push('/MyBlog/basicEditor').catch(err => {err})
             },
             jumpToStar() {
+                this.current = ["3"]
                 console.log('star')
                 this.$router.push({
                     name: 'userLayout' ,
@@ -79,6 +88,7 @@
                 }).catch(err => console.log(err))
             },
             jumpToSetting() {
+                this.current = ["3"]
                 console.log('setting')
                 this.$router.push({
                     name: 'userLayout',
@@ -89,6 +99,7 @@
                 }).catch(err => console.log(err))
             },
             jumpToMyArticles() {
+                this.current = ["3"]
                 console.log("myArticles")
                 this.$router.push({
                     name: 'userLayout',
@@ -99,6 +110,7 @@
                 })
             },
             jumpToFollowers() {
+                this.current = ["3"]
                 console.log('followers')
                 this.$router.push({
                     name: 'userLayout',

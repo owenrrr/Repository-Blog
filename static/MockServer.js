@@ -162,9 +162,10 @@ app.post('/user/adduser', jsonParser, async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
     let email = req.body.email;
+    let color = req.body.color;
 
     console.log('添加成功');
-    let userid = JSON.parse(await userDB.add(username, password, email));
+    let userid = JSON.parse(await userDB.add(username, password, email, color));
     await res.json({
         statue: 1,
         userinfo: {
