@@ -248,7 +248,7 @@ module.exports = {
 
     //paper upadte
 
-    update: function (paperId, starNum, likeNum, commentNum) {
+    updateLikeAndStar: function (paperId, starNum, likeNum) {
 
         return new Promise((resolve, reject) => {
 
@@ -260,7 +260,41 @@ module.exports = {
 
             star_num='${starNum}',
 
-            like_num='${likeNum}',
+            like_num='${likeNum}'
+
+            where paper_id='${paperId}';`;
+
+            connection.query(sql, function (err, res) {
+
+                if (err) {
+
+                    console.log('[UPDATE-ERROR]' + err.message);
+
+                    return;
+
+                }
+
+                console.log('[UPDATE-SUCCESS] ' + res.affectedRows);
+
+                resolve();
+
+            });
+
+            closeConnection();
+
+        })
+
+    },
+
+    updateComment: function (paperId, commentNum) {
+
+        return new Promise((resolve, reject) => {
+
+            openConnection();
+
+            let sql = `update paper
+
+            set 
 
             comment_num='${commentNum}'
 

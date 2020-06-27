@@ -229,11 +229,10 @@
 
             async savePaperState(){
                 //  在此组件中只会出现star,like,comment改变，其余不变
-                await axios.post('http://localhost:3000/paper/updatepaper',{
+                await axios.post('http://localhost:3000/paper/updatePaperLikeAndStar',{
                     paperId: this.activePaperId,
                     starNum: this.paper.starNum,
                     likeNum: this.paper.likeNum,
-                    commentNum: this.paper.commentNum,
                 })
                 console.log("This is in save-paper-state operation")
 

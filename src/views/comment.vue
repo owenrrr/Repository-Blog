@@ -141,7 +141,7 @@
                 this.commentlist = res.data.commentList
                 console.log(this.commentlist)
                 this.showData=this.commentlist
-                this.$message.success('Submit success!', 2)
+                this.$message.success('评论成功!', 2)
                 this.content=''
                 await this.savePaperState()
 
@@ -160,10 +160,8 @@
             },
 
             async savePaperState(){
-                await axios.post('http://localhost:3000/paper/updatepaper',{
+                await axios.post('http://localhost:3000/paper/updatePaperComment',{
                     paperId: this.activePaperId,
-                    starNum: this.paper.starNum,
-                    likeNum: this.paper.likeNum,
                     commentNum: this.paper.commentNum,
                 })
                 console.log("This is in save-paper-state operation")
