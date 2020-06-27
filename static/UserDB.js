@@ -274,7 +274,7 @@ module.exports = {
 
                                 imgURL: res[i].imgURL,
 
-                                email: res[0].email
+                                email: res[i].email
 
                             };
 

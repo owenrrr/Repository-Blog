@@ -184,5 +184,6 @@ import {mapMutations} from 'vuex'
         padding: 20px 20px;
         border-radius: 30px;
         margin-bottom: 10px;
+        background-color: #bbbbbb;
     }
 </style>
