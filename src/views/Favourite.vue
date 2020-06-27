@@ -45,6 +45,7 @@
                 actions :[],
                 userList: [],
                 paperList: [],
+                currentUserId: this.$route.params.userId
             };
         },
 
@@ -87,7 +88,7 @@
                 let res = await axios.get('http://localhost:3000/favorite/getpaperlist',
                     {
                                 params:{
-                                    userId: this.getUserId,
+                                    userId: this.currentUserId,
                                     current: this.current
                                 }
                     })

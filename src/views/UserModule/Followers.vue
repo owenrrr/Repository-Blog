@@ -14,8 +14,11 @@
                                 class="follow-list-item"
                         >
                             <a-list-item-meta :description="item.email">
-                                <a slot="title" :href="item.href">{{ item.userName }}</a>
-                                <a-avatar slot="avatar" size="large" :style="{backgroundColor: item.color}">{{item.userName}}</a-avatar>
+                                <a slot="title" @click="jumpToAnother(item)">{{ item.userName }}</a>
+                                <a-avatar
+                                        slot="avatar"
+                                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                                />
                             </a-list-item-meta>
                             <a-button type="danger" @click="removeFollow(item.userId)">取消关注</a-button>
                         </a-list-item>
@@ -46,7 +49,7 @@
                     <a-list :data-source="data2">
                         <a-list-item slot="renderItem" slot-scope="item" class="follow-list-item">
                             <a-list-item-meta :description="item.email">
-                                <a slot="title" :href="item.href">{{ item.userName }}</a>
+                                <a slot="title">{{ item.userName }}</a>
                                 <a-avatar slot="avatar" size="large" :style="{backgroundColor: item.color}">{{item.userName}}</a-avatar>
                             </a-list-item-meta>
                             <a-button type="primary" @click="follow(item.userId)">关注</a-button>
@@ -85,7 +88,7 @@
                 searchUsersNum: 0,
             };
         },
-        async beforeMount() {
+        async mounted() {
             this.data1 = await this.fetchDataMyFollowers()
             this.data2 = await this.fetchDataAddFollowers()
         },
@@ -169,13 +172,18 @@
                         array: this.data1,
                     }
                 })
-                /*let temp = []
-                for(let i=0; i<res.data.pageData.length; i++){
-                    if(!this.isInArray(this.data1,res.data.pageData[i])){
-                        temp.push(res.data.pageData[i])
+                console.log(res.data)
+                this.data2 = res.data
+            },
+            jumpToAnother(item) {
+                this.$router.push({
+                    name: 'userLayout',
+                    params: {
+                        userId: item.userId,
+                        firstPage: '1'
                     }
-                }*/
-                this.data2 = res.data.pageData
+                })
+                console.log(item)
             }
         },
     }
