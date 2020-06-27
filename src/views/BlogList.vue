@@ -8,7 +8,7 @@
                     <a-list-item-meta>
                         <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
                         <a slot="title" @click="commitPaperId(item.paperId)">{{ item.title }}</a>
-                        <a-avatar slot="avatar" size="large" :style="{backgroundColor: getcolor()}">{{item.userName}}</a-avatar>
+                        <a-avatar slot="avatar" size="large" :style="{backgroundColor: item.color}">{{item.userName}}</a-avatar>
                     </a-list-item-meta>
                     <template>
                         <span>
@@ -41,7 +41,6 @@ import {mapMutations} from 'vuex'
         name: "BlogList",
         data() {
             return {
-                colorList: ['#2828FF','#00BB00','#FF5809','#F9F900','#AE57A4','#FF0000','#FF60AF','#8E8E8E','#9F35FF','#00FFFF'],
                 listData : [],
                 actions :[],
                 paperList: [],
@@ -58,9 +57,6 @@ import {mapMutations} from 'vuex'
             ...mapMutations([
                 'set_paperId'
             ]),
-            getcolor(){
-                return this.colorList[Math.floor(Math.random()*10)]
-            },
             async onSearch(value){
                 await this.search(value)
                 await this.constructors(this.paperList)
@@ -143,11 +139,13 @@ import {mapMutations} from 'vuex'
                         commentNum: paper.commentNum,
                         createTime: paper.createTime,
                         userName: null,
+                        color: '',
                         index:index,
                     }
                     index++
                     let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: tmp.userId}})
                     tmp.userName = res.data.userName
+                    tmp.color = res.data.color
                     this.listData.push(tmp)
                 }
                 console.log("This is after setListData :")

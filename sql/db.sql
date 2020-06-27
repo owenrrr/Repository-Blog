@@ -188,7 +188,7 @@ CREATE TABLE `user` (
   `description` varchar(255) DEFAULT NULL,
   `sex` varchar(255) DEFAULT NULL,
   `age` int(10) unsigned DEFAULT NULL,
-  `imgURL` varchar(255) DEFAULT NULL,
+  `color` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -199,10 +199,10 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'lxyeah@qq.com', 'lxyeah','ZHIXINGHEYI99',null,'男',20,null),
-                          (2,'owen@qq.com','owen','123456',null,'男',20,null),
-                          (3,'Charlie@qq.com','Charlie','123456',null,'男',20,null),
-                          (14,'123@qq.com', '李炫晔', '123456', null, '女', 20, null);
+INSERT INTO `user` VALUES (1,'lxyeah@qq.com', 'lxyeah','ZHIXINGHEYI99',null,'男',20,'#2828FF'),
+                          (2,'owen@qq.com','owen','123456',null,'男',20,'#00BB00'),
+                          (3,'Charlie@qq.com','Charlie','123456',null,'男',20,'#FF5809'),
+                          (14,'123@qq.com', '李炫晔', '123456', null, '女', 20, '#F9F900');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
