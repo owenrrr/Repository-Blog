@@ -5,6 +5,7 @@ const FavoriteDB = require('./FavoriteDB');
 const paperDB = require('./PaperDB');
 const LikeDB = require('./LikeDB');
 const Blog_CommentDB = require('./Blog_CommentDB');
+const FollowDB = require('./FollowDB')
 
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
@@ -21,6 +22,65 @@ app.all('*', function (req, res, next) {
 const port = 3000;
 
 app.get('/', (req, res) => res.send('Hello World'));
+
+// Table `Follow` operation
+
+app.get('/follow/getFollows', jsonParser, async (req, res) => {
+    let userId = req.query.userId;
+    let userList = await FollowDB.getFollows(userId);
+    userList = JSON.parse(userList)
+    let users = []
+    for(let user of userList){
+        let temp = await userDB.getById(user)
+        temp = JSON.parse(temp)
+        users.push(temp)
+    }
+    await res.json(
+        users
+    )
+})
+
+app.get('/follow/check', jsonParser, async (req, res) => {
+    let userId = Number(req.query.userId);
+    let followId = Number(req.query.followId);
+    let userList = await FollowDB.getFollows(userId)
+    userList = JSON.parse(userList)
+    let sign = false
+    for (let user of userList) {
+        if (user === followId) {
+            sign = true
+            break
+        }
+    }
+    await res.json(sign)
+
+})
+
+app.post('/follow/addFollow', jsonParser, async (req, res) => {
+    let userId = req.body.userId
+    let followId = req.body.followId
+    let result = await FollowDB.add(userId, followId);
+    console.log('关注成功');
+    await res.json({
+        statue: 1,
+        follow: {
+            followId,
+            userId,
+            result
+        }
+    })
+
+})
+
+app.post('/follow/removeFollow', jsonParser, async (req, res) => {
+    let userId = req.body.userId
+    let followId = req.body.followId
+    await FollowDB.remove(userId, followId);
+    console.log('删除关注成功');
+    await res.json({
+        statue: 1,
+    })
+})
 
 // Table `user` operation
 
@@ -288,6 +348,14 @@ app.get('/like/getpaperlist', jsonParser, async (req, res) => {
 });
 
 // Table `paper` operation
+app.get('/paper/getauthorId', jsonParser, async (req, res) => {
+    let paperId = req.query.paperId
+    let authorId = await paperDB.getauthorid(paperId)
+    authorId = JSON.parse(authorId)
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    console.log(authorId);
+    await res.json(authorId)
+})
 app.get('/paper/getsearch', jsonParser, async (req, res) => {
     let text = req.query.content;
     let current = req.query.current;
