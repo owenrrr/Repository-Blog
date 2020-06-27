@@ -96,7 +96,7 @@ app.post('/follow/removeFollow', jsonParser, async (req, res) => {
 app.get('/user/searchUser', jsonParser, async (req, res) => {
     let text = req.query.searchInfo
     let current = req.query.current
-    let array = req.query.array
+    let userId = req.query.userId
 
     let users = await userDB.getAll();
     users = JSON.parse(users);
@@ -108,11 +108,14 @@ app.get('/user/searchUser', jsonParser, async (req, res) => {
         }
     }
 
+    let follows = await FollowDB.getFollows(userId)
+    follows = JSON.parse(follows)
+
     let userList = []
     for(let i=0; i<tempList.length; i++){
         let flag = true
-        for(let j=0; j<array.length; j++){
-            if(array[j].userId==tempList[i].userId){
+        for(let follow of follows){
+            if(tempList[i].userId==follow){
                 flag = false
                 break
             }

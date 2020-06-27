@@ -15,10 +15,7 @@
                         >
                             <a-list-item-meta :description="item.email">
                                 <a slot="title" @click="jumpToAnother(item)">{{ item.userName }}</a>
-                                <a-avatar
-                                        slot="avatar"
-                                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                                />
+                                <a-avatar slot="avatar" size="large" :style="{backgroundColor: item.color}">{{item.userName}}</a-avatar>
                             </a-list-item-meta>
                             <a-button type="danger" @click="removeFollow(item.userId)">取消关注</a-button>
                         </a-list-item>
@@ -142,7 +139,7 @@
                     params: {
                         searchInfo: this.input,
                         current: this.current2,
-                        array: this.data1
+                        userId: this.getUserId,
                     }
                 })
                 this.total2 = res.data.total
@@ -153,7 +150,7 @@
                     params: {
                         searchInfo: this.input,
                         current: this.current2,
-                        array: this.data1,
+                        userId: this.getUserId,
                     }
                 })
                 console.log(res.data)
