@@ -1,5 +1,6 @@
 <template>
     <div>
+        <div class="user-layout">
         <a-menu v-model="current" mode="horizontal" @select="jumpToDetail">
             <a-menu-item key="1">
                 <a-icon type="user">
@@ -25,6 +26,7 @@
         <transition name="fade-transform" mode="out-in">
             <router-view style="min-height: 500px; margin-top: 20px"/>
         </transition>
+        </div>
     </div>
 </template>
 
@@ -107,5 +109,7 @@
 </script>
 
 <style scoped>
-
+    .user-layout {
+        border: #eeeeee solid 1px;
+    }
 </style>

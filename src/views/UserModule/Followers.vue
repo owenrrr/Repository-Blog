@@ -1,119 +1,198 @@
-/* eslint-disable vue/no-unused-vars */
 <template>
-<div>
-    <div class="inline-blo">
-        <h1 style="font-size: 20px; margin-left: 70px; margin-right: 70px; font: YouYuan">Recommended List</h1>
-        <a-list item-layout="horizontal" :data-source="data">
-            <a-list-item slot="renderItem" slot-scope="item">
-                <a-list-item-meta
-                    :description= "item.description"
+    <div >
+        <div class="follower">
+            <div class="left">
+                <a-page-header
+                        class="title"
+                        title="我的关注"
+                />
+                <div
+                        v-infinite-scroll="handleInfiniteOnLoad"
+                        class="demo-infinite-container-one"
+                        :infinite-scroll-disabled="busy"
+                        :infinite-scroll-distance="10"
                 >
-                    <a slot="title">{{ item.title }}</a>
-                    <a-avatar
-                    slot="avatar"
-                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                    />
-                </a-list-item-meta>
-            </a-list-item>
-        </a-list>
+                    <a-list :data-source="data">
+                        <a-list-item
+                                slot="renderItem" slot-scope="item"
+                                @mouseenter="changeActive($event, item)"
+                                @mouseleave="removeActive($event, item)"
+                        >
+                            <a-list-item-meta :description="item.email">
+                                <a slot="title" :href="item.href">{{ item.name.last }}</a>
+                                <a-avatar
+                                        slot="avatar"
+                                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                                />
+                            </a-list-item-meta>
+                            <a-button type="danger" v-if="item.state === 1">取消关注</a-button>
+                        </a-list-item>
+                        <div v-if="loading && !busy" class="demo-loading-container-one">
+                            <a-spin />
+                        </div>
+                    </a-list>
+                </div>
+            </div>
+            <div class="right">
+                <a-page-header
+                        class="title"
+                        title="添加关注"
+                >
+                    <template slot="extra">
+                        <a-input-search
+                                placeholder="输入好友邮箱或姓名"
+                                enter-button
+
+                                style="width: 100%;"
+                        />
+                    </template>
+                </a-page-header>
+
+                <div
+                        v-infinite-scroll="handleInfiniteOnLoad"
+                        class="demo-infinite-container-two"
+                        :infinite-scroll-disabled="busy"
+                        :infinite-scroll-distance="10"
+                >
+                    <a-list :data-source="data">
+                        <a-list-item slot="renderItem" slot-scope="item">
+                            <a-list-item-meta :description="item.email">
+                                <a slot="title" :href="item.href">{{ item.name.last }}</a>
+                                <a-avatar
+                                        slot="avatar"
+                                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                                />
+                            </a-list-item-meta>
+                            <a-button type="primary">关注</a-button>
+                        </a-list-item>
+                        <div v-if="loading && !busy" class="demo-loading-container-two">
+                            <a-spin />
+                        </div>
+                    </a-list>
+                </div>
+            </div>
+        </div>
     </div>
-    <div style="display: inline-block; width: 40%; float: right; margin-top: 10px; margin-right: 10px">
-        <a-input-search placeholder="Input username..." allow-clear class="searchInput" @search="onSearch" />
-        <a-button style="margin-bottom: 10px; margin-right: 10px" v-if="state == 'search'" @click="stateshow">Back</a-button>
-    </div>
-</div>
 </template>
 
 <script>
-// description= "item.description"
-import axios from 'axios'
-export default{
-    name: 'Followers',
-    data() {
-        return {
-            data: [],
-            userid: null,
-            defaultData: [],
-            state: "show",  // show, search
-        }
-    },
-    mounted(){
-        this.constructor()
-        console.log(this.data)
-    },
-    methods:{
-        constructor(){
-            let userList
-            axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-                console.log("Excute the constructor function! in constructor")
-                userList = res.data.userList
-                console.log(userList)
-                this.userid = this.$store.getters.getUserid
-                console.log(this.userid)
-              for (var user of userList){
-                if (user.userid === this.userid){
-                   continue
-                }
-                let tmp = {title: null, description: null}
-                tmp.title = user.username
-                tmp.description = (user.description == null? "He/She is too lazy, nothing left ( ˘•ω•˘ )": user.description)
-                this.data.push(tmp)
-              }
-              console.log(this.data)
-            })
 
+    //import axios from 'axios'
+    import reqwest from 'reqwest';
+    import infiniteScroll from 'vue-infinite-scroll';
+    const fakeDataUrl = 'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
+    export default{
+        name: 'Followers',
+        directives: { infiniteScroll },
+        data() {
+            return {
+                data: [],
+                loading: false,
+                busy: false,
+            };
         },
-        onSearch(value){
-            let userList
-            axios.get('http://localhost:3000/user/getuserlist').then((res) => {
-                console.log(value)
-                if (this.state === 'show'){
-                    for (var t of this.data){  
-                        //先备份defaultlist
-                        this.defaultData.push(t)
-                    }
+        beforeMount() {
+            this.fetchData(res => {
+                this.data = res.results;
+            });
+        },
+        methods: {
+            fetchData(callback) {
+                reqwest({
+                    url: fakeDataUrl,
+                    type: 'json',
+                    method: 'get',
+                    contentType: 'application/json',
+                    success: res => {
+                        callback(res);
+                    },
+                });
+            },
+            handleInfiniteOnLoad() {
+                const data = this.data;
+                this.loading = true;
+                if (data.length > 14) {
+                    this.$message.warning('Infinite List loaded all');
+                    this.busy = true;
+                    this.loading = false;
+                    return;
                 }
-                console.log("Excute the constructor function! in onSearch")
-                userList = res.data.userList
-                let tmp = {title: null, description: null}
-              for (var user of userList){
-                if (user.username == value){
-                    tmp.title = user.username
-                    tmp.description = (user.description == null? "He/She is too lazy, nothing left ( ˘•ω•˘ )": user.description)
-                    this.data.length = 0 // 清空数组
-                    this.data.push(tmp)
-                    break
-                }
-              }
-              console.log("Here is search of data")
-              console.log(this.data)
-              console.log(this.defaultData)
-              if (this.data.length == this.defaultData){
-                  this.$message.warning("'" + value + "' is not exist. ", 3);
-              }
-              this.state = 'search'
-            })
+                this.fetchData(res => {
+                    this.data = data.concat(res.results);
+                    this.loading = false;
+                });
+            },
+            changeActive(e, item) {
+
+                console.log('光标移入')
+                item.state = 1
+                console.log(item)
+            },
+            removeActive(e, item) {
+
+                console.log('光标移出')
+                item.state = 0
+                console.log(item)
+            }
         },
-        stateshow(){
-            this.data.length = 0 // 清空data
-            for (var t of this.defaultData){
-                this.data.push(t)
-            } 
-            this.defaultData.length = 0 //清空defaultData   
-            console.log("Execute stateshow function and the data is :" + this.data)
-            this.state = 'show'
-        },
-    },
-}
+    }
 </script>
 
 <style>
-.searchInput {
-    width: 200px; 
-    float: right; 
-}
-.inline-blo {
-    display: inline-block;
-    width: 40%;
-}
+    .follower {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        min-height: 500px;
+    }
+
+    .left{
+        width: 40%;
+        margin-right: 5%;
+        border: #dddddd solid 1px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .right {
+        width: 40%;
+        margin-left: 5%;
+        border: #dddddd solid 1px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .title {
+        border: 1px solid rgb(235, 237, 240);
+        border-radius: 10px 10px 0 0;
+        background-color: #eeeeee;
+    }
+
+    .demo-infinite-container-one {
+        border: 1px solid #e8e8e8;
+        border-radius: 4px;
+        overflow: auto;
+        padding: 8px 24px;
+        height: 500px;
+    }
+    .demo-loading-container-one {
+        position: absolute;
+        bottom: 40px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .demo-infinite-container-two {
+        border: 1px solid #e8e8e8;
+        border-radius: 4px;
+        overflow: auto;
+        padding: 8px 24px;
+        height: 500px;
+    }
+    .demo-loading-container-two {
+        position: absolute;
+        bottom: 40px;
+        width: 100%;
+        text-align: center;
+    }
 </style>

@@ -33,7 +33,11 @@
                             <a-icon type="star"/>
                             我的收藏
                         </a-menu-item>
-                        <a-menu-item key="4" @click="logOut" style="text-align: center">
+                        <a-menu-item key="4" @click="jumpToFollowers">
+                            <a-icon type="team"/>
+                            我的关注
+                        </a-menu-item>
+                        <a-menu-item key="5" @click="logOut" style="text-align: center">
                             <a-icon type="poweroff"></a-icon>
                             退出账号
                         </a-menu-item>
@@ -85,12 +89,22 @@
                 }).catch(err => console.log(err))
             },
             jumpToMyArticles() {
-                console.log("!!!!!!!!!!!!!!!!!")
+                console.log("myArticles")
                 this.$router.push({
                     name: 'userLayout',
                     params: {
                         userId: this.getUserId,
                         firstPage: '2'
+                    }
+                })
+            },
+            jumpToFollowers() {
+                console.log('followers')
+                this.$router.push({
+                    name: 'userLayout',
+                    params: {
+                        userId: this.getUserId,
+                        firstPage: '4'
                     }
                 })
             },
