@@ -99,7 +99,7 @@
             async $route(to, from) {
                 console.log(to.path)
                 console.log(from.path)
-                if (to.path.substring(0, 16) !== from.path.substring(0, 16)) {
+                if (to.path.length === 16) {
                     await this.jumpToPage(this.$route.params.firstPage)
                     this.current = [this.$route.params.firstPage]
                 }
