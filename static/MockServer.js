@@ -84,6 +84,36 @@ app.post('/follow/removeFollow', jsonParser, async (req, res) => {
 
 // Table `user` operation
 
+app.get('/user/searchUserByName', jsonParser, async (req, res) => {
+    let text = req.query.userName
+    let users = await userDB.getAll();
+    users = JSON.parse(users);
+    let userList = []
+    for(let user of users){
+        if(user.userName.search(text) !== -1){
+            userList.push(user)
+        }
+    }
+    await res.json({
+        userList
+    })
+})
+
+app.get('/user/searchUserByEmail', jsonParser, async (req, res) => {
+    let text = req.query.userName
+    let users = await userDB.getAll();
+    users = JSON.parse(users);
+    let userList = []
+    for(let user of users){
+        if(user.email.search(text) !== -1){
+            userList.push(user)
+        }
+    }
+    await res.json({
+        userList
+    })
+})
+
 app.get('/user/getUserById', jsonParser, async (req, res) => {
     let userId = req.query.userId;
     let user;
@@ -348,11 +378,17 @@ app.get('/like/getpaperlist', jsonParser, async (req, res) => {
 });
 
 // Table `paper` operation
+app.post('/paper/deletepaper', jsonParser, async(req, res) => {
+    let paperId = req.body.paperId
+    await paperDB.delete(paperId)
+    await res.json({
+        statue: 1,
+    });
+})
 app.get('/paper/getauthorId', jsonParser, async (req, res) => {
     let paperId = req.query.paperId
     let authorId = await paperDB.getauthorid(paperId)
     authorId = JSON.parse(authorId)
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     console.log(authorId);
     await res.json(authorId)
 })

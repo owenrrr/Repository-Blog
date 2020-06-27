@@ -17,6 +17,40 @@ function closeConnection() {
 
 module.exports = {
 
+    delete: function(paperId) {
+
+        return new Promise((resolve, reject) => {
+
+            openConnection();
+
+            let params = [paperId];
+
+            let sql = 'delete from paper where paper_id = ?;';
+
+            connection.query(sql, params, function(err, res) {
+
+                if (err) {
+
+                    console.log('[DELETE-ERROR]' + err.message);
+
+                    return;
+
+                }
+
+                console.log('[DELETE-PAPER-SUCCESS] ');
+
+                console.log(res);
+
+                resolve(JSON.stringify(res));
+
+            })
+
+            closeConnection()
+
+        })
+
+    },
+
     add: function (userId, title, createTime, content) {
 
         return new Promise((resolve, reject) => {
