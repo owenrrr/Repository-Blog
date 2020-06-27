@@ -153,8 +153,8 @@
                         userId: this.getUserId,
                     }
                 })
-                console.log(res.data)
-                this.data2 = res.data
+                console.log(res.data.pageData)
+                this.data2 = res.data.pageData
             },
             jumpToAnother(item) {
                 this.$router.push({
@@ -210,5 +210,6 @@
         background-color: #eeeeee;
         box-shadow: 5px 5px 2px #aaaaaa;
     }
+
 
 </style>

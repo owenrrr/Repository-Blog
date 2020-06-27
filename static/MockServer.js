@@ -36,7 +36,7 @@ app.get('/follow/getFollows', jsonParser, async (req, res) => {
         temp = JSON.parse(temp)
         users.push(temp)
     }
-    let pageSize = 3
+    let pageSize = 5
     let pageData = []
     for (let i = (current - 1) * pageSize; i < current * pageSize; i++) {
         if (i < users.length) {
@@ -120,12 +120,15 @@ app.get('/user/searchUser', jsonParser, async (req, res) => {
                 break
             }
         }
+        if(tempList[i].userId==userId){
+            flag = false
+        }
         if(flag){
             userList.push(tempList[i])
         }
     }
 
-    let pageSize = 3
+    let pageSize = 5
     let pageData = []
 
     for (let i = (current - 1) * pageSize; i < current * pageSize; i++) {
