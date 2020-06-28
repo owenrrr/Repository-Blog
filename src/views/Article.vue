@@ -12,6 +12,9 @@
                         返回上一页
                     </a-button>-->
                     <div style="float: left; font-size: 40px; width: 80%; "><i style="float: left; margin-top: 20px">{{ paper.title }}</i></div>
+                    <div style="float: right">
+                        <a-button type="primary" style="float: right; margin-top: 30px" @click="back()">返回上一页</a-button>
+                    </div>
                     <div style="float: left; font-size: 15px; width: 100%;">
                         <p style="float: left; margin-right: 20px; font-size: 15px">{{'作者: ' + userName }}</p>
                         <a-button style="float: left; margin-top: 15px" type="dashed" v-if="followState&&!isMe" @click="removeFollow">已关注</a-button>
@@ -73,6 +76,10 @@
                 if(this.getUserId==author){
                     this.isMe = true
                 }
+            },
+
+            back(){
+                this.$router.back()
             },
 
             async isFollow(){
