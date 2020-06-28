@@ -1,46 +1,32 @@
 <template>
-    <div id="components-layout-demo-basic">
-        <a-layout>
-            <a-layout>
-                <a-layout-header>
-<!--                    <a-button
-                            class="title"
-                            type="primary"
-                            style="float: right; font-size: 15px;  margin-top: 40px"
-                            @click="back()"
-                    >
-                        返回上一页
-                    </a-button>-->
-                    <div style="float: left; font-size: 40px; width: 80%; "><i style="float: left; margin-top: 20px">{{ paper.title }}</i></div>
-                    <div style="float: right">
-                        <a-button type="primary" style="float: right; margin-top: 30px" @click="back()">返回上一页</a-button>
-                    </div>
-                    <div style="float: left; font-size: 15px; width: 100%;">
-                        <p style="float: left; margin-right: 20px; font-size: 15px">{{'作者: ' + userName }}</p>
-                        <a-button style="float: left; margin-top: 15px" type="dashed" v-if="followState&&!isMe" @click="removeFollow">已关注</a-button>
-                        <a-button style="float: left; margin-top: 15px" type="primary" v-if="!followState&&!isMe" @click="follow">关注作者</a-button>
-                        <div>
+    <div>
+        <div class="article-header">
+            <a-button type="default" @click="back"><a-icon type="left"/>返回上一页</a-button>
+            <div style=" font-size: 30px; margin-top: 20px"><i>{{ paper.title }}</i></div>
+            <div class="atom">
+                <div class="atom-atom">
+                    <p style="font-size: 15px">{{'作者: ' + userName }}</p>
+                    <a-button style="margin-left: 10px" type="dashed" v-if="followState&&!isMe" @click="removeFollow">已关注</a-button>
+                    <a-button style="margin-left: 10px" type="primary" v-if="!followState&&!isMe" @click="follow">关注作者</a-button>
+                </div>
+                <div>
                     <span style="margin-right: 20px; float: right;">
                         <a-icon type="calendar" style="margin-right: 10px;" />{{ date_ymd + " " + date_hms }}
                     </span>
-                            <span style="margin-right: 20px; float: right;" >
+                    <span style="margin-right: 20px; float: right;" >
                         <a-icon type="star" v-bind:theme="isFavorite()" style="margin-right: 10px" @click="addStar"/>{{ paper.starNum }}
                     </span>
-                            <span style="margin-right: 20px; float: right;">
+                    <span style="margin-right: 20px; float: right;">
                         <a-icon type="like" v-bind:theme="isLike()" style="margin-right: 10px"  @click="addLike"/>{{ paper.likeNum }}
                     </span>
-                        </div>
-                    </div>
-                </a-layout-header>
-                <a-layout-content>
-                    <div v-html="paper.content" class="content">
-                    </div>
-                </a-layout-content>
-                <a-layout-footer style="text-align: center">
-                    <comment style="width: 100%; height: auto; display: inline-block"></comment>
-                </a-layout-footer>
-            </a-layout>
-        </a-layout>
+                </div>
+            </div>
+        </div>
+        <div v-html="paper.content" class="content">
+        </div>
+        <div style="min-height: 300px">
+            <comment style="width: 100%;"></comment>
+        </div>
     </div>
 </template>
 
@@ -270,27 +256,37 @@
 </script>
 
 <style>
+    .atom {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .atom-atom {
+        display: flex;
+        justify-content: center;
+        align-items: baseline;
+    }
     .content {
         font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        background-color: #eeeeee;
         font-size: 16px;
         color: #2c3e50;
-        margin: 20px 20px;
-        min-height: 300px;
+        min-height: 500px;
+        padding: 20px;
+        border: #dddddd 1px solid;
     }
     .content h1, h2, h3{
         text-align: center;
         font-size: 30px;
     }
 
-    .ant-layout::-webkit-scrollbar {
-        display: none;
-    }
-    #components-layout-demo-basic .ant-layout-footer,
-    #components-layout-demo-basic .ant-layout-header {
-        min-height: 150px;
-        background-color: #eeeeee;
+    .article-header {
+        border: #dddddd 1px solid;
+        padding: 10px;
+        min-height: 200px;
     }
 
 

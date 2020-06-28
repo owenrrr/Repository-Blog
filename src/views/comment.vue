@@ -1,27 +1,31 @@
 <template>
-    <a-list
+    <div class="comment">
+        <a-list
             class="comment-list"
             :header="`共有 ${data.length} 条回复`"
             item-layout="horizontal"
             :data-source=showData
-    >
-        <a-list-item slot="renderItem" slot-scope="item" :id="'id' + item.blogCommentId" class="list-item">
-            <a-comment :author="item.author" :avatar="item.avatar" style="width: 100%">
-                <template slot="actions">
-                    <span v-for="action in item.actions" :key="action" @click="reply(item)" style="color: dodgerblue">{{ action }}</span>
-                </template>
-                <div slot="content" style="width: 100%">
-                    <span v-if="item.commentType" @click="toTargetComment(item)" style="color: dodgerblue">{{'@' + item.replyCommentName}}</span>
-                    {{ item.content }}
-                </div>
-                <a-tooltip slot="datetime">
-                    <span style="color: grey">{{item.datetime}}</span>
-                </a-tooltip>
-            </a-comment>
-        </a-list-item>
-        <a-input id="reply" style="width:80% ; height:40px ; margin:5px 10px ; display: inline-block" type="text" :placeholder="replyHolder" v-model="content" defaultValue=content></a-input>
-        <a-button type="primary" @click="submitComment">提交</a-button>
-    </a-list>
+        >
+            <a-list-item slot="renderItem" slot-scope="item" :id="'id' + item.blogCommentId" class="list-item">
+                <a-comment :author="item.author" :avatar="item.avatar" style="width: 100%">
+                    <template slot="actions">
+                        <span v-for="action in item.actions" :key="action" @click="reply(item)" style="color: dodgerblue">{{ action }}</span>
+                    </template>
+                    <div slot="content" style="width: 100%">
+                        <span v-if="item.commentType" @click="toTargetComment(item)" style="color: dodgerblue">{{'@' + item.replyCommentName}}</span>
+                        {{ item.content }}
+                    </div>
+                    <a-tooltip slot="datetime">
+                        <span style="color: grey">{{item.datetime}}</span>
+                    </a-tooltip>
+                </a-comment>
+            </a-list-item>
+        </a-list>
+        <div class="comment-footer">
+            <a-input id="reply" style="width:90% ; height:40px ; margin:5px 10px ; display: inline-block" type="text" :placeholder="replyHolder" v-model="content" defaultValue=content></a-input>
+            <a-button type="primary"  @click="submitComment">提交</a-button>
+        </div>
+    </div>
 </template>
 <script>
 
@@ -207,12 +211,22 @@
 </script>
 
 <style scoped>
+    .comment {
+        border: #dddddd 1px solid;
+    }
+    .comment-list {
+        margin: 10px;
+    }
+    .comment-footer {
+
+    }
     .list-item {
         border: #dddddd solid;
         box-shadow: 10px 10px 5px #cccccc;
         padding: 20px 20px;
         border-radius: 30px;
         margin-bottom: 10px;
+        margin-top: 10px;
     }
 
 </style>
