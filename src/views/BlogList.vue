@@ -174,6 +174,7 @@ import {mapMutations} from 'vuex'
         align-self: flex-end;
         width: 100%;
         text-align: center;
+        margin-bottom: 20px;
     }
 
     .list-item {

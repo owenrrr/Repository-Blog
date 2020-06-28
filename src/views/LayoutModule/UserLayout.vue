@@ -132,5 +132,6 @@
 <style scoped>
     .user-layout {
         border: #eeeeee solid 1px;
+        padding-bottom: 20px;
     }
 </style>

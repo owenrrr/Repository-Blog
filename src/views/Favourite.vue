@@ -25,7 +25,7 @@
                 </a-list-item>
             </a-list>
         </div>
-        <div class="page" >
+        <div class="favorite-page" >
             <a-pagination v-model="current" :total="total" @change="onChange" />
         </div>
     </div>
@@ -163,7 +163,7 @@
         margin-bottom: 10px;
     }
 
-    .page {
+    .favorite-page {
         align-self: flex-end;
         width: 100%;
         text-align: center;
