@@ -3,7 +3,15 @@
         <a-layout>
             <a-layout>
                 <a-layout-header>
-                    <div style="float: left; font-size: 40px; width: 100%; "><i style="float: left; margin-top: 20px">{{ paper.title }}</i></div>
+<!--                    <a-button
+                            class="title"
+                            type="primary"
+                            style="float: right; font-size: 15px;  margin-top: 40px"
+                            @click="back()"
+                    >
+                        返回上一页
+                    </a-button>-->
+                    <div style="float: left; font-size: 40px; width: 80%; "><i style="float: left; margin-top: 20px">{{ paper.title }}</i></div>
                     <div style="float: left; font-size: 15px; width: 100%;">
                         <p style="float: left; margin-right: 20px; font-size: 15px">{{'作者: ' + userName }}</p>
                         <a-button style="float: left; margin-top: 15px" type="dashed" v-if="followState&&!isMe" @click="removeFollow">已关注</a-button>
@@ -161,7 +169,7 @@
 
             async getUsername(){
                 let userInfo
-                let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: this.getUserId}})
+                let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: this.paper.userId}})
                 console.log("This is in getUsername()")
                 userInfo = res.data
                 console.log(userInfo)

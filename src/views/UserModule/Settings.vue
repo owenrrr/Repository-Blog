@@ -187,7 +187,7 @@
         },
 
         async constructor(){
-            let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: this.$route.params.userId}})
+            let res = await axios.get('http://localhost:3000/user/getUserById', {params: {userId: this.$route.params.id}})
             this.userInfo = res.data
             console.log(this.userInfo)
             this.basic.userId = this.userInfo.userId

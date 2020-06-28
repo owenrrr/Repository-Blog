@@ -2,27 +2,29 @@
     <div >
         <div class="follower">
             <div class="left">
-                <a-page-header
-                        class="title"
-                        title="我的关注"
-                />
-                <div
-                >
-                    <a-list :data-source="data1">
-                        <a-list-item
-                                slot="renderItem" slot-scope="item"
-                                class="follow-list-item"
-                        >
-                            <a-list-item-meta :description="item.email">
-                                <a slot="title" @click="jumpToAnother(item)">{{ item.userName }}</a>
-                                <a-avatar slot="avatar" size="large" :style="{backgroundColor: item.color}">{{item.userName}}</a-avatar>
-                            </a-list-item-meta>
-                            <a-button type="danger" @click="removeFollow(item.userId)">取消关注</a-button>
-                        </a-list-item>
-                    </a-list>
+                <div class="follow-header">
+                    <a-page-header
+                            class="title"
+                            title="我的关注"
+                    />
+                    <div style="height: 340px;"
+                    >
+                        <a-list :data-source="data1">
+                            <a-list-item
+                                    slot="renderItem" slot-scope="item"
+                                    class="follow-list-item"
+                            >
+                                <a-list-item-meta :description="item.email">
+                                    <a slot="title" @click="jumpToAnother(item)">{{ item.userName }}</a>
+                                    <a-avatar slot="avatar" size="large" :style="{backgroundColor: item.color}">{{item.userName}}</a-avatar>
+                                </a-list-item-meta>
+                                <a-button type="danger" @click="removeFollow(item.userId)">取消关注</a-button>
+                            </a-list-item>
+                        </a-list>
+                    </div>
                 </div>
-                <div class="page1" >
-                    <a-pagination v-model="current1" :total="total1" pageSize="3" @change="onChange1" style="margin-left: 37%"/>
+                <div class="follow-page-one" >
+                    <a-pagination v-model="current1" :total="total1" :pageSize="5" @change="onChange1" style="margin-left: 37%"/>
                 </div>
             </div>
             <div class="right">
@@ -43,6 +45,7 @@
 
                 <div
                 >
+                    <div style="height: 340px;">
                     <a-list :data-source="data2">
                         <a-list-item slot="renderItem" slot-scope="item" class="follow-list-item">
                             <a-list-item-meta :description="item.email">
@@ -52,8 +55,9 @@
                             <a-button type="primary" @click="follow(item.userId)">关注</a-button>
                         </a-list-item>
                     </a-list>
-                    <div class="page2" >
-                        <a-pagination v-model="current2" :total="total2" pageSize="3" @change="onChange2" style="margin-left: 37%"/>
+                    </div>
+                    <div class="follow-page-two" >
+                        <a-pagination v-model="current2" :total="total2" :pageSize="5" @change="onChange2" style="margin-left: 37%"/>
                     </div>
                 </div>
             </div>
@@ -127,7 +131,7 @@
             async fetchDataMyFollowers() {
                 let res = await axios.get('http://localhost:3000/follow/getFollows', {
                     params: {
-                        userId: this.$route.params.userId,
+                        userId: this.$route.params.id,
                         current: this.current1
                     }
                 })
@@ -158,7 +162,7 @@
             },
             jumpToAnother(item) {
                 this.$router.push({
-                    name: 'userLayout',
+                    name: 'anotherLayout',
                     params: {
                         userId: item.userId,
                         firstPage: '1'
@@ -186,6 +190,17 @@
         border: #dddddd solid 1px;
         border-radius: 10px;
         background-color: #dddddd;
+        height: 500px;
+    }
+
+    .follow-page-one {
+        position: relative;
+        bottom: -30px;
+    }
+
+    .follow-page-two {
+        position: relative;
+        bottom: -30px;
     }
 
     .right {
@@ -194,6 +209,7 @@
         border: #dddddd solid 1px;
         border-radius: 10px;
         background-color: #dddddd;
+        height: 500px;
     }
 
     .title {

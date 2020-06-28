@@ -61,27 +61,49 @@ Vue.use(VueRouter)
           component: () => import('@/views/LayoutModule/UserLayout'),
           children: [
             {
-              path: 'favourite/:userId',
+              path: 'favourite/:id',
               name: 'favourite',
               component: () => import('@/views/Favourite')
             },
             {
-              path: 'settings/:userId',
+              path: 'settings/:id',
               name :'settings',
               component: () => import('@/views/UserModule/Settings')
             },
             {
-              path: 'followers/:userId',
+              path: 'followers/:id',
               name :'followers',
               component: () => import('@/views/UserModule/Followers')
             },
             {
-              path: 'myArticles/:userId',
+              path: 'myArticles/:id',
               name: 'myArticles',
               component: () => import('@/views/UserModule/myArticles')
             }
           ]
         },
+        {
+          path: '/anotherLayout/:userId/:firstPage',
+          name: 'anotherLayout',
+          component: () => import('@/views/LayoutModule/AnotherLayout'),
+          children: [
+            {
+              path: 'anotherFavourite/:id',
+              name: 'anotherFavourite',
+              component: () => import('@/views/AnotherModule/anotherFavourite')
+            },
+            {
+              path: 'anotherSettings/:id',
+              name :'anotherSettings',
+              component: () => import('@/views/AnotherModule/anotherSettings')
+            },
+            {
+              path: 'anotherMyArticles/:id',
+              name: 'anotherMyArticles',
+              component: () => import('@/views/AnotherModule/anotherMyArticles')
+            }
+          ]
+        }
 
 
 

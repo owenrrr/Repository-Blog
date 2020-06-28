@@ -24,7 +24,7 @@
                 </a-menu-item>
             </a-menu>
             <transition name="fade-transform" mode="out-in">
-                <router-view style="min-height: 500px; margin-top: 20px"/>
+                <router-view style="min-height: 500px; margin-top: 20px" :key="$route.fullPath"/>
             </transition>
         </div>
     </div>
@@ -47,16 +47,6 @@
             ])
         },
         methods: {
-            async jumpToMine() {
-                console.log(this.getUserId)
-                await this.$router.push({
-                    name: 'userLayout',
-                    params: {
-                        userId: this.getUserId,
-                        firstPage: '1'
-                    }
-                })
-            },
             async jumpToDetail({key}) {
                 await this.jumpToPage(key)
             },
@@ -65,37 +55,45 @@
                 key = Number(key)
                 if (key === 1) {
                     console.log('settings')
+                    console.log(this.currentUserId)
+                    console.log(this.current)
                     await this.$router.push({
                         name: 'settings',
                         params: {
-                            userId: this.currentUserId
+                            id: this.currentUserId
                         }
                     })
                 }
                 else if (key === 2) {
                     console.log('myArticles')
+                    console.log(this.currentUserId)
+                    console.log(this.current)
                     await this.$router.push({
                         name: 'myArticles',
                         params: {
-                            userId: this.currentUserId
+                            id: this.currentUserId
                         }
                     })
                 }
                 else if (key === 3) {
                     console.log('favourite');
+                    console.log(this.currentUserId)
+                    console.log(this.current)
                     await this.$router.push({
                         name: 'favourite',
                         params: {
-                            userId: this.currentUserId
+                            id: this.currentUserId
                         }
                     })
                 }
                 else if (key === 4) {
                     console.log('followers');
+                    console.log(this.currentUserId)
+                    console.log(this.current)
                     await this.$router.push({
                         name: 'followers',
                         params: {
-                            userId: this.currentUserId
+                            id: this.currentUserId
                         }
                     })
                 }
@@ -112,6 +110,8 @@
             async $route(to, from) {
                 console.log(to.path)
                 console.log(from.path)
+                console.log(this.currentUserId)
+                console.log(this.current)
                 if (to.path.search('settings') === -1 &&
                     to.path.search('followers') === -1 &&
                     to.path.search('favourite') === -1 &&
@@ -122,6 +122,7 @@
                     console.log(this.current)
                     console.log(this.currentUserId)
                     await this.jumpToPage(this.$route.params.firstPage)
+
                 }
             }
         }

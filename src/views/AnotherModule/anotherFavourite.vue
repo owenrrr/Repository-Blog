@@ -36,7 +36,7 @@
     import {mapGetters, mapMutations} from 'vuex'
 
     export default {
-        name: "BlogList",
+        name: "anotherFavourite",
         data() {
             return {
                 listData : [],
@@ -79,19 +79,21 @@
 
             async constructors(paperList){
                 console.log("This is in constructor")
-                this.setActions(paperList)
-                await this.setListData(paperList)
+                if (paperList.length !== 0) {
+                    this.setActions(paperList)
+                    await this.setListData(paperList)
+                }
+
             },
 
             async setPaperList(){
                 console.log("This is in setPaperList")
-                console.log(this.currentUserId)
                 let res = await axios.get('http://localhost:3000/favorite/getpaperlist',
                     {
-                                params:{
-                                    userId: this.currentUserId,
-                                    current: this.current
-                                }
+                        params:{
+                            userId: this.currentUserId,
+                            current: this.current
+                        }
                     })
                 console.log(res)
                 this.paperList = res.data.paperList

@@ -2,7 +2,7 @@
     <div class="main">
         <div class="list">
             <a-list item-layout="vertical" size="large" :data-source="listData">
-                <a-list-item slot="renderItem" key="item.title" slot-scope="item" class="favorite-list-item">
+                <a-list-item slot="renderItem" key="item.title" slot-scope="item" class="articles-list-item">
                     <a-list-item-meta>
                         <!-- 先试试查看文章细看页面有无错误 更动click及herf :href="item.href"-->
                         <a slot="title" @click="commitPaperId(item.paperId)">{{ item.title }}</a>
@@ -21,6 +21,9 @@
                             <a-icon type="message" style="margin-right: 8px"/>
                             {{ actions[item.index].text3 }}
                         </span>
+                        <span>
+                            <a-button type="danger"  v-if="Number(getUserId) === Number(currentUserId)" :ghost="true" style="float: right" @click="deleteArticle(item.paperId)">删除文章</a-button>
+                        </span>
                     </template>
                 </a-list-item>
             </a-list>
@@ -36,7 +39,7 @@
     import {mapGetters, mapMutations} from 'vuex'
 
     export default {
-        name: "BlogList",
+        name: "anotherMyArticles",
         data() {
             return {
                 listData : [],
@@ -66,6 +69,16 @@
                 'set_paperId'
             ]),
 
+            async deleteArticle(paperId){
+                var msg = "您确定要删除吗？"
+                if(confirm(msg)==true){
+                    await axios.post('http://localhost:3000/paper/deletepaper', {paperId:paperId})
+                    await this.setPaperList()
+                    await this.constructors(this.paperList)
+                    this.$message.success('删除成功', 2)
+                }
+            },
+
             async onChange(page) {
                 this.current =page
                 await this.setPaperList()
@@ -85,15 +98,13 @@
 
             async setPaperList(){
                 console.log("This is in setPaperList")
-                console.log(this.currentUserId)
-                let res = await axios.get('http://localhost:3000/favorite/getpaperlist',
+                let res = await axios.get('http://localhost:3000/paper/getmypapers',
                     {
-                                params:{
-                                    userId: this.currentUserId,
-                                    current: this.current
-                                }
+                        params:{
+                            userId: this.currentUserId,
+                            current: this.current
+                        }
                     })
-                console.log(res)
                 this.paperList = res.data.paperList
                 this.total = res.data.total
                 console.log(this.paperList);
@@ -129,6 +140,7 @@
                         commentNum: paper.commentNum,
                         createTime: paper.createTime,
                         userName: null ,
+                        color: '',
                         index: index
                     }
                     index++
@@ -154,23 +166,17 @@
         flex-flow: row wrap;
     }
 
+    .header {
+        margin-bottom: 10px;
+    }
+
     .list {
         align-self: flex-start;
         width: 100%;
     }
 
-    .header {
-        margin-bottom: 10px;
-    }
-
-    .page {
-        align-self: flex-end;
-        width: 100%;
-        text-align: center;
-    }
-
-    .favorite-list-item {
-        border: #eeeeee solid;
+    .articles-list-item {
+        border: #dddddd solid;
         box-shadow: 10px 10px 5px #dddddd;
         padding: 20px 20px;
         border-radius: 30px;
@@ -178,5 +184,11 @@
         background-color: #bbbbbb;
         margin-left: 10px;
         margin-right: 10px;
+    }
+
+    .page {
+        align-self: flex-end;
+        width: 100%;
+        text-align: center;
     }
 </style>

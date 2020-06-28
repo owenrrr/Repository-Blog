@@ -48,7 +48,7 @@
                 actions :[],
                 userList: [],
                 paperList: [],
-                currentUserId: this.$route.params.userId
+                currentUserId: this.$route.params.id
             };
         },
 
